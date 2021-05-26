@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Sodalite.src.Utilities
+namespace Sodalite
 {
 	public static class Extensions
 	{
