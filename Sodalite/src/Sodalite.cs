@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
@@ -27,7 +26,6 @@ namespace Sodalite
 		private static ManualLogSource? _logger;
 
 		// Static stuff
-		private static readonly string ResourcesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "res");
 		internal static ManualLogSource StaticLogger => _logger ?? throw new InvalidOperationException("Cannot get logger before the behaviour is initialized!");
 
 		public Sodalite()
