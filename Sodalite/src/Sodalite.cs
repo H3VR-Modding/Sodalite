@@ -43,9 +43,10 @@ namespace Sodalite
 			_logEvents = SodalitePatcher.LogBuffer.LogEvents;
 			SodalitePatcher.LogBuffer.Dispose();
 
-			// Make a new LockablePanel
+			// Make a new LockablePanel for the console panel
 			_logPanel = new LockablePanel();
 			_logPanel.Configure += ConfigureLogPanel;
+			_logPanel.TextureOverride = Utilities.LoadTextureFromBytes(Assembly.GetExecutingAssembly().GetResource("LogPanel.png"));
 			H3Api.WristMenu.Buttons.Add(new WristMenuButton("Spawn Log Panel", int.MaxValue, SpawnLogPanel));
 		}
 
@@ -55,9 +56,6 @@ namespace Sodalite
 			Transform button = H3Api.WristMenu!.Instance!.OptionsPanelPrefab.transform.Find("OptionsCanvas_0_Main/Canvas/Label_SelectASection/Button_Option_1_Locomotion");
 			WidgetStyle.DefaultButtonSprite = button.GetComponent<Image>().sprite;
 			WidgetStyle.DefaultTextFont = button.GetChild(0).GetComponent<Text>().font;
-
-			// Load the log panel texture
-			_logPanel.TextureOverride = Utilities.LoadTextureFromFile(Path.Combine(ResourcesPath, "LogPanel.png"));
 		}
 
 		#region Utility Panel (Widgets test)

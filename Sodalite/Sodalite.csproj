@@ -26,13 +26,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="res/**/*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Remove="Deli.H3VR.deli" />
-    </ItemGroup>
-
-    <ItemGroup>
         <Reference Include="Assembly-CSharp, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>..\libs\Assembly-CSharp_publicized.dll</HintPath>
         </Reference>
@@ -52,6 +45,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Sodalite.Patcher\Sodalite.Patcher.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="res/**/*" />
     </ItemGroup>
 
 </Project>

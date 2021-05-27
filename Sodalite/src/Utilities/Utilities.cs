@@ -16,10 +16,34 @@ namespace Sodalite
 		/// <returns></returns>
 		public static Texture2D LoadTextureFromFile(string file)
 		{
-			byte[] fileData = File.ReadAllBytes(file);
+			return LoadTextureFromBytes(File.ReadAllBytes(file));
+		}
+
+		/// <summary>
+		///		Helper method for loading a texture from some bytes
+		/// </summary>
+		/// <param name="bytes"></param>
+		/// <returns></returns>
+		public static Texture2D LoadTextureFromBytes(byte[] bytes)
+		{
 			Texture2D tex = new(0, 0);
-			tex.LoadImage(fileData);
+			tex.LoadImage(bytes);
 			return tex;
+		}
+
+		public static byte[] GetResource(this Assembly asm, string file)
+		{
+			// Get the resource's actual name
+			string? resource = asm.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith(file));
+			if (resource is null) throw new FileNotFoundException($"A resource with the name '{file}' was not found.", file);
+
+			// Read the stream into a byte array
+			using Stream stream = asm.GetManifestResourceStream(resource) ?? throw new InvalidOperationException("Somehow the file was found but the stream couldn't be gotten.");
+			byte[] buffer = new byte[stream.Length];
+			stream.Read(buffer, 0, buffer.Length);
+
+			// Return the array
+			return buffer;
 		}
 
 		/// <summary>
