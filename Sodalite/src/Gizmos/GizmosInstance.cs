@@ -246,7 +246,6 @@ namespace Popcron
 						{
 							float magnitude = direction.magnitude;
 							int amount = Mathf.RoundToInt(magnitude / dashGap);
-							direction /= magnitude;
 
 							for (int p = 0; p < amount - 1; p++)
 								if (p % 2 == (alt ? 1 : 0))

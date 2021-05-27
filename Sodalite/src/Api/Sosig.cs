@@ -12,6 +12,11 @@ namespace Sodalite.Api
 	/// </summary>
 	public class SosigAPI
 	{
+		// Internal constructor so no one else can make a new one of these
+		internal SosigAPI()
+		{
+		}
+
 		/// <summary>
 		///		Spawns a Sosig with the given template, options position and rotation.
 		/// </summary>
@@ -127,8 +132,7 @@ namespace Sodalite.Api
 				All = Primary | Secondary | Tertiary
 			}
 
-			// ReSharper disable UnusedAutoPropertyAccessor.Global
-			// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+			// ReSharper disable UnusedAutoPropertyAccessor.Global, AutoPropertyCanBeMadeGetOnly.Global
 			public bool SpawnActivated { get; set; } = false;
 			public int IFF { get; set; } = 0;
 			public bool SpawnWithFullAmmo { get; set; } = true;
@@ -136,8 +140,7 @@ namespace Sodalite.Api
 			public Sosig.SosigOrder SpawnState { get; set; } = Sosig.SosigOrder.Disabled;
 			public Vector3 SosigTargetPosition { get; set; } = Vector3.zero;
 			public Vector3 SosigTargetRotation { get; set; } = Vector3.zero;
-			// ReSharper restore UnusedAutoPropertyAccessor.Global
-			// ReSharper restore AutoPropertyCanBeMadeGetOnly.Global
+			// ReSharper restore UnusedAutoPropertyAccessor.Global, AutoPropertyCanBeMadeGetOnly.Global
 		}
 	}
 }
