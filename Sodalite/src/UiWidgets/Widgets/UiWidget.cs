@@ -50,7 +50,6 @@ namespace Sodalite.UiWidgets
 		/// <typeparam name="TWidget">The type of widget to make</typeparam>
 		/// <typeparam name="TStyle">The type of style to apply</typeparam>
 		/// <returns>The created widget</returns>
-		// ReSharper disable once MemberCanBePrivate.Global
 		public static TWidget CreateAndConfigureWidget<TWidget, TStyle>(GameObject go, Action<TWidget> configureWidget, Action<TStyle> configureStyle)
 			where TWidget : UiWidget where TStyle : WidgetStyle
 		{

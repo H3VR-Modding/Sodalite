@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
+// ReSharper disable All
 
 #nullable disable
 public struct ScriptableRenderContext
@@ -68,12 +69,10 @@ namespace Popcron
 					};
 
 					// Turn on alpha blending
-					// ReSharper disable Unity.PreferAddressByIdToGraphicsParams
 					_defaultMaterial.SetInt("_SrcBlend", (int) BlendMode.SrcAlpha);
 					_defaultMaterial.SetInt("_DstBlend", (int) BlendMode.OneMinusSrcAlpha);
 					_defaultMaterial.SetInt("_Cull", (int) CullMode.Off);
 					_defaultMaterial.SetInt("_ZWrite", 0);
-					// ReSharper restore Unity.PreferAddressByIdToGraphicsParams
 				}
 
 				return _defaultMaterial;
@@ -84,7 +83,6 @@ namespace Popcron
 		{
 			if (_hotReloaded || !_instance)
 			{
-				// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 				var gizmosInstances = FindObjectsOfType<GizmosInstance>();
 				for (int i = 0; i < gizmosInstances.Length; i++)
 				{
@@ -103,7 +101,6 @@ namespace Popcron
 				//none were found, create a new one
 				if (!_instance)
 				{
-					// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 					_instance = new GameObject(typeof(GizmosInstance).FullName).AddComponent<GizmosInstance>();
 					_instance.gameObject.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
 				}
@@ -119,7 +116,6 @@ namespace Popcron
 		/// </summary>
 		internal static void Submit(Vector3[] points, Color? color, bool dashed)
 		{
-			// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 			GizmosInstance inst = GetOrCreate();
 
 			//if new frame, reset index
@@ -186,7 +182,6 @@ namespace Popcron
 		private void Update()
 		{
 			//always render something
-			// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 			Gizmos.Line(default, default);
 		}
 

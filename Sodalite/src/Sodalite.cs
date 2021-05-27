@@ -6,6 +6,7 @@ using System.Reflection;
 using BepInEx;
 using BepInEx.Logging;
 using FistVR;
+using MonoMod.RuntimeDetour;
 using Sodalite.Api;
 using Sodalite.Patcher;
 using Sodalite.UiWidgets;
@@ -31,8 +32,11 @@ namespace Sodalite
 
 		public Sodalite()
 		{
-			// Patch a call to GetTypes
-			On.UnityEngine.Rendering.PostProcessing.PostProcessManager.ReloadBaseTypes += PostProcessManagerOnReloadBaseTypes;
+			// Hook a call to a compiler-generated method and replace it with one that doesn't use an unsafe GetTypes call
+			new Hook(
+				typeof(PostProcessManager).GetMethod("<ReloadBaseTypes>m__0", BindingFlags.Static | BindingFlags.NonPublic),
+				GetType().GetMethod(nameof(EnumerateTypesSafe), BindingFlags.Static | BindingFlags.NonPublic)
+			);
 
 			// Set our logger so it's accessible from anywhere
 			_logger = Logger;
@@ -132,20 +136,12 @@ namespace Sodalite
 
 		#endregion
 
-		// Patch for a location in the game's code that uses an Assembly.GetTypes() call. This could be an IL thing but I can't be bothered to do that right now.
-		private static void PostProcessManagerOnReloadBaseTypes(On.UnityEngine.Rendering.PostProcessing.PostProcessManager.orig_ReloadBaseTypes orig, PostProcessManager self)
+		// Hook over the lambda that PostProcessManager.ReloadBaseTypes uses so we can use a GetTypesSafe instead of GetTypes
+		private static IEnumerable<Type> EnumerateTypesSafe(Assembly assembly)
 		{
-			self.CleanBaseTypes();
-			IEnumerable<Type> enumerable = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => from t in a.GetTypesSafe()
+			return from t in assembly.GetTypesSafe()
 				where t.IsSubclassOf(typeof(PostProcessEffectSettings)) && t.IsDefined(typeof(PostProcessAttribute), false)
-				select t);
-			foreach (Type type in enumerable)
-			{
-				self.settingsTypes.Add(type, type.GetAttribute<PostProcessAttribute>());
-				PostProcessEffectSettings postProcessEffectSettings = (PostProcessEffectSettings) ScriptableObject.CreateInstance(type);
-				postProcessEffectSettings.SetAllOverridesTo(true, false);
-				self.m_BaseSettings.Add(postProcessEffectSettings);
-			}
+				select t;
 		}
 	}
 }

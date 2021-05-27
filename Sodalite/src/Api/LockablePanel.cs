@@ -20,7 +20,6 @@ namespace Sodalite.Api
 		/// </summary>
 		/// <returns>The parent game object of the panel</returns>
 		/// <exception cref="InvalidOperationException">Method was called before a reference to the options panel prefab was taken</exception>
-		// ReSharper disable once MemberCanBeMadeStatic.Global
 		public GameObject GetCleanLockablePanel()
 		{
 			FVRWristMenu? wristMenu = H3Api.WristMenu.Instance;

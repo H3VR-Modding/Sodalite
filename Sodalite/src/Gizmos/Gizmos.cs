@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable All
 
 namespace Popcron
 {
@@ -11,11 +11,9 @@ namespace Popcron
 		/// By default, it will always render to scene view camera and the main camera.
 		/// Subscribing to this allows you to whitelist your custom cameras.
 		/// </summary>
-		// ReSharper disable once UnusedParameter.Local
 		public static readonly Func<Camera, bool> CameraFilter = cam => false;
 
 
-		// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 		/// <summary>
 		/// The size of the total gizmos buffer.
 		/// Default is 4096.
@@ -56,7 +54,6 @@ namespace Popcron
 		/// Global offset for all points. Default is (0, 0, 0).
 		/// </summary>
 		public static Vector3 Offset { get; set; } = Vector3.zero;
-		// ReSharper restore AutoPropertyCanBeMadeGetOnly.Global
 
 		private static Vector3[] _buffer = new Vector3[BufferSize];
 
@@ -67,7 +64,6 @@ namespace Popcron
 		{
 			if (!Enabled) return;
 
-			// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 			Drawer? drawer = Drawer.Get<T>();
 			if (drawer != null)
 			{
@@ -76,7 +72,6 @@ namespace Popcron
 				//copy from buffer and add to the queue
 				Vector3[] array = new Vector3[points];
 				Array.Copy(_buffer, array, points);
-				// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 				GizmosInstance.Submit(array, color, dashed);
 			}
 		}
@@ -96,7 +91,6 @@ namespace Popcron
 		/// </summary>
 		public static void Line(Vector3 a, Vector3 b, Color? color = null, bool dashed = false)
 		{
-			// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 			Draw<LineDrawer>(color, dashed, a, b);
 		}
 

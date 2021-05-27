@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
+// ReSharper disable All
 
 namespace Popcron
 {
@@ -43,7 +44,6 @@ namespace Popcron
 							}
 							catch (Exception e)
 							{
-								// ReSharper disable once Unity.PerformanceCriticalCodeInvocation
 								Debug.LogError($"Couldn't register drawer of type {type} because {e.Message}");
 							}
 					}
