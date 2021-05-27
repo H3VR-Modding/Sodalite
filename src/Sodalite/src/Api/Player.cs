@@ -88,7 +88,7 @@ namespace Sodalite.Api
 		/// <summary>
 		/// Position of the player
 		/// </summary>
-		public Transform PlayerPositon
+		public Transform PlayerPosition
 		{
 			get => GM.CurrentPlayerRoot;
 
@@ -125,6 +125,7 @@ namespace Sodalite.Api
 		}
 		#endregion
 
+		#region Functions
 		/// <summary>
 		///	Kills player
 		/// </summary>
@@ -155,12 +156,12 @@ namespace Sodalite.Api
 		public void TeleportPlayer(Vector3 position, bool additive = true)
 		{
 			if (additive)
-				PlayerPositon.position += position;
+				PlayerPosition.position += position;
 			else
-				PlayerPositon.position = position;
+				PlayerPosition.position = position;
 			PlayerBody.UpdatePlayerBodyPositions();
 		}
-
+		#endregion
 
 
 		internal PlayerAPI() {}
