@@ -12,6 +12,9 @@ using UnityEngine.UI;
 
 namespace Sodalite
 {
+	/// <summary>
+	/// Unity MonoBehaviour for controlling the BepInEx log panel
+	/// </summary>
 	public class BepInExLogPanel : MonoBehaviour
 	{
 		private List<LogEventArgs>? _currentEvents;

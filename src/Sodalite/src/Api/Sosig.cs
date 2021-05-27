@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 namespace Sodalite.Api
 {
 	/// <summary>
-	///		Sodalite Sosig API for spawning Sosigs.
+	///	Sodalite Sosig API for spawning Sosigs.
 	/// </summary>
 	public class SosigAPI
 	{
@@ -18,10 +18,10 @@ namespace Sodalite.Api
 		}
 
 		/// <summary>
-		///		Spawns a Sosig with the given template, options position and rotation.
+		///	Spawns a Sosig with the given template, options position and rotation.
 		/// </summary>
 		/// <remarks>
-		///		This code has been adapted from the game's SosigSpawner class. The contents have been tidied and documented.
+		///	This code has been adapted from the game's SosigSpawner class. The contents have been tidied and documented.
 		/// </remarks>
 		/// <param name="template">The Sosig Enemy Template to spawn from. This defines the equipment, accessories, etc.</param>
 		/// <param name="spawnOptions">The spawning options such as the Sosig's IFF, activation and general state</param>
@@ -34,7 +34,7 @@ namespace Sodalite.Api
 			FVRObject prefab = template.SosigPrefabs[Random.Range(0, template.SosigPrefabs.Count)];
 			SosigConfigTemplate configTemplate = template.ConfigTemplates[Random.Range(0, template.ConfigTemplates.Count)];
 			SosigOutfitConfig outfitConfig = template.OutfitConfig[Random.Range(0, template.OutfitConfig.Count)];
-			Sosig sosig = SpawnSosigAndConfigureSosig(prefab.GetGameObject(), position, rotation, configTemplate, outfitConfig);
+			Sosig sosig = SpawnAndConfigureSosig(prefab.GetGameObject(), position, rotation, configTemplate, outfitConfig);
 
 			// Initialize some stuff
 			sosig.InitHands();
@@ -82,7 +82,7 @@ namespace Sodalite.Api
 			return sosig;
 		}
 
-		private static Sosig SpawnSosigAndConfigureSosig(GameObject prefab, Vector3 pos, Quaternion rot, SosigConfigTemplate template, SosigOutfitConfig outfit)
+		private static Sosig SpawnAndConfigureSosig(GameObject prefab, Vector3 pos, Quaternion rot, SosigConfigTemplate template, SosigOutfitConfig outfit)
 		{
 			// Get the Sosig component
 			Sosig sosig = Object.Instantiate(prefab, pos, rot).GetComponentInChildren<Sosig>();
@@ -120,9 +120,14 @@ namespace Sodalite.Api
 			}
 		}
 
-		// ReSharper disable once ClassNeverInstantiated.Global
+		/// <summary>
+		/// This class represents the options that will be used while spawning a Sosig
+		/// </summary>
 		public class SpawnOptions
 		{
+			/// <summary>
+			/// Enum representing the equipment slots on a Sosig
+			/// </summary>
 			[Flags]
 			public enum EquipmentSlots
 			{
@@ -132,15 +137,44 @@ namespace Sodalite.Api
 				All = Primary | Secondary | Tertiary
 			}
 
-			// ReSharper disable UnusedAutoPropertyAccessor.Global, AutoPropertyCanBeMadeGetOnly.Global
+			/// <summary>
+			/// Whether or not the Sosig should spawn activated. A disabled Sosig will not do
+			/// anything but stand around.
+			/// </summary>
 			public bool SpawnActivated { get; set; } = false;
+
+			/// <summary>
+			/// The IFF to spawn a Sosig with. IFF is essentially the entity's team, entities with
+			/// the same IFF will not attack each other
+			/// </summary>
 			public int IFF { get; set; } = 0;
+
+			/// <summary>
+			/// Whether the Sosig should spawn with ammo for their weapons
+			/// </summary>
 			public bool SpawnWithFullAmmo { get; set; } = true;
+
+			/// <summary>
+			/// Flags representing which equipment slots the Sosig may spawn with.
+			/// Sosig templates have configured chances to spawn with each equipment slot so
+			/// it's not guaranteed to spawn with every weapon each time.
+			/// </summary>
 			public EquipmentSlots EquipmentMode { get; set; } = EquipmentSlots.All;
+
+			/// <summary>
+			/// The state that the Sosig will start in.
+			/// </summary>
 			public Sosig.SosigOrder SpawnState { get; set; } = Sosig.SosigOrder.Disabled;
+
+			/// <summary>
+			/// The Sosig's guard state turret location and assault state attack location
+			/// </summary>
 			public Vector3 SosigTargetPosition { get; set; } = Vector3.zero;
+
+			/// <summary>
+			/// The Sosig's guard state dominant direction
+			/// </summary>
 			public Vector3 SosigTargetRotation { get; set; } = Vector3.zero;
-			// ReSharper restore UnusedAutoPropertyAccessor.Global, AutoPropertyCanBeMadeGetOnly.Global
 		}
 	}
 }

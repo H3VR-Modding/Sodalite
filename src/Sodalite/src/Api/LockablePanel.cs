@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 namespace Sodalite.Api
 {
 	/// <summary>
-	///		Sodalite Lockable Panel API for making custom lockable panels.
+	///	Sodalite Lockable Panel API for making custom lockable panels.
 	/// </summary>
 	public class LockablePanelAPI
 	{
@@ -54,12 +54,32 @@ namespace Sodalite.Api
 			Object.Destroy(panel.GetComponent<OptionsPanel_Screenmanager>());
 		}
 	}
+}
 
+namespace Sodalite
+{
+	/// <summary>
+	///	The LockablePanel class represents a lockable panel similar to the options panel in game.
+	/// This abstraction is required because Unity Game Objects are scoped to the scene that they are
+	/// instantiated in, so this class will re-create and configure the panel for you when you try and
+	/// get it if necessary.
+	/// </summary>
 	public class LockablePanel
 	{
 		// And also a reference to this object's current panel
 		private GameObject? _currentPanel;
+
+		/// <summary>
+		///	The texture that will be applied to this panel when it is configured. Leaving this null
+		/// will leave the default blue texture on the panel.
+		/// </summary>
 		public Texture2D? TextureOverride;
+
+		/// <summary>
+		/// Event callback for when this panel is being configured. This is called once every time a
+		/// new panel game object needs to be created so if you need to run any setup code for your
+		/// panel, do it here.
+		/// </summary>
 		public event Action<GameObject>? Configure;
 
 		/// <summary>

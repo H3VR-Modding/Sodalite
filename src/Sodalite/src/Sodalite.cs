@@ -15,6 +15,9 @@ using UnityEngine.UI;
 
 namespace Sodalite
 {
+	/// <summary>
+	/// Sodalite main BepInEx plugin entrypoint
+	/// </summary>
 	[BepInPlugin("nrgill28.Sodalite", "Sodalite", "0.3.0")]
 	[BepInProcess("h3vr.exe")]
 	public class Sodalite : BaseUnityPlugin, ILogListener

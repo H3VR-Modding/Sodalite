@@ -2,12 +2,15 @@
 
 namespace Sodalite.UiWidgets
 {
+	/// <summary>
+	/// Some UI extensions
+	/// </summary>
 	public static class Extensions
 	{
 		/// <summary>
-		///		Anchors this element so that it completely fills it's parent
+		///	Anchors this element so that it completely fills it's parent
 		/// </summary>
-		/// <param name="rt"></param>
+		/// <param name="rt">RectTransform to operate on</param>
 		public static void FillParent(this RectTransform rt)
 		{
 			//rt.localPosition = Vector3.zero;

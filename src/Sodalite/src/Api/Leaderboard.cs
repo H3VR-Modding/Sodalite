@@ -5,7 +5,7 @@ using Steamworks;
 namespace Sodalite.Api
 {
 	/// <summary>
-	///		Sodalite Leaderboard API provides methods for interfacing with the game's leaderboards.
+	///	Sodalite Leaderboard API provides methods for interfacing with the game's leaderboards.
 	/// </summary>
 	public class LeaderboardAPI
 	{
@@ -42,9 +42,10 @@ namespace Sodalite.Api
 		}
 
 		/// <summary>
-		///		Call this method to get a disposable leaderboard disable lock.
-		///		Leaderboard submission will be disabled while you have the lock, dispose it when you want to re-enable leaderboard submission.
+		///	Calling this method will let you disable the Steam leaderboards. Disposing of the object returned by
+		/// this method will re-enable the leaderboards (as long as no other mod is holding their own lock)
 		/// </summary>
+		/// <returns>A disposable that while undisposed prevents any scores from submitting to Steam leaderboards.</returns>
 		public IDisposable GetLeaderboardDisableLock()
 		{
 			return new LeaderboardDisableDisposable(_scoreboardDisabled);

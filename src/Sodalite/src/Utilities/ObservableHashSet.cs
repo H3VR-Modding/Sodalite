@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 namespace Sodalite
 {
+	/// <summary>
+	/// Because .NET 3.5 doesn't include the ObservableCollection class, here's my own implementation.
+	/// This is a HashSet that gives event callbacks when an item is added or removed.
+	/// </summary>
+	/// <typeparam name="T">The type of the element inside</typeparam>
 	public class ObservableHashSet<T> : IList<T>
 	{
 		private readonly List<T> _list = new();

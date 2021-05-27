@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FistVR;
 using HarmonyLib;
@@ -9,14 +10,17 @@ using Object = UnityEngine.Object;
 namespace Sodalite.Api
 {
 	/// <summary>
-	///		Sodalite Wrist Menu API for adding and removing custom wrist menu buttons.
+	///	Sodalite Wrist Menu API for adding and removing custom wrist menu buttons.
 	/// </summary>
 	public class WristMenuAPI
 	{
+		/// <summary>
+		/// Reference to the current instance of the game's wrist menu.
+		/// </summary>
 		public FVRWristMenu? Instance { get; private set; }
 
 		/// <summary>
-		///		Collection of wrist menu buttons. Add to this collection to register a button and remove from the collection to unregister.
+		///	Collection of wrist menu buttons. Add to this collection to register a button and remove from the collection to unregister.
 		/// </summary>
 		public ICollection<WristMenuButton> Buttons => _wristMenuButtons;
 
@@ -43,9 +47,6 @@ namespace Sodalite.Api
 			RemoveWristMenuButton(Instance, button);
 		}
 
-		/// <summary>
-		///		Hook for the wrist menu awake. This adds all the buttons to the wrist menu
-		/// </summary>
 		private void FVRWristMenuOnAwake(On.FistVR.FVRWristMenu.orig_Awake orig, FVRWristMenu self)
 		{
 			// Note to self; this is required and very important.
@@ -62,9 +63,6 @@ namespace Sodalite.Api
 				AddWristMenuButton(self, button);
 		}
 
-		/// <summary>
-		///		Adds a wrist menu button to the wrist menu
-		/// </summary>
 		private void AddWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
 		{
 			// The button we want to use as a reference is either the spectator button (wristMenu.Buttons[16])
@@ -118,9 +116,6 @@ namespace Sodalite.Api
 			button.CallOnCreate(pointable);
 		}
 
-		/// <summary>
-		///		Removes a wrist menu button from the wrist menu
-		/// </summary>
 		private void RemoveWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
 		{
 			// This time our reference is the current button
@@ -160,47 +155,49 @@ namespace Sodalite.Api
 	}
 
 	/// <summary>
-	///		Represents a wrist menu button
+	///	This class represents a custom button on the wrist menu. This abstraction is required
+	/// because the wrist menu buttons are just game objects and would be lost on a scene load
+	/// so this class is used to store the button's information and re-create for you when required.
 	/// </summary>
 	public class WristMenuButton
 	{
 		/// <summary>
-		///		The text that this button will display when shown on the wrist menu.
+		///	The text that this button will display when shown on the wrist menu.
 		/// </summary>
 		public string Text { get; }
 
 		/// <summary>
-		///		The priority of this button. Priority determines the order in which buttons appear.
+		///	The priority of this button. Priority determines the order in which buttons appear.
 		/// </summary>
 		public int Priority { get; }
 
 		/// <summary>
-		///		Called when this button is added to the wrist menu and provides a reference to the game object that was created
+		///	Event callback for when this button is being created. If you need to run some setup
+		/// code on your button, subscribe to this event.
 		/// </summary>
-		// ReSharper disable once EventNeverSubscribedTo.Global
-		public event WristMenuButtonOnCreate? OnCreate;
+		public event Action<FVRWristMenuPointableButton>? OnCreate;
 
 		/// <summary>
-		///		Called when this button is selected by the player
+		///	Event callback for when this button is clicked on by the player
 		/// </summary>
-		public event WristMenuButtonOnClick? OnClick;
+		public event Action? OnClick;
 
 		/// <summary>
-		///		Constructor for the wrist menu button taking the text and a click action
+		///	Constructor for the wrist menu button taking the text and a click action
 		/// </summary>
 		/// <param name="text">The text to display on this button</param>
 		/// <param name="clickAction">The callback for when the button is clicked</param>
-		public WristMenuButton(string text, WristMenuButtonOnClick? clickAction = null) : this(text, 0, clickAction)
+		public WristMenuButton(string text, Action? clickAction = null) : this(text, 0, clickAction)
 		{
 		}
 
 		/// <summary>
-		///		Constructor for the wrist menu button taking the text, priority and a click action
+		///	Constructor for the wrist menu button taking the text, priority and a click action
 		/// </summary>
 		/// <param name="text">The text to display on this button</param>
 		/// <param name="priority">The priority of the button. This decides the order of buttons on the wrist menu</param>
 		/// <param name="clickAction">The callback for when the button is clicked</param>
-		public WristMenuButton(string text, int priority, WristMenuButtonOnClick? clickAction = null)
+		public WristMenuButton(string text, int priority, Action? clickAction = null)
 		{
 			Text = text;
 			Priority = priority;
@@ -216,9 +213,5 @@ namespace Sodalite.Api
 		{
 			OnClick?.Invoke();
 		}
-
-		// Delegates for this class
-		public delegate void WristMenuButtonOnClick();
-		public delegate void WristMenuButtonOnCreate(FVRWristMenuPointableButton button);
 	}
 }

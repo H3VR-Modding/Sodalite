@@ -12,16 +12,14 @@ namespace Sodalite.Patcher
 		public static IEnumerable<string> TargetDLLs { get; } = new string[0];
 		internal static LogBuffer LogBuffer { get; } = new();
 
-		// ReSharper disable once UnusedParameter.Global
 		public static void Patch(AssemblyDefinition assembly)
 		{
 		}
 	}
 
 	/// <summary>
-	///		Small class to buffer logs output in the patching stage so we can read them later in the runtime stage
+	///	Small class to buffer logs output in the patching stage so we can read them later in the runtime stage
 	/// </summary>
-	// ReSharper disable once ClassNeverInstantiated.Global
 	internal class LogBuffer : ILogListener
 	{
 		public LogBuffer()
