@@ -13,8 +13,8 @@
         <Description>Patching stage for H3 Modding Toolkit</Description>
         <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
 
-        <PackageProjectUrl>https://github.com/Deli-Collective/Sodalite</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/Deli-Collective/Sodalite.git</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/H3VR-Modding/Sodalite</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/H3VR-Modding/Sodalite.git</RepositoryUrl>
         <RootNamespace>Sodalite.Patcher</RootNamespace>
     </PropertyGroup>
 
