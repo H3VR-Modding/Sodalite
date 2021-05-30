@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net35</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+        <PackageId>Sodalite.Patcher</PackageId>
+        <Title>Sodalite - Modding Toolkit for H3VR</Title>
+        <Authors>nrgill28</Authors>
+        <Description>Patching stage for H3 Modding Toolkit</Description>
+        <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+
+        <PackageProjectUrl>https://github.com/H3VR-Modding/Sodalite</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/H3VR-Modding/Sodalite.git</RepositoryUrl>
+        <RootNamespace>Sodalite.Patcher</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BepInEx.Core" Version="5.4.8" />
+        <PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>Sodalite</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+</Project>
