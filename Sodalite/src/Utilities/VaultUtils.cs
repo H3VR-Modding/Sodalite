@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Sodalite
 {
-	public static class VaultUtilites
+	public static class VaultUtils
 	{
 
 
