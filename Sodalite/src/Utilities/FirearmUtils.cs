@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Sodalite
 {
@@ -28,26 +29,26 @@ namespace Sodalite
 
 			//Create a list containing all compatible ammo containers
 			List<FVRObject> compatibleContainers = new List<FVRObject>();
-			if(firearm.CompatibleMagazines is not null) compatibleContainers.AddRange(firearm.CompatibleMagazines);
+			if (firearm.CompatibleMagazines is not null) compatibleContainers.AddRange(firearm.CompatibleMagazines);
 			if (firearm.CompatibleClips is not null) compatibleContainers.AddRange(firearm.CompatibleClips);
 			if (firearm.CompatibleSpeedLoaders is not null) compatibleContainers.AddRange(firearm.CompatibleSpeedLoaders);
 
 			//Go through these containers and remove any that don't fit given criteria
-			for(int i = compatibleContainers.Count - 1; i >= 0; i--)
+			for (int i = compatibleContainers.Count - 1; i >= 0; i--)
 			{
-				if(blacklistedContainers is not null && blacklistedContainers.Contains(compatibleContainers[i].ItemID))
+				if (blacklistedContainers is not null && blacklistedContainers.Contains(compatibleContainers[i].ItemID))
 				{
 					compatibleContainers.RemoveAt(i);
 				}
 
-				if(compatibleContainers[i].MagazineCapacity < minCapacity || compatibleContainers[i].MagazineCapacity > maxCapacity)
+				if (compatibleContainers[i].MagazineCapacity < minCapacity || compatibleContainers[i].MagazineCapacity > maxCapacity)
 				{
 					compatibleContainers.RemoveAt(i);
 				}
 			}
 
 			//If the resulting list is empty, and smallestIfEmpty is true, add the smallest capacity magazine to the list
-			if(compatibleContainers.Count == 0 && smallestIfEmpty && firearm.CompatibleMagazines is not null)
+			if (compatibleContainers.Count == 0 && smallestIfEmpty && firearm.CompatibleMagazines is not null)
 			{
 				FVRObject? magazine = GetSmallestCapacityMagazine(firearm.CompatibleMagazines);
 				if (magazine is not null) compatibleContainers.Add(magazine);
@@ -70,8 +71,8 @@ namespace Sodalite
 
 			//This was done with a list because whenever there are multiple smallest magazines of the same size, we want to return a random one from those options
 			List<FVRObject> smallestMagazines = new List<FVRObject>();
-			
-			foreach(FVRObject magazine in magazines)
+
+			foreach (FVRObject magazine in magazines)
 			{
 				if (blacklistedMagazines is not null && blacklistedMagazines.Contains(magazine.ItemID)) continue;
 
@@ -210,7 +211,7 @@ namespace Sodalite
 			FVRInteractiveObject leftHandObject = GM.CurrentMovementManager.Hands[1].CurrentInteractable;
 
 			//Get any items in the players hands
-			if(rightHandObject is FVRPhysicalObject && ((FVRPhysicalObject)rightHandObject).ObjectWrapper is not null)
+			if (rightHandObject is FVRPhysicalObject && ((FVRPhysicalObject)rightHandObject).ObjectWrapper is not null)
 			{
 				heldItems.Add(((FVRPhysicalObject)rightHandObject).ObjectWrapper);
 			}
@@ -229,7 +230,7 @@ namespace Sodalite
 				}
 
 				//If the player has a backpack on, we should search through that as well
-				else if (slot.CurObject is PlayerBackPack && ((PlayerBackPack)slot.CurObject).ObjectWrapper is not null)
+				if (slot.CurObject is PlayerBackPack && ((PlayerBackPack)slot.CurObject).ObjectWrapper is not null)
 				{
 					foreach (FVRQuickBeltSlot backpackSlot in GM.CurrentPlayerBody.QuickbeltSlots)
 					{
@@ -253,14 +254,14 @@ namespace Sodalite
 		/// <param name="blacklistedContainers">A list of ItemIDs for magazines that will be excluded</param>
 		/// <returns>An FVRObject for an ammo container. Can be null if no container is found</returns>
 		public static FVRObject? GetAmmoContainerForEquipped(int minCapacity = 0, int maxCapacity = 9999, List<string>? blacklistedContainers = null)
-        {
+		{
 			List<FVRObject> heldItems = GetEquippedItems();
 
 			//Iterpret -1 as having no max capacity
 			if (maxCapacity == -1) maxCapacity = 9999;
 
 			//Go through and remove any items that have no ammo containers
-			for(int i = heldItems.Count - 1; i >= 0; i--)
+			for (int i = heldItems.Count - 1; i >= 0; i--)
 			{
 				if (!FVRObjectHasAmmoContainer(heldItems[i]))
 				{
@@ -270,7 +271,7 @@ namespace Sodalite
 
 			//Now go through all items that do have ammo containers, and try to get an ammo container for one of them
 			heldItems.Shuffle();
-			foreach(FVRObject item in heldItems)
+			foreach (FVRObject item in heldItems)
 			{
 				List<FVRObject> containers = GetCompatibleAmmoContainers(item, minCapacity, maxCapacity, false, blacklistedContainers);
 				if (containers.Count > 0) return containers.GetRandom();
@@ -279,6 +280,9 @@ namespace Sodalite
 			return null;
 		}
 
-
 	}
+
+	
+
+
 }
