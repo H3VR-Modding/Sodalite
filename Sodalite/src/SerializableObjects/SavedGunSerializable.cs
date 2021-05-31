@@ -32,7 +32,15 @@ namespace Sodalite
 		public List<SavedGunComponentSerializable> Components;
 
 
-		public SavedGunSerializable(SavedGun gun)
+		/// <summary>
+		/// Creates a serializable version of the given SavedGunObject
+		/// </summary>
+		/// <remarks>
+		/// Passing the firearm component for the vault file is slightly faster than just passing the SavedGun object
+		/// </remarks>
+		/// <param name="gun"></param>
+		/// <param name="firearm"></param>
+		public SavedGunSerializable(SavedGun gun, FVRFireArm? firearm = null)
 		{
 			FileName = gun.FileName;
 			Components = gun.Components.Select(o => new SavedGunComponentSerializable(o)).ToList();
@@ -40,7 +48,8 @@ namespace Sodalite
 			LoadedRoundsInChambers = gun.LoadedRoundsInChambers;
 			SavedFlags = gun.SavedFlags;
 
-			LoadFirearmProperties(gun);
+			if(firearm is not null) LoadFirearmProperties(firearm);
+			else LoadFirearmProperties(gun);
 		}
 
 
