@@ -10,9 +10,7 @@
         }
       ],
       "dest": "api",
-      "filter": "api_filter.yml",
-      "disableGitFeatures": false,
-      "disableDefaultFilter": false
+      "filter": "api_filter.yml"
     }
   ],
   "build": {
@@ -42,7 +40,6 @@
     "overwrite": [
       {
         "files": [
-          "apidoc/**.md"
         ],
         "exclude": [
           "obj/**",
@@ -59,9 +56,6 @@
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
-    "noLangKeyword": false,
-    "keepFileLink": false,
-    "cleanupCacheHistory": false,
-    "disableGitFeatures": false
+    "noLangKeyword": false
   }
 }
