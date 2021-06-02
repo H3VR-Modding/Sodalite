@@ -199,26 +199,28 @@ namespace Sodalite
 		}
 
 
+
+
 		/// <summary>
-		/// Returns a list of FVRObjects for items that are either in the players hand, or in one of the players quickbelt slots. This also includes any items in a players backpack if they are wearing one
+		/// Returns a list of FVRPhysicalObjects for items that are either in the players hand, or in one of the players quickbelt slots. This also includes any items in a players backpack if they are wearing one
 		/// </summary>
-		/// <returns>A list of FVRObjects equipped on the player</returns>
-		public static List<FVRObject> GetEquippedItems()
+		/// <returns>A list of FVRPhysicalObjects equipped on the player</returns>
+		public static List<FVRPhysicalObject> GetEquippedItems()
 		{
-			List<FVRObject> heldItems = new List<FVRObject>();
+			List<FVRPhysicalObject> heldItems = new List<FVRPhysicalObject>();
 
 			FVRInteractiveObject rightHandObject = GM.CurrentMovementManager.Hands[0].CurrentInteractable;
 			FVRInteractiveObject leftHandObject = GM.CurrentMovementManager.Hands[1].CurrentInteractable;
 
 			//Get any items in the players hands
-			if (rightHandObject is FVRPhysicalObject && ((FVRPhysicalObject)rightHandObject).ObjectWrapper is not null)
+			if (rightHandObject is FVRPhysicalObject)
 			{
-				heldItems.Add(((FVRPhysicalObject)rightHandObject).ObjectWrapper);
+				heldItems.Add((FVRPhysicalObject)rightHandObject);
 			}
 
-			if (leftHandObject is FVRPhysicalObject && ((FVRPhysicalObject)leftHandObject).ObjectWrapper is not null)
+			if (leftHandObject is FVRPhysicalObject)
 			{
-				heldItems.Add(((FVRPhysicalObject)leftHandObject).ObjectWrapper);
+				heldItems.Add((FVRPhysicalObject)leftHandObject);
 			}
 
 			//Get any items on the players body
@@ -226,7 +228,7 @@ namespace Sodalite
 			{
 				if (slot.CurObject is not null && slot.CurObject.ObjectWrapper is not null)
 				{
-					heldItems.Add(slot.CurObject.ObjectWrapper);
+					heldItems.Add(slot.CurObject);
 				}
 
 				//If the player has a backpack on, we should search through that as well
@@ -234,9 +236,9 @@ namespace Sodalite
 				{
 					foreach (FVRQuickBeltSlot backpackSlot in GM.CurrentPlayerBody.QuickbeltSlots)
 					{
-						if (backpackSlot.CurObject is not null && backpackSlot.CurObject.ObjectWrapper is not null)
+						if (backpackSlot.CurObject is not null)
 						{
-							heldItems.Add(backpackSlot.CurObject.ObjectWrapper);
+							heldItems.Add(backpackSlot.CurObject);
 						}
 					}
 				}
@@ -244,6 +246,29 @@ namespace Sodalite
 
 			return heldItems;
 		}
+
+
+
+		/// <summary>
+		/// Returns a list of FVRObjects for all of the items that are equipped on the player. Items without a valid FVRObject are excluded. There may also be duplicate entries if the player has identical items equipped
+		/// </summary>
+		/// <returns>A list of FVRObjects equipped on the player</returns>
+		public static List<FVRObject> GetEquippedFVRObjects()
+		{
+			List<FVRObject> equippedFVRObjects = new List<FVRObject>();
+
+			foreach(FVRPhysicalObject item in GetEquippedItems())
+			{
+				if (item.ObjectWrapper is null) continue;
+
+				equippedFVRObjects.Add(item.ObjectWrapper);
+			}
+
+			return equippedFVRObjects;
+		}
+
+
+
 
 
 		/// <summary>
@@ -255,7 +280,7 @@ namespace Sodalite
 		/// <returns>An FVRObject for an ammo container. Can be null if no container is found</returns>
 		public static FVRObject? GetAmmoContainerForEquipped(int minCapacity = 0, int maxCapacity = 9999, List<string>? blacklistedContainers = null)
 		{
-			List<FVRObject> heldItems = GetEquippedItems();
+			List<FVRObject> heldItems = GetEquippedFVRObjects();
 
 			//Iterpret -1 as having no max capacity
 			if (maxCapacity == -1) maxCapacity = 9999;
