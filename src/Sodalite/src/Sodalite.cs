@@ -9,6 +9,7 @@ using MonoMod.RuntimeDetour;
 using Sodalite.Api;
 using Sodalite.Patcher;
 using Sodalite.UiWidgets;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
@@ -53,6 +54,18 @@ namespace Sodalite
 			_logPanel.Configure += ConfigureLogPanel;
 			_logPanel.TextureOverride = Utilities.LoadTextureFromBytes(Assembly.GetExecutingAssembly().GetResource("LogPanel.png"));
 			H3Api.WristMenu.Buttons.Add(new WristMenuButton("Spawn Log Panel", int.MaxValue, SpawnLogPanel));
+
+			// Try to log the game's build id. This can be useful for debugging but only works if the game is launched via Steam.
+			// The game _usually_ is launched via Steam, even with r2mm, so this may only error if someone tries to launch the game via the exe directly.
+			try
+			{
+				SteamAPI.Init();
+				Logger.LogMessage($"Game build ID: {SteamApps.GetAppBuildId()}.");
+			}
+			catch (InvalidOperationException)
+			{
+				Logger.LogWarning("Game build ID unknown: unable to initialize Steamworks.");
+			}
 		}
 
 		private void Start()
