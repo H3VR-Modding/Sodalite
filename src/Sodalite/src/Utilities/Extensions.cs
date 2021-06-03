@@ -7,25 +7,20 @@ namespace Sodalite
 {
 	public static class Extensions
 	{
-		private static Random? random;
+		private static Random? _random;
 
 		/// <summary>
-		/// Returns a random item from the list when called
+		/// Returns a random item from this list
 		/// </summary>
-		/// <returns>
-		/// A random item from the list
-		/// </returns>
-		/// <exception cref="IndexOutOfRangeException">
-		/// Thrown when the given list is empty
-		/// </exception>
-		public static T GetRandom<T>(this List<T> list)
+		public static T GetRandom<T>(this IList<T> list)
 		{
+			// Make sure there is at least one item in the lsit
 			if (list.Count < 1)
-				throw new IndexOutOfRangeException("Cannot get random item from empty list!");
+				throw new InvalidOperationException("Cannot get random item from empty list!");
 
-			if (random is null) random = new Random();
-
-			return list[random.Next(list.Count)];
+			// Make sure our random is set and return a random item
+			_random ??= new Random();
+			return list[_random.Next(list.Count)];
 		}
 	}
 }

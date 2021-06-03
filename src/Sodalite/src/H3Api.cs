@@ -30,5 +30,11 @@ namespace Sodalite
 		///		See: <see cref="SosigAPI"/>
 		/// </summary>
 		public static SosigAPI Sosig { get; } = new();
+
+		/// <summary>
+		///		Reference to the Player API.
+		///		See: <see cref="PlayerAPI"/>
+		/// </summary>
+		public static PlayerAPI Player { get; } = new();
 	}
 }

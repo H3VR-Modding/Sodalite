@@ -22,7 +22,7 @@ namespace Sodalite
 		/// <returns>A SavedGunSerializable which represents the vault file for the given firearm</returns>
 		public static SavedGunSerializable CreateVaultFile(FVRFireArm fireArm)
 		{
-			List<FVRPhysicalObject> detectedObjects = FirearmUtils.GetAllAttachedObjects(fireArm, true);
+			List<FVRPhysicalObject> detectedObjects = FVRObjectExtensions.GetAllAttachedObjects(fireArm, true);
 
 			SavedGun savedGun = new SavedGun();
 			savedGun.DateMade = DateTime.Now;
@@ -35,7 +35,7 @@ namespace Sodalite
 			//Go through each detected object and add them as saved components
 			for (int i = 0; i < detectedObjects.Count; i++)
 			{
-				
+
 				SavedGunComponent savedGunComponent = new SavedGunComponent();
 				savedGunComponent.Index = i;
 				savedGunComponent.ObjectID = detectedObjects[i].ObjectWrapper.ItemID;

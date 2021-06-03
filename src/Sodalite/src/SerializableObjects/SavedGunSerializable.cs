@@ -7,8 +7,6 @@ using UnityEngine;
 
 namespace Sodalite
 {
-
-
 	/// <summary>
 	/// A serializable version of the SavedGun object (vault file). Useful for saving vault files to text files such as json.
 	/// A SavedGun object can be converted to this serializable version by passing it as a parameter to this objects constructor
@@ -85,10 +83,9 @@ namespace Sodalite
 			LoadedRoundsInChambers = gun.LoadedRoundsInChambers;
 			SavedFlags = gun.SavedFlags;
 
-			if(firearm is not null) LoadFirearmProperties(firearm);
+			if (firearm is not null) LoadFirearmProperties(firearm);
 			else LoadFirearmProperties(gun);
 		}
-
 
 
 		public SavedGun GetSavedGun()
@@ -200,6 +197,7 @@ namespace Sodalite
 					{
 						modeList.Add(mode.GetHandgunMode());
 					}
+
 					handgun.FireSelectorModes = modeList.ToArray();
 				}
 
@@ -222,6 +220,7 @@ namespace Sodalite
 					{
 						modeList.Add(mode.GetClosedBoltMode());
 					}
+
 					closedBolt.FireSelector_Modes = modeList.ToArray();
 				}
 
@@ -244,6 +243,7 @@ namespace Sodalite
 					{
 						modeList.Add(mode.GetOpenBoltMode());
 					}
+
 					openBolt.FireSelector_Modes = modeList.ToArray();
 				}
 
@@ -267,9 +267,9 @@ namespace Sodalite
 	{
 		public int Index;
 		public string ObjectID;
-		public Vector3Serializable PosOffset;
-		public Vector3Serializable OrientationForward;
-		public Vector3Serializable OrientationUp;
+		public SerializableVector3 PosOffset;
+		public SerializableVector3 OrientationForward;
+		public SerializableVector3 OrientationUp;
 		public int ObjectAttachedTo;
 		public int MountAttachedTo;
 		public bool IsFirearm;
@@ -282,16 +282,15 @@ namespace Sodalite
 		{
 			Index = component.Index;
 			ObjectID = component.ObjectID;
-			PosOffset = new Vector3Serializable(component.PosOffset);
-			OrientationForward = new Vector3Serializable(component.OrientationForward);
-			OrientationUp = new Vector3Serializable(component.OrientationUp);
+			PosOffset = component.PosOffset;
+			OrientationForward = component.OrientationForward;
+			OrientationUp = component.OrientationUp;
 			ObjectAttachedTo = component.ObjectAttachedTo;
 			MountAttachedTo = component.MountAttachedTo;
 			IsFirearm = component.isFirearm;
 			IsMagazine = component.isMagazine;
 			IsAttachment = component.isAttachment;
 			Flags = component.Flags;
-
 		}
 
 		public SavedGunComponent GetGunComponent()
@@ -300,19 +299,18 @@ namespace Sodalite
 
 			component.Index = Index;
 			component.ObjectID = ObjectID;
-			component.PosOffset = PosOffset.GetVector3();
-			component.OrientationForward = OrientationForward.GetVector3();
-			component.OrientationUp = OrientationUp.GetVector3();
+			component.PosOffset = PosOffset;
+			component.OrientationForward = OrientationForward;
+			component.OrientationUp = OrientationUp;
 			component.ObjectAttachedTo = ObjectAttachedTo;
 			component.MountAttachedTo = MountAttachedTo;
 			component.isFirearm = IsFirearm;
 			component.isMagazine = IsMagazine;
 			component.isAttachment = IsAttachment;
 			component.Flags = Flags;
-				
+
 			return component;
 		}
-
 	}
 
 
@@ -325,26 +323,28 @@ namespace Sodalite
 		public FireSelectorModeType modeType;
 		public int burstAmount;
 
-		public FireSelectorMode() { }
+		public FireSelectorMode()
+		{
+		}
 
 		public FireSelectorMode(Handgun.FireSelectorMode mode)
 		{
 			selectorPosition = mode.SelectorPosition;
-			modeType = (FireSelectorModeType)Enum.Parse(typeof(FireSelectorModeType), mode.ModeType.ToString());
+			modeType = (FireSelectorModeType) Enum.Parse(typeof(FireSelectorModeType), mode.ModeType.ToString());
 			burstAmount = mode.BurstAmount;
 		}
 
 		public FireSelectorMode(ClosedBoltWeapon.FireSelectorMode mode)
 		{
 			selectorPosition = mode.SelectorPosition;
-			modeType = (FireSelectorModeType)Enum.Parse(typeof(FireSelectorModeType), mode.ModeType.ToString());
+			modeType = (FireSelectorModeType) Enum.Parse(typeof(FireSelectorModeType), mode.ModeType.ToString());
 			burstAmount = mode.BurstAmount;
 		}
 
 		public FireSelectorMode(OpenBoltReceiver.FireSelectorMode mode)
 		{
 			selectorPosition = mode.SelectorPosition;
-			modeType = (FireSelectorModeType)Enum.Parse(typeof(FireSelectorModeType), mode.ModeType.ToString());
+			modeType = (FireSelectorModeType) Enum.Parse(typeof(FireSelectorModeType), mode.ModeType.ToString());
 			burstAmount = -1;
 		}
 
@@ -352,7 +352,7 @@ namespace Sodalite
 		{
 			Handgun.FireSelectorMode mode = new Handgun.FireSelectorMode();
 			mode.SelectorPosition = selectorPosition;
-			mode.ModeType = (Handgun.FireSelectorModeType)Enum.Parse(typeof(Handgun.FireSelectorModeType), modeType.ToString());
+			mode.ModeType = (Handgun.FireSelectorModeType) Enum.Parse(typeof(Handgun.FireSelectorModeType), modeType.ToString());
 			mode.BurstAmount = burstAmount;
 			return mode;
 		}
@@ -361,7 +361,7 @@ namespace Sodalite
 		{
 			OpenBoltReceiver.FireSelectorMode mode = new OpenBoltReceiver.FireSelectorMode();
 			mode.SelectorPosition = selectorPosition;
-			mode.ModeType = (OpenBoltReceiver.FireSelectorModeType)Enum.Parse(typeof(OpenBoltReceiver.FireSelectorModeType), modeType.ToString());
+			mode.ModeType = (OpenBoltReceiver.FireSelectorModeType) Enum.Parse(typeof(OpenBoltReceiver.FireSelectorModeType), modeType.ToString());
 			return mode;
 		}
 
@@ -369,7 +369,7 @@ namespace Sodalite
 		{
 			ClosedBoltWeapon.FireSelectorMode mode = new ClosedBoltWeapon.FireSelectorMode();
 			mode.SelectorPosition = selectorPosition;
-			mode.ModeType = (ClosedBoltWeapon.FireSelectorModeType)Enum.Parse(typeof(ClosedBoltWeapon.FireSelectorModeType), modeType.ToString());
+			mode.ModeType = (ClosedBoltWeapon.FireSelectorModeType) Enum.Parse(typeof(ClosedBoltWeapon.FireSelectorModeType), modeType.ToString());
 			mode.BurstAmount = burstAmount;
 			return mode;
 		}
@@ -384,6 +384,4 @@ namespace Sodalite
 		FullAuto,
 		SuperFastBurst
 	}
-
 }
-
