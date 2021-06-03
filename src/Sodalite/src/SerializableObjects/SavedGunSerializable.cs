@@ -20,15 +20,52 @@ namespace Sodalite
 		public List<FireArmRoundClass> LoadedRoundsInChambers;
 		public List<string> SavedFlags;
 
-		public bool overrideFireRate;
-		public bool overrideFireSelectors;
 
-		public float springSpeedForward;
-		public float springSpeedRearward;
-		public float springStiffness;
+		/// <summary>
+		/// When true, spawning this vaulted gun will apply changes to fire rate (spring properties)
+		/// </summary>
+		public bool OverrideFireRate;
 
-		public List<FireSelectorMode> fireSelectorModes = new List<FireSelectorMode>();
+		/// <summary>
+		/// When true, spawning this vaulted gun will override the guns fire selectors
+		/// </summary>
+		public bool OverrideFireSelectors;
 
+		/// <summary>
+		/// The speed at which the guns main spring moves forward
+		/// </summary>
+		/// <remarks>
+		/// Only applied when OverrideFireRate is true
+		/// </remarks>
+		public float SpeedForward;
+
+		/// <summary>
+		/// The speed at which the guns main spring moves rearward
+		/// </summary>
+		/// <remarks>
+		/// Only applied when OverrideFireRate is true
+		/// </remarks>
+		public float SpeedRearward;
+
+		/// <summary>
+		/// The overall stiffness of firearms main spring. Higher values mean more spring tension
+		/// </summary>
+		/// <remarks>
+		/// Only applied when OverrideFireRate is true
+		/// </remarks>
+		public float SpringStiffness;
+
+		/// <summary>
+		/// A list of fire selector modes for the gun
+		/// </summary>
+		/// <remarks>
+		/// Only applied when OverrideFireSelectors is true
+		/// </remarks>
+		public List<FireSelectorMode> FireSelectorModes = new List<FireSelectorMode>();
+
+		/// <summary>
+		/// A list of components which make up the vaulted gun
+		/// </summary>
 		public List<SavedGunComponentSerializable> Components;
 
 
@@ -38,8 +75,8 @@ namespace Sodalite
 		/// <remarks>
 		/// Passing the firearm component for the vault file is slightly faster than just passing the SavedGun object
 		/// </remarks>
-		/// <param name="gun"></param>
-		/// <param name="firearm"></param>
+		/// <param name="gun">The SavedGun (vault file) that this object will be based off of</param>
+		/// <param name="firearm">A reference to the base firearm for the vault file, from which properties like firerate will be taken</param>
 		public SavedGunSerializable(SavedGun gun, FVRFireArm? firearm = null)
 		{
 			FileName = gun.FileName;
@@ -105,12 +142,12 @@ namespace Sodalite
 			{
 				foreach (Handgun.FireSelectorMode mode in handgun.FireSelectorModes)
 				{
-					fireSelectorModes.Add(new FireSelectorMode(mode));
+					FireSelectorModes.Add(new FireSelectorMode(mode));
 				}
 
-				springSpeedForward = handgun.Slide.Speed_Forward;
-				springSpeedRearward = handgun.Slide.Speed_Rearward;
-				springStiffness = handgun.Slide.SpringStiffness;
+				SpeedForward = handgun.Slide.Speed_Forward;
+				SpeedRearward = handgun.Slide.Speed_Rearward;
+				SpringStiffness = handgun.Slide.SpringStiffness;
 
 				return;
 			}
@@ -119,12 +156,12 @@ namespace Sodalite
 			{
 				foreach (ClosedBoltWeapon.FireSelectorMode mode in closedBolt.FireSelector_Modes)
 				{
-					fireSelectorModes.Add(new FireSelectorMode(mode));
+					FireSelectorModes.Add(new FireSelectorMode(mode));
 				}
 
-				springSpeedForward = closedBolt.Bolt.Speed_Forward;
-				springSpeedRearward = closedBolt.Bolt.Speed_Rearward;
-				springStiffness = closedBolt.Bolt.SpringStiffness;
+				SpeedForward = closedBolt.Bolt.Speed_Forward;
+				SpeedRearward = closedBolt.Bolt.Speed_Rearward;
+				SpringStiffness = closedBolt.Bolt.SpringStiffness;
 
 				return;
 			}
@@ -133,12 +170,12 @@ namespace Sodalite
 			{
 				foreach (OpenBoltReceiver.FireSelectorMode mode in openBolt.FireSelector_Modes)
 				{
-					fireSelectorModes.Add(new FireSelectorMode(mode));
+					FireSelectorModes.Add(new FireSelectorMode(mode));
 				}
 
-				springSpeedForward = openBolt.Bolt.BoltSpeed_Forward;
-				springSpeedRearward = openBolt.Bolt.BoltSpeed_Rearward;
-				springStiffness = openBolt.Bolt.BoltSpringStiffness;
+				SpeedForward = openBolt.Bolt.BoltSpeed_Forward;
+				SpeedRearward = openBolt.Bolt.BoltSpeed_Rearward;
+				SpringStiffness = openBolt.Bolt.BoltSpringStiffness;
 
 				return;
 			}
@@ -151,26 +188,26 @@ namespace Sodalite
 		/// <param name="firearm">The firearm that is having this SavedGunSerializables properties applied to it</param>
 		public void ApplyFirearmProperties(FVRFireArm firearm)
 		{
-			if (!overrideFireRate && !overrideFireSelectors) return;
+			if (!OverrideFireRate && !OverrideFireSelectors) return;
 
 			if (firearm is Handgun handgun)
 			{
 
-				if (overrideFireSelectors)
+				if (OverrideFireSelectors)
 				{
 					List<Handgun.FireSelectorMode> modeList = new List<Handgun.FireSelectorMode>();
-					foreach (FireSelectorMode mode in fireSelectorModes)
+					foreach (FireSelectorMode mode in FireSelectorModes)
 					{
 						modeList.Add(mode.GetHandgunMode());
 					}
 					handgun.FireSelectorModes = modeList.ToArray();
 				}
 
-				if (overrideFireRate)
+				if (OverrideFireRate)
 				{
-					handgun.Slide.Speed_Forward = springSpeedForward;
-					handgun.Slide.Speed_Rearward = springSpeedRearward;
-					handgun.Slide.SpringStiffness = springStiffness;
+					handgun.Slide.Speed_Forward = SpeedForward;
+					handgun.Slide.Speed_Rearward = SpeedRearward;
+					handgun.Slide.SpringStiffness = SpringStiffness;
 				}
 
 				return;
@@ -178,21 +215,21 @@ namespace Sodalite
 
 			if (firearm is ClosedBoltWeapon closedBolt)
 			{
-				if (overrideFireSelectors)
+				if (OverrideFireSelectors)
 				{
 					List<ClosedBoltWeapon.FireSelectorMode> modeList = new List<ClosedBoltWeapon.FireSelectorMode>();
-					foreach (FireSelectorMode mode in fireSelectorModes)
+					foreach (FireSelectorMode mode in FireSelectorModes)
 					{
 						modeList.Add(mode.GetClosedBoltMode());
 					}
 					closedBolt.FireSelector_Modes = modeList.ToArray();
 				}
 
-				if (overrideFireRate)
+				if (OverrideFireRate)
 				{
-					closedBolt.Bolt.Speed_Forward = springSpeedForward;
-					closedBolt.Bolt.Speed_Rearward = springSpeedRearward;
-					closedBolt.Bolt.SpringStiffness = springStiffness;
+					closedBolt.Bolt.Speed_Forward = SpeedForward;
+					closedBolt.Bolt.Speed_Rearward = SpeedRearward;
+					closedBolt.Bolt.SpringStiffness = SpringStiffness;
 				}
 
 				return;
@@ -200,21 +237,21 @@ namespace Sodalite
 
 			if (firearm is OpenBoltReceiver openBolt)
 			{
-				if (overrideFireSelectors)
+				if (OverrideFireSelectors)
 				{
 					List<OpenBoltReceiver.FireSelectorMode> modeList = new List<OpenBoltReceiver.FireSelectorMode>();
-					foreach (FireSelectorMode mode in fireSelectorModes)
+					foreach (FireSelectorMode mode in FireSelectorModes)
 					{
 						modeList.Add(mode.GetOpenBoltMode());
 					}
 					openBolt.FireSelector_Modes = modeList.ToArray();
 				}
 
-				if (overrideFireRate)
+				if (OverrideFireRate)
 				{
-					openBolt.Bolt.BoltSpeed_Forward = springSpeedForward;
-					openBolt.Bolt.BoltSpeed_Rearward = springSpeedRearward;
-					openBolt.Bolt.BoltSpringStiffness = springStiffness;
+					openBolt.Bolt.BoltSpeed_Forward = SpeedForward;
+					openBolt.Bolt.BoltSpeed_Rearward = SpeedRearward;
+					openBolt.Bolt.BoltSpringStiffness = SpringStiffness;
 				}
 
 				return;
