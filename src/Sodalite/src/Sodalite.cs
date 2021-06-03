@@ -45,7 +45,6 @@ namespace Sodalite
 
 			// Register ourselves as the new log listener and try to grab what's already been captured
 			BepInEx.Logging.Logger.Listeners.Add(this);
-			// Grab the captured logs from the buffer and dispose it.
 			_logEvents = SodalitePatcher.LogBuffer.LogEvents;
 			SodalitePatcher.LogBuffer.Dispose();
 

@@ -36,5 +36,11 @@ namespace Sodalite
 		///		See: <see cref="PlayerAPI"/>
 		/// </summary>
 		public static PlayerAPI Player { get; } = new();
+
+		/// <summary>
+		///		Reference to the Vault API.
+		///		See: <see cref="VaultAPI"/>
+		/// </summary>
+		public static VaultAPI Vault { get; } = new();
 	}
 }

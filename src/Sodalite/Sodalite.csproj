@@ -41,6 +41,9 @@
         <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\libs\UnityEngine.UI.dll</HintPath>
         </Reference>
+        <Reference Include="Valve.Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\libs\Valve.Newtonsoft.Json.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>

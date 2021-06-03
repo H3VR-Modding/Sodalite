@@ -2,11 +2,16 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using FistVR;
+using Valve.Newtonsoft.Json;
 
 namespace Sodalite.Api
 {
 	public class PlayerAPI
 	{
+		internal PlayerAPI()
+		{
+		}
+
 		/// <summary>
 		/// Returns a read-only collection of the objects the player currently has equipped.
 		/// This includes objects in the player's hands, in quickbelt slots, or in an equipped backpack slot.
@@ -16,6 +21,7 @@ namespace Sodalite.Api
 		{
 			// Make a list of the objects and a helper method to add to it
 			List<FVRPhysicalObject> objects = new();
+
 			void AddObject(FVRPhysicalObject? obj)
 			{
 				// If this slot is holding a backpack also iterate over it's slots and add them
