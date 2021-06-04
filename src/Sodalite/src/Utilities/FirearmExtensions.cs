@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using FistVR;
 
-namespace Sodalite
+namespace Sodalite.Utilities
 {
 	public static class FirearmExtensions
 	{

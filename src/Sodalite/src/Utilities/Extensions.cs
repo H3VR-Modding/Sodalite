@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Sodalite
+namespace Sodalite.Utilities
 {
 	public static class Extensions
 	{
@@ -14,7 +12,7 @@ namespace Sodalite
 		/// </summary>
 		public static T GetRandom<T>(this IList<T> list)
 		{
-			// Make sure there is at least one item in the lsit
+			// Make sure there is at least one item in the list
 			if (list.Count < 1)
 				throw new InvalidOperationException("Cannot get random item from empty list!");
 

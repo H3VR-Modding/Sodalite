@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FistVR;
+using Sodalite.Utilities;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;

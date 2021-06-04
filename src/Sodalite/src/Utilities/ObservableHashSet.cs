@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Sodalite
+namespace Sodalite.Utilities
 {
 	/// <summary>
 	/// Because .NET 3.5 doesn't include the ObservableCollection class, here's my own implementation.

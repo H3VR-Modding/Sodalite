@@ -2,10 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using FistVR;
-using Valve.Newtonsoft.Json;
 
 namespace Sodalite.Api
 {
+	/// <summary>
+	/// Player API for Sodalite. Contains methods relating to the player
+	/// </summary>
 	public class PlayerAPI
 	{
 		internal PlayerAPI()

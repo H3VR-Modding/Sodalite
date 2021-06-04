@@ -3,10 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FistVR;
+using Sodalite.Utilities;
 using UnityEngine;
 
 namespace Sodalite.Api
 {
+	/// <summary>
+	/// Vault API for Sodalite. This class offers methods for creating serialized vault guns and spawning them back.
+	/// </summary>
 	public class VaultAPI
 	{
 		internal VaultAPI()
@@ -198,7 +202,7 @@ namespace Sodalite.Api
 					attachments.Add(gameObject);
 				}
 
-				//If this is a apeedloader or clip, we load it with ammo
+				//If this is a speedloader or clip, we load it with ammo
 				else
 				{
 					trayObjects.Add(gameObject);

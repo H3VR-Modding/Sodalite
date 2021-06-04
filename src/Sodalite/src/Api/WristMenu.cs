@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FistVR;
 using HarmonyLib;
+using Sodalite.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;

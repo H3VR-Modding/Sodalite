@@ -3,8 +3,12 @@ using System.Linq;
 using UnityEngine;
 using Valve.Newtonsoft.Json;
 
-namespace Sodalite
+namespace Sodalite.Utilities
 {
+	/// <summary>
+	/// Because Unity's Vector3 classes are not serializable by default, use
+	/// this converter when trying to serialize things that use Vector3.
+	/// </summary>
 	public class Vector3Converter : JsonConverter
 	{
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

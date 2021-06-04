@@ -5,9 +5,9 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace Sodalite
+namespace Sodalite.Utilities
 {
-	public static class Utilities
+	public static class SodaliteUtils
 	{
 		/// <summary>
 		///	Helper method for loading a texture from a path
