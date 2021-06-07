@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using FistVR;
@@ -74,16 +75,69 @@ namespace Sodalite.Api
 			       item.CompatibleSpeedLoaders is { Count: > 0 };
 		}
 
-		public static FVRObject? GetNextHighestCapacityMagazine(IEnumerable<FVRObject> pool, int currentCap)
+		/// <summary>
+		/// Gets a magazine from the provided pool that has a capacity one step up from the capacity provided
+		/// </summary>
+		/// <param name="pool">The collection of magazines to select from</param>
+		/// <param name="currentCap">The capacity to compare against</param>
+		/// <param name="filter">Optional func to filter the results</param>
+		/// <returns>The FVRObject of a magazine, clip, or speed loader</returns>
+		public static FVRObject? GetNextHighestCapacityMagazine(IList<FVRObject> pool, int currentCap, Func<FVRObject, bool>? filter = null)
 		{
-			// Find out what the next highest capacity from the pool is
-			int nextHighestCap = pool.Select(x => x.MagazineCapacity).Where(x => x > currentCap).Min();
+			return filter is not null ?
+				GetSmallestMagazine(pool, x => x.MagazineCapacity >= currentCap && filter(x)) :
+				GetSmallestMagazine(pool, x => x.MagazineCapacity >= currentCap);
+		}
+
+		/// <summary>
+		/// Returns a magazine that is compatible with any of the (firearm) objects in the pool
+		/// </summary>
+		/// <param name="pool">The collection of objects to get a compatible magazine for</param>
+		/// <param name="filter">The optional filter to apply to the result</param>
+		/// <returns>The FVRObject of a magazine, clip, or speed loader</returns>
+		public static FVRObject? GetMagazineCompatibleWithAny(IEnumerable<FVRObject> pool, Func<FVRObject, bool>? filter = null)
+		{
+			// Create a list of all the compatible magazines
+			List<FVRObject> compatible = (
+				from item in pool
+				from mag in item.GetCompatibleMagazines()
+				where filter is null || filter(mag)
+				select mag
+			).ToList();
+
+			// Return a random one
+			return compatible.GetRandom();
+		}
+
+		/// <summary>
+		/// Returns the smallest magazine from the pool that passes the filter or null if there are none
+		/// </summary>
+		/// <param name="pool">The collection of objects to get a compatible magazine for</param>
+		/// <param name="filter">The optional filter to apply to the result</param>
+		/// <returns>The FVRObject of a magazine, clip, or speed loader</returns>
+		public static FVRObject? GetSmallestMagazine(IList<FVRObject> pool, Func<FVRObject, bool>? filter = null)
+		{
+			// Find out what the smallest capacity is
+			int smallestCap = pool.Where(filter ?? (x => true)).Select(x => x.MagazineCapacity).Min();
 
 			// Select all the magazines with that capacity
-			FVRObject[] valid = pool.Where(x => x.MagazineCapacity == nextHighestCap).ToArray();
+			IEnumerable<FVRObject> valid = pool.Where(x => x.MagazineCapacity == smallestCap);
+			if (filter is not null) valid = valid.Where(filter);
 
 			// Return a random item from the array or null if there are none
-			return valid.Length == 0 ? null : valid.GetRandom();
+			FVRObject[] array = valid.ToArray();
+			return array.Length == 0 ? null : array.GetRandom();
+		}
+
+		/// <summary>
+		/// Returns the smallest magazine compatible with the provided firearm that passes the filter or null if there are none
+		/// </summary>
+		/// <param name="firearm">The FVRObject of the firearm</param>
+		/// <param name="filter">The optional filter to apply to the result</param>
+		/// <returns>The FVRObject of a magazine, clip, or speed loader</returns>
+		public static FVRObject? GetSmallestMagazine(FVRObject firearm, Func<FVRObject, bool>? filter = null)
+		{
+			return GetSmallestMagazine(firearm.GetCompatibleMagazines(), filter);
 		}
 	}
 }
