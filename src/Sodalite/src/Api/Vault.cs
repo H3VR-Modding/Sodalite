@@ -249,9 +249,9 @@ namespace Sodalite.Api
 						}
 
 						component3.AttachToMount(mount, false);
-						if (component3 is Suppressor)
+						if (component3 is Suppressor suppressor)
 						{
-							((Suppressor)component3).AutoMountWell();
+							suppressor.AutoMountWell();
 						}
 
 						validIndexes.Add(savedGunComponent.Index);

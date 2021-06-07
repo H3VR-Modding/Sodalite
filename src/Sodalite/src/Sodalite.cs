@@ -66,11 +66,6 @@ namespace Sodalite
 			{
 				Logger.LogWarning("Game build ID unknown: unable to initialize Steamworks.");
 			}
-
-			FVRObject obj = null!;
-			int currentMagCap = 30;
-			List<string> blacklisted = new();
-			obj.GetCompatibleMagazines().Min(x => blacklisted.Contains(x.ItemID) || x.MagazineCapacity <= currentMagCap ? -1 : x.MagazineCapacity);
 		}
 
 		private void Start()

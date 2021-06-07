@@ -50,7 +50,7 @@ namespace Sodalite.Api
 		/// Checks if the object has any compatible ammo containers
 		/// </summary>
 		/// <param name="item">The FVRObject to check</param>
-		/// <returns>True if the FVRObject has any compatible rounds, clips, magazines, or speedloaders. False if it contains none of these</returns>
+		/// <returns>True if the FVRObject has any compatible rounds, clips, magazines, or speed loaders. False if it contains none of these</returns>
 		public static bool HasAmmo(this FVRObject item)
 		{
 			//Refresh the FVRObject to have data directly from object dictionary
@@ -118,11 +118,10 @@ namespace Sodalite.Api
 		public static FVRObject? GetSmallestMagazine(IList<FVRObject> pool, Func<FVRObject, bool>? filter = null)
 		{
 			// Find out what the smallest capacity is
-			int smallestCap = pool.Where(filter ?? (x => true)).Select(x => x.MagazineCapacity).Min();
+			int smallestCap = (filter is null ? pool : pool.Where(filter)).Select(x => x.MagazineCapacity).Min();
 
 			// Select all the magazines with that capacity
-			IEnumerable<FVRObject> valid = pool.Where(x => x.MagazineCapacity == smallestCap);
-			if (filter is not null) valid = valid.Where(filter);
+			IEnumerable<FVRObject> valid = (filter is null ? pool : pool.Where(filter)).Where(x => x.MagazineCapacity == smallestCap);
 
 			// Return a random item from the array or null if there are none
 			FVRObject[] array = valid.ToArray();

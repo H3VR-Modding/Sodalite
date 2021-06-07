@@ -9,6 +9,7 @@ namespace Sodalite.Utilities
 	/// Because Unity's Vector3 classes are not serializable by default, use
 	/// this converter when trying to serialize things that use Vector3.
 	/// </summary>
+	// ReSharper disable once UnusedType.Global
 	public class Vector3Converter : JsonConverter
 	{
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
