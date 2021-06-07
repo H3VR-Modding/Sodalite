@@ -5,11 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Sodalite.Utilities
 {
 	public static class SodaliteUtils
 	{
+		private static Random? _random;
+
 		/// <summary>
 		///	Helper method for loading a texture from a path
 		/// </summary>
@@ -82,6 +85,20 @@ namespace Sodalite.Utilities
 		public static bool HasFlag<TEnum>(this TEnum value, TEnum flag) where TEnum : Enum
 		{
 			return (Convert.ToInt32(value) & Convert.ToInt32(flag)) != 0;
+		}
+
+		/// <summary>
+		/// Returns a random item from this list
+		/// </summary>
+		public static T GetRandom<T>(this IList<T> list)
+		{
+			// Make sure there is at least one item in the list
+			if (list.Count < 1)
+				throw new InvalidOperationException("Cannot get random item from empty list!");
+
+			// Make sure our random is set and return a random item
+			_random ??= new Random();
+			return list[_random.Next(list.Count)];
 		}
 
 		/// <summary>
