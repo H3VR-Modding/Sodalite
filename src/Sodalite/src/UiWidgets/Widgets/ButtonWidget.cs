@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using FistVR;
+using Sodalite.Api;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -61,7 +62,7 @@ namespace Sodalite.UiWidgets
 			Button.onClick.AddListener(() =>
 			{
 				// If we have references to everything we need to play a sound, play a sound
-				FVRWristMenu? wristMenu = H3Api.WristMenu.Instance;
+				FVRWristMenu? wristMenu = WristMenuAPI.Instance;
 				if (AudioSource is not null && AudioSource && wristMenu is not null && wristMenu)
 					AudioSource.PlayOneShot(wristMenu.AudClip_Engage);
 				callback();

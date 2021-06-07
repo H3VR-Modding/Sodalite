@@ -7,7 +7,7 @@ namespace Sodalite.Api
 	/// <summary>
 	///	Sodalite Leaderboard API provides methods for interfacing with the game's leaderboards.
 	/// </summary>
-	public class LeaderboardAPI
+	public static class LeaderboardAPI
 	{
 		internal class LeaderboardDisableDisposable : IDisposable
 		{
@@ -25,9 +25,9 @@ namespace Sodalite.Api
 			}
 		}
 
-		private readonly HashSet<LeaderboardDisableDisposable> _scoreboardDisabled = new();
+		private static readonly HashSet<LeaderboardDisableDisposable> _scoreboardDisabled = new();
 
-		internal LeaderboardAPI()
+		static LeaderboardAPI()
 		{
 			// Disable any form of Steam leaderboard uploading
 			On.Steamworks.SteamUserStats.UploadLeaderboardScore += (orig, leaderboard, method, score, details, count) =>
@@ -46,7 +46,7 @@ namespace Sodalite.Api
 		/// this method will re-enable the leaderboards (as long as no other mod is holding their own lock)
 		/// </summary>
 		/// <returns>A disposable that while undisposed prevents any scores from submitting to Steam leaderboards.</returns>
-		public IDisposable GetLeaderboardDisableLock()
+		public static IDisposable GetLeaderboardDisableLock()
 		{
 			return new LeaderboardDisableDisposable(_scoreboardDisabled);
 		}

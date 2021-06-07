@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FistVR;
-using Sodalite.Utilities;
 using UnityEngine;
 
 namespace Sodalite.Api
@@ -11,12 +10,8 @@ namespace Sodalite.Api
 	/// <summary>
 	/// Vault API for Sodalite. This class offers methods for creating serialized vault guns and spawning them back.
 	/// </summary>
-	public class VaultAPI
+	public static class VaultAPI
 	{
-		internal VaultAPI()
-		{
-		}
-
 		/// <summary>
 		/// Scans the given firearm and creates a vault file based on everything that is attached
 		/// </summary>
@@ -25,7 +20,7 @@ namespace Sodalite.Api
 		/// </remarks>
 		/// <param name="firearm">The firearm for which the vault file is being created</param>
 		/// <returns>A SavedGunSerializable which represents the vault file for the given firearm</returns>
-		public SavedGun SaveGun(FVRFireArm firearm)
+		public static SavedGun SaveGun(FVRFireArm firearm)
 		{
 			// Create our SavedGun object and assign the creation time
 			SavedGun savedGun = new()
@@ -141,7 +136,7 @@ namespace Sodalite.Api
 		/// <param name="gun">The serializable version of a SavedGun object</param>
 		/// <param name="position">The position the gun should spawn at</param>
 		/// <param name="rotation">The rotation the gun should spawn with</param>
-		public void SpawnGun(SavedGun gun, Vector3 position, Quaternion rotation)
+		public static void SpawnGun(SavedGun gun, Vector3 position, Quaternion rotation)
 		{
 			AnvilManager.Instance.StartCoroutine(SpawnGun_Internal(gun, position, rotation));
 		}

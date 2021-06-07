@@ -8,18 +8,14 @@ namespace Sodalite.Api
 	/// <summary>
 	/// Player API for Sodalite. Contains methods relating to the player
 	/// </summary>
-	public class PlayerAPI
+	public static class PlayerAPI
 	{
-		internal PlayerAPI()
-		{
-		}
-
 		/// <summary>
 		/// Returns a read-only collection of the objects the player currently has equipped.
 		/// This includes objects in the player's hands, in quickbelt slots, or in an equipped backpack slot.
 		/// </summary>
 		/// <returns></returns>
-		public ReadOnlyCollection<FVRPhysicalObject> GetEquippedObjects()
+		public static ReadOnlyCollection<FVRPhysicalObject> GetEquippedObjects()
 		{
 			// Make a list of the objects and a helper method to add to it
 			List<FVRPhysicalObject> objects = new();

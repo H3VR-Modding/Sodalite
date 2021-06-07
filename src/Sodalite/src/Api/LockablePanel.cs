@@ -1,5 +1,6 @@
 ﻿using System;
 using FistVR;
+using Sodalite.Api;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -8,21 +9,16 @@ namespace Sodalite.Api
 	/// <summary>
 	///	Sodalite Lockable Panel API for making custom lockable panels.
 	/// </summary>
-	public class LockablePanelAPI
+	public static class LockablePanelAPI
 	{
-		// Internal constructor so no one can make a second one of these
-		internal LockablePanelAPI()
-		{
-		}
-
 		/// <summary>
 		/// Returns a new lockable panel that has been completely emptied of content
 		/// </summary>
 		/// <returns>The parent game object of the panel</returns>
 		/// <exception cref="InvalidOperationException">Method was called before a reference to the options panel prefab was taken</exception>
-		public GameObject GetCleanLockablePanel()
+		public static GameObject GetCleanLockablePanel()
 		{
-			FVRWristMenu? wristMenu = H3Api.WristMenu.Instance;
+			FVRWristMenu? wristMenu = WristMenuAPI.Instance;
 			if (wristMenu is null || !wristMenu)
 				throw new InvalidOperationException("You're trying to create a lockable panel too early! Please wait until the runtime phase.");
 
@@ -92,7 +88,7 @@ namespace Sodalite
 			if (_currentPanel is null || !_currentPanel)
 			{
 				// Make a new empty panel
-				_currentPanel = H3Api.LockablePanel.GetCleanLockablePanel();
+				_currentPanel = LockablePanelAPI.GetCleanLockablePanel();
 
 				// If we have a texture override, set it here
 				if (TextureOverride is not null && TextureOverride)

@@ -11,13 +11,8 @@ namespace Sodalite.Api
 	/// <summary>
 	///	Sodalite Sosig API for spawning Sosigs.
 	/// </summary>
-	public class SosigAPI
+	public static class SosigAPI
 	{
-		// Internal constructor so no one else can make a new one of these
-		internal SosigAPI()
-		{
-		}
-
 		/// <summary>
 		///	Spawns a Sosig with the given template, options position and rotation.
 		/// </summary>
@@ -29,7 +24,7 @@ namespace Sodalite.Api
 		/// <param name="position">The position to spawn the Sosig at</param>
 		/// <param name="rotation">The rotation to spawn the Sosig with</param>
 		/// <returns>The spawned Sosig object</returns>
-		public Sosig Spawn(SosigEnemyTemplate template, SpawnOptions spawnOptions, Vector3 position, Quaternion rotation)
+		public static Sosig Spawn(SosigEnemyTemplate template, SpawnOptions spawnOptions, Vector3 position, Quaternion rotation)
 		{
 			// Get all our objects ready
 			FVRObject prefab = template.SosigPrefabs[Random.Range(0, template.SosigPrefabs.Count)];

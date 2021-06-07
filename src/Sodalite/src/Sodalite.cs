@@ -53,7 +53,7 @@ namespace Sodalite
 			_logPanel = new LockablePanel();
 			_logPanel.Configure += ConfigureLogPanel;
 			_logPanel.TextureOverride = SodaliteUtils.LoadTextureFromBytes(Assembly.GetExecutingAssembly().GetResource("LogPanel.png"));
-			H3Api.WristMenu.Buttons.Add(new WristMenuButton("Spawn Log Panel", int.MaxValue, SpawnLogPanel));
+			WristMenuAPI.Buttons.Add(new WristMenuButton("Spawn Log Panel", int.MaxValue, SpawnLogPanel));
 
 			// Try to log the game's build id. This can be useful for debugging but only works if the game is launched via Steam.
 			// The game _usually_ is launched via Steam, even with r2mm, so this may only error if someone tries to launch the game via the exe directly.
@@ -66,12 +66,17 @@ namespace Sodalite
 			{
 				Logger.LogWarning("Game build ID unknown: unable to initialize Steamworks.");
 			}
+
+			FVRObject obj = null!;
+			int currentMagCap = 30;
+			List<string> blacklisted = new();
+			obj.GetCompatibleMagazines().Min(x => blacklisted.Contains(x.ItemID) || x.MagazineCapacity <= currentMagCap ? -1 : x.MagazineCapacity);
 		}
 
 		private void Start()
 		{
 			// Pull the button sprite and font for our use later
-			Transform button = H3Api.WristMenu.Instance!.OptionsPanelPrefab.transform.Find("OptionsCanvas_0_Main/Canvas/Label_SelectASection/Button_Option_1_Locomotion");
+			Transform button = WristMenuAPI.Instance!.OptionsPanelPrefab.transform.Find("OptionsCanvas_0_Main/Canvas/Label_SelectASection/Button_Option_1_Locomotion");
 			WidgetStyle.DefaultButtonSprite = button.GetComponent<Image>().sprite;
 			WidgetStyle.DefaultTextFont = button.GetChild(0).GetComponent<Text>().font;
 		}
@@ -123,7 +128,7 @@ namespace Sodalite
 		// Wrist menu button callback. Gets our panel instance and makes the hand retrieve it.
 		private void SpawnLogPanel()
 		{
-			FVRWristMenu? wristMenu = H3Api.WristMenu.Instance;
+			FVRWristMenu? wristMenu = WristMenuAPI.Instance;
 			if (wristMenu is null || !wristMenu) return;
 			GameObject panel = _logPanel.GetOrCreatePanel();
 			wristMenu.m_currentHand.RetrieveObject(panel.GetComponent<FVRPhysicalObject>());

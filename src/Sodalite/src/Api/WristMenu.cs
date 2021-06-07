@@ -13,22 +13,22 @@ namespace Sodalite.Api
 	/// <summary>
 	///	Sodalite Wrist Menu API for adding and removing custom wrist menu buttons.
 	/// </summary>
-	public class WristMenuAPI
+	public static class WristMenuAPI
 	{
 		/// <summary>
 		/// Reference to the current instance of the game's wrist menu.
 		/// </summary>
-		public FVRWristMenu? Instance { get; private set; }
+		public static FVRWristMenu? Instance { get; private set; }
 
 		/// <summary>
 		///	Collection of wrist menu buttons. Add to this collection to register a button and remove from the collection to unregister.
 		/// </summary>
-		public ICollection<WristMenuButton> Buttons => _wristMenuButtons;
+		public static ICollection<WristMenuButton> Buttons => _wristMenuButtons;
 
-		private readonly ObservableHashSet<WristMenuButton> _wristMenuButtons = new();
-		private readonly Dictionary<WristMenuButton, Button> _currentButtons = new();
+		private static readonly ObservableHashSet<WristMenuButton> _wristMenuButtons = new();
+		private static readonly Dictionary<WristMenuButton, Button> _currentButtons = new();
 
-		internal WristMenuAPI()
+		static  WristMenuAPI()
 		{
 			// Wrist Menu stuff
 			On.FistVR.FVRWristMenu.Awake += FVRWristMenuOnAwake;
@@ -36,19 +36,19 @@ namespace Sodalite.Api
 			_wristMenuButtons.ItemRemoved += WristMenuButtonsItemRemoved;
 		}
 
-		private void WristMenuButtonsItemAdded(WristMenuButton button)
+		private static void WristMenuButtonsItemAdded(WristMenuButton button)
 		{
 			if (Instance is null || !Instance) return;
 			AddWristMenuButton(Instance, button);
 		}
 
-		private void WristMenuButtonsItemRemoved(WristMenuButton button)
+		private static void WristMenuButtonsItemRemoved(WristMenuButton button)
 		{
 			if (Instance is null || !Instance) return;
 			RemoveWristMenuButton(Instance, button);
 		}
 
-		private void FVRWristMenuOnAwake(On.FistVR.FVRWristMenu.orig_Awake orig, FVRWristMenu self)
+		private static void FVRWristMenuOnAwake(On.FistVR.FVRWristMenu.orig_Awake orig, FVRWristMenu self)
 		{
 			// Note to self; this is required and very important.
 			orig(self);
@@ -64,7 +64,7 @@ namespace Sodalite.Api
 				AddWristMenuButton(self, button);
 		}
 
-		private void AddWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
+		private static void AddWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
 		{
 			// The button we want to use as a reference is either the spectator button (wristMenu.Buttons[16])
 			// or the button just above where this one should go according to the priority
@@ -117,7 +117,7 @@ namespace Sodalite.Api
 			button.CallOnCreate(pointable);
 		}
 
-		private void RemoveWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
+		private static void RemoveWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
 		{
 			// This time our reference is the current button
 			Button referenceButton = _currentButtons[button];
