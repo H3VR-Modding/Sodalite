@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Random = System.Random;
 
-namespace Sodalite
+namespace Sodalite.Utilities
 {
-	public static class Utilities
+	public static class SodaliteUtils
 	{
+		private static Random? _random;
+
 		/// <summary>
 		///	Helper method for loading a texture from a path
 		/// </summary>
@@ -82,5 +86,56 @@ namespace Sodalite
 		{
 			return (Convert.ToInt32(value) & Convert.ToInt32(flag)) != 0;
 		}
+
+		/// <summary>
+		/// Returns a random item from this list
+		/// </summary>
+		public static T GetRandom<T>(this IList<T> list)
+		{
+			// Make sure there is at least one item in the list
+			if (list.Count < 1)
+				throw new InvalidOperationException("Cannot get random item from empty list!");
+
+			// Make sure our random is set and return a random item
+			_random ??= new Random();
+			return list[_random.Next(list.Count)];
+		}
+
+		/// <summary>
+		/// Enumerator wrapper to handle a specific exception that happens while it is being enumerated.
+		/// This method is a typed version of <see cref="TryCatch"/> that lets you handle specific exceptions.
+		/// </summary>
+		/// <param name="this">The enumerator to wrap</param>
+		/// <param name="handler">The exception handler</param>
+		/// <typeparam name="T">The type of the exception to handle</typeparam>
+		/// <returns>The wrapped enumerator</returns>
+		public static IEnumerator TryCatch<T>(this IEnumerator @this, Action<T> handler) where T : Exception
+		{
+			bool MoveNext()
+			{
+				try
+				{
+					return @this.MoveNext();
+				}
+				catch (T e)
+				{
+					handler(e);
+					return false;
+				}
+			}
+
+			while (MoveNext())
+				yield return @this.Current;
+		}
+
+		/// <summary>
+		/// Enumerator wrapper to handle exceptions that happen while it is being enumerated.
+		/// This method should only be used when you don't know what kind of exception your coroutine will throw.
+		/// If you do know, you should use <see cref="TryCatch{T}"/> instead.
+		/// </summary>
+		/// <param name="this">The enumerator to wrap</param>
+		/// <param name="handler">The exception handler</param>
+		/// <returns>The wrapped enumerator</returns>
+		public static IEnumerator TryCatch(this IEnumerator @this, Action<Exception> handler) => @this.TryCatch<Exception>(handler);
 	}
 }

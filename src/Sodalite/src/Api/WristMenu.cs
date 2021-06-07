@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FistVR;
 using HarmonyLib;
+using Sodalite.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -12,42 +13,42 @@ namespace Sodalite.Api
 	/// <summary>
 	///	Sodalite Wrist Menu API for adding and removing custom wrist menu buttons.
 	/// </summary>
-	public class WristMenuAPI
+	public static class WristMenuAPI
 	{
 		/// <summary>
 		/// Reference to the current instance of the game's wrist menu.
 		/// </summary>
-		public FVRWristMenu? Instance { get; private set; }
+		public static FVRWristMenu? Instance { get; private set; }
 
 		/// <summary>
 		///	Collection of wrist menu buttons. Add to this collection to register a button and remove from the collection to unregister.
 		/// </summary>
-		public ICollection<WristMenuButton> Buttons => _wristMenuButtons;
+		public static ICollection<WristMenuButton> Buttons => WristMenuButtons;
 
-		private readonly ObservableHashSet<WristMenuButton> _wristMenuButtons = new();
-		private readonly Dictionary<WristMenuButton, Button> _currentButtons = new();
+		private static readonly ObservableHashSet<WristMenuButton> WristMenuButtons = new();
+		private static readonly Dictionary<WristMenuButton, Button> CurrentButtons = new();
 
-		internal WristMenuAPI()
+		static  WristMenuAPI()
 		{
 			// Wrist Menu stuff
 			On.FistVR.FVRWristMenu.Awake += FVRWristMenuOnAwake;
-			_wristMenuButtons.ItemAdded += WristMenuButtonsItemAdded;
-			_wristMenuButtons.ItemRemoved += WristMenuButtonsItemRemoved;
+			WristMenuButtons.ItemAdded += WristMenuButtonsItemAdded;
+			WristMenuButtons.ItemRemoved += WristMenuButtonsItemRemoved;
 		}
 
-		private void WristMenuButtonsItemAdded(WristMenuButton button)
+		private static void WristMenuButtonsItemAdded(WristMenuButton button)
 		{
 			if (Instance is null || !Instance) return;
 			AddWristMenuButton(Instance, button);
 		}
 
-		private void WristMenuButtonsItemRemoved(WristMenuButton button)
+		private static void WristMenuButtonsItemRemoved(WristMenuButton button)
 		{
 			if (Instance is null || !Instance) return;
 			RemoveWristMenuButton(Instance, button);
 		}
 
-		private void FVRWristMenuOnAwake(On.FistVR.FVRWristMenu.orig_Awake orig, FVRWristMenu self)
+		private static void FVRWristMenuOnAwake(On.FistVR.FVRWristMenu.orig_Awake orig, FVRWristMenu self)
 		{
 			// Note to self; this is required and very important.
 			orig(self);
@@ -56,21 +57,21 @@ namespace Sodalite.Api
 			Instance = self;
 
 			// Clear the list of existing buttons
-			_currentButtons.Clear();
+			CurrentButtons.Clear();
 
 			// For all the registered buttons, add them
-			foreach (WristMenuButton button in _wristMenuButtons)
+			foreach (WristMenuButton button in WristMenuButtons)
 				AddWristMenuButton(self, button);
 		}
 
-		private void AddWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
+		private static void AddWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
 		{
 			// The button we want to use as a reference is either the spectator button (wristMenu.Buttons[16])
 			// or the button just above where this one should go according to the priority
-			WristMenuButton? aboveButton = _wristMenuButtons
+			WristMenuButton? aboveButton = WristMenuButtons
 				.OrderByDescending(x => x.Priority)
 				.LastOrDefault(x => x.Priority > button.Priority);
-			Button referenceButton = aboveButton is null ? wristMenu.Buttons[16] : _currentButtons[aboveButton];
+			Button referenceButton = aboveButton is null ? wristMenu.Buttons[16] : CurrentButtons[aboveButton];
 			RectTransform referenceRt = referenceButton.GetComponent<RectTransform>();
 
 			// Expand the canvas by the height of this button
@@ -112,14 +113,14 @@ namespace Sodalite.Api
 			wristMenu.Buttons.Add(newButton);
 
 			// Finally add it to the dict and call the create event
-			_currentButtons.Add(button, newButton);
+			CurrentButtons.Add(button, newButton);
 			button.CallOnCreate(pointable);
 		}
 
-		private void RemoveWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
+		private static void RemoveWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
 		{
 			// This time our reference is the current button
-			Button referenceButton = _currentButtons[button];
+			Button referenceButton = CurrentButtons[button];
 			RectTransform referenceRt = referenceButton.GetComponent<RectTransform>();
 
 			// Shrink the canvas by the height of this button
@@ -140,7 +141,7 @@ namespace Sodalite.Api
 
 			// Then remove it from the internal stuff.
 			// Unfortunately, removing a button requires us to re-assign the index values of all the buttons on the wrist menu :P
-			wristMenu.Buttons.Remove(_currentButtons[button]);
+			wristMenu.Buttons.Remove(CurrentButtons[button]);
 			buttonSet.ButtonImagesInSet = wristMenu.Buttons.Select(x => x.GetComponent<Image>()).ToArray();
 			for (int i = 0; i < buttonSet.ButtonImagesInSet.Length; i++)
 			{
@@ -150,7 +151,7 @@ namespace Sodalite.Api
 
 			// Destroy the object and remove the button from the dict
 			Object.Destroy(referenceButton.gameObject);
-			_currentButtons.Remove(button);
+			CurrentButtons.Remove(button);
 		}
 	}
 

@@ -9,6 +9,7 @@ using MonoMod.RuntimeDetour;
 using Sodalite.Api;
 using Sodalite.Patcher;
 using Sodalite.UiWidgets;
+using Sodalite.Utilities;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
@@ -45,15 +46,14 @@ namespace Sodalite
 
 			// Register ourselves as the new log listener and try to grab what's already been captured
 			BepInEx.Logging.Logger.Listeners.Add(this);
-			// Grab the captured logs from the buffer and dispose it.
 			_logEvents = SodalitePatcher.LogBuffer.LogEvents;
 			SodalitePatcher.LogBuffer.Dispose();
 
 			// Make a new LockablePanel for the console panel
 			_logPanel = new LockablePanel();
 			_logPanel.Configure += ConfigureLogPanel;
-			_logPanel.TextureOverride = Utilities.LoadTextureFromBytes(Assembly.GetExecutingAssembly().GetResource("LogPanel.png"));
-			H3Api.WristMenu.Buttons.Add(new WristMenuButton("Spawn Log Panel", int.MaxValue, SpawnLogPanel));
+			_logPanel.TextureOverride = SodaliteUtils.LoadTextureFromBytes(Assembly.GetExecutingAssembly().GetResource("LogPanel.png"));
+			WristMenuAPI.Buttons.Add(new WristMenuButton("Spawn Log Panel", int.MaxValue, SpawnLogPanel));
 
 			// Try to log the game's build id. This can be useful for debugging but only works if the game is launched via Steam.
 			// The game _usually_ is launched via Steam, even with r2mm, so this may only error if someone tries to launch the game via the exe directly.
@@ -71,7 +71,7 @@ namespace Sodalite
 		private void Start()
 		{
 			// Pull the button sprite and font for our use later
-			Transform button = H3Api.WristMenu!.Instance!.OptionsPanelPrefab.transform.Find("OptionsCanvas_0_Main/Canvas/Label_SelectASection/Button_Option_1_Locomotion");
+			Transform button = WristMenuAPI.Instance!.OptionsPanelPrefab.transform.Find("OptionsCanvas_0_Main/Canvas/Label_SelectASection/Button_Option_1_Locomotion");
 			WidgetStyle.DefaultButtonSprite = button.GetComponent<Image>().sprite;
 			WidgetStyle.DefaultTextFont = button.GetChild(0).GetComponent<Text>().font;
 		}
@@ -123,7 +123,7 @@ namespace Sodalite
 		// Wrist menu button callback. Gets our panel instance and makes the hand retrieve it.
 		private void SpawnLogPanel()
 		{
-			FVRWristMenu? wristMenu = H3Api.WristMenu.Instance;
+			FVRWristMenu? wristMenu = WristMenuAPI.Instance;
 			if (wristMenu is null || !wristMenu) return;
 			GameObject panel = _logPanel.GetOrCreatePanel();
 			wristMenu.m_currentHand.RetrieveObject(panel.GetComponent<FVRPhysicalObject>());
