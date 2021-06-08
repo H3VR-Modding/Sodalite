@@ -1,7 +1,7 @@
 ﻿{
   "$schema": "https://raw.githubusercontent.com/ash-hat/thunderstore.manifest/v1/schema.json",
   "name": "Sodalite",
-  "version_number": "1.0.0",
+  "version_number": "{VERSION}",
   "website_url": "https://github.com/H3VR-Modding/Sodalite",
   "description": "Modding API and tools for H3VR code plugins",
   "dependencies": [
