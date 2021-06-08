@@ -17,10 +17,17 @@ using UnityEngine.UI;
 
 namespace Sodalite
 {
+	internal static class Constants
+	{
+		public const string Guid = "nrgill28.Sodalite";
+		public const string Name = "Sodalite";
+		public const string Version = ThisAssembly.Git.BaseVersion.Major + "." + ThisAssembly.Git.BaseVersion.Minor + "." + ThisAssembly.Git.BaseVersion.Patch;
+	}
+
 	/// <summary>
 	/// Sodalite main BepInEx plugin entrypoint
 	/// </summary>
-	[BepInPlugin("nrgill28.Sodalite", "Sodalite", "0.3.0")]
+	[BepInPlugin(Constants.Guid, Constants.Name, Constants.Version)]
 	[BepInProcess("h3vr.exe")]
 	public class Sodalite : BaseUnityPlugin, ILogListener
 	{

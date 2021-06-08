@@ -1,0 +1,12 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/ash-hat/thunderstore.manifest/v1/schema.json",
+  "name": "Sodalite",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/H3VR-Modding/Sodalite",
+  "description": "Modding API and tools for H3VR code plugins",
+  "dependencies": [
+    "BepInEx-BepInExPack_H3VR-5.4.1101",
+    "BepInEx-MonoMod_Loader-1.0.0",
+    "nrgill28-HookGenPatcher_H3VR-1.2.3"
+  ]
+}
