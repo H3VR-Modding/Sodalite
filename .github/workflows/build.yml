@@ -1,4 +1,4 @@
-﻿name: dotnet package
+﻿name: Build project
 
 on: [ push ]
 
@@ -16,7 +16,7 @@ jobs:
         dotnet-version: 5.0.x
         
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore src/
       
     - name: Build
       run: dotnet build src/ --configuration Release --no-restore
