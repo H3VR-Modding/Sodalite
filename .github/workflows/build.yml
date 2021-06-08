@@ -1,0 +1,25 @@
+﻿name: dotnet package
+
+on: [ push ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - run: git fetch --prune --unshallow
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+        
+    - name: Install dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build src/ --configuration Release --no-restore
+      
+    - name: Package
+      run: thunderstore/make_package.sh
