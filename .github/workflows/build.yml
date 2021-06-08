@@ -23,3 +23,9 @@ jobs:
       
     - name: Package
       run: bash thunderstore/make_package.sh
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Deli.H3VR
+        path: thunderstore/Sodalite.zip
