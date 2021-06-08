@@ -9,6 +9,9 @@ using Random = System.Random;
 
 namespace Sodalite.Utilities
 {
+	/// <summary>
+	/// Collection of static utilities and extension methods used for Sodalite
+	/// </summary>
 	public static class SodaliteUtils
 	{
 		private static Random? _random;

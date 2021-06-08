@@ -7,6 +7,9 @@ using Sodalite.Utilities;
 
 namespace Sodalite.Api
 {
+	/// <summary>
+	/// Sodalite API for interacting with firearms and magazines
+	/// </summary>
 	public static class FirearmAPI
 	{
 		/// <summary>

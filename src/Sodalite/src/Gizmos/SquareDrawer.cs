@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+#pragma warning disable 1591
 namespace Popcron
 {
 	public class SquareDrawer : Drawer

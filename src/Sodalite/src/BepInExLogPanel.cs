@@ -36,7 +36,7 @@ namespace Sodalite
 			[LogLevel.Debug] = "grey"
 		};
 
-		public void CreateWithExisting(BaseUnityPlugin source, GameObject canvas, List<LogEventArgs> currentEvents)
+		internal void CreateWithExisting(BaseUnityPlugin source, GameObject canvas, List<LogEventArgs> currentEvents)
 		{
 			// Set variables and bind configs
 			_currentEvents = currentEvents;
@@ -74,14 +74,14 @@ namespace Sodalite
 			UpdateText();
 		}
 
-		public void Scroll(int direction)
+		internal void Scroll(int direction)
 		{
 			if (_currentEvents is null || direction == 0) return;
 			_offset = Mathf.Clamp(_offset + direction, 0, _currentEvents.Count - 1);
 			UpdateText();
 		}
 
-		public void LogEvent()
+		internal void LogEvent()
 		{
 			// If the user is currently offset the scrolling, keep their position in the log
 			if (_offset != 0) _offset += 1;
@@ -106,13 +106,19 @@ namespace Sodalite
 		}
 	}
 
+	/// <summary>
+	/// Pointable monobehaviour for the log panel. This is responsible for getting the player's touchpad input
+	/// </summary>
 	public class ScrollPointable : FVRPointable
 	{
-		public BepInExLogPanel? Panel;
+		internal BepInExLogPanel? Panel;
 		private float _lastScrollTime;
 
 		private const float ScrollPause = 0.05f;
 
+		/// <summary>
+		/// Called every frame when the player is pointing at this
+		/// </summary>
 		public override void OnHoverDisplay()
 		{
 			if (Panel is null || Time.time < _lastScrollTime + ScrollPause) return;

@@ -12,12 +12,18 @@ namespace Sodalite.Utilities
 	// ReSharper disable once UnusedType.Global
 	public class Vector3Converter : JsonConverter
 	{
+		/// <summary>
+		///	Writes the Vector3 as a comma separated string, e.g. 1.5,2.5,-1.5
+		/// </summary>
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{
 			if (value is not Vector3 vector) throw new JsonSerializationException("Expected Vector3 object value");
 			writer.WriteValue($"{vector.x},{vector.y},{vector.z}");
 		}
 
+		/// <summary>
+		/// Reads the serialized Vector3 value
+		/// </summary>
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{
 			if (reader.TokenType != JsonToken.String) throw new JsonSerializationException("Expected value to be a string");
@@ -27,9 +33,9 @@ namespace Sodalite.Utilities
 			return new Vector3(array[0], array[1], array[2]);
 		}
 
-		public override bool CanConvert(Type objectType)
-		{
-			return objectType == typeof(Vector3);
-		}
+		/// <summary>
+		/// We only convert Vector3s
+		/// </summary>
+		public override bool CanConvert(Type objectType) => objectType == typeof(Vector3);
 	}
 }

@@ -127,9 +127,16 @@ namespace Sodalite.Api
 			[Flags]
 			public enum EquipmentSlots
 			{
+				/// <summary>Primary equipment slot</summary>
 				Primary,
+
+				/// <summary>Secondary equipment slot</summary>
 				Secondary,
+
+				/// <summary>Tertiary equipment slot</summary>
 				Tertiary,
+
+				/// <summary>All equipment slots</summary>
 				All = Primary | Secondary | Tertiary
 			}
 

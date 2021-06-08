@@ -7,14 +7,23 @@ using UnityEngine.UI;
 
 namespace Sodalite.UiWidgets
 {
+	/// <summary>
+	/// UiWidget that represents a button with text and a background image
+	/// </summary>
 	public class ButtonWidget : UiWidget
 	{
+		/// <summary>Reference to the Unity Button component of this widget</summary>
 		public Button Button = null!;
+
+		/// <summary>Reference to the Unity Text component of this widget</summary>
 		public Text ButtonText = null!;
+
+		/// <summary>Reference to the Unity Image component of this widget</summary>
 		public Image ButtonImage = null!;
 
 		private BoxCollider _boxCollider = null!;
 
+		/// <summary>Initializes the widget</summary>
 		protected override void Awake()
 		{
 			base.Awake();

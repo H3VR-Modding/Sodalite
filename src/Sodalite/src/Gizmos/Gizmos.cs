@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 // ReSharper disable All
+#pragma warning disable 1591
 
 namespace Popcron
 {

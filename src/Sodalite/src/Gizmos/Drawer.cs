@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 // ReSharper disable All
+#pragma warning disable 1591
 
 namespace Popcron
 {

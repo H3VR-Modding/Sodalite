@@ -11,9 +11,11 @@ namespace Sodalite.Utilities
 	/// <typeparam name="T">The type of the element inside</typeparam>
 	public class ObservableHashSet<T> : IList<T>
 	{
+#pragma warning disable 1591
 		private readonly List<T> _list = new();
 
 		public event Action<T>? ItemAdded;
+
 		public event Action<T>? ItemRemoved;
 
 		public void Add(T item)
@@ -83,5 +85,6 @@ namespace Sodalite.Utilities
 		}
 
 		#endregion
+#pragma warning restore 1591
 	}
 }

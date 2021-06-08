@@ -15,6 +15,7 @@ namespace Sodalite.UiWidgets
 		/// </summary>
 		public TLayout LayoutGroup = null!;
 
+		/// <summary>Initializes the widget</summary>
 		protected override void Awake()
 		{
 			base.Awake();

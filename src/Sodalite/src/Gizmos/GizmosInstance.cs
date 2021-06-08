@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 // ReSharper disable All
+#pragma warning disable 1591
 
 #nullable disable
 public struct ScriptableRenderContext

@@ -40,6 +40,9 @@ namespace Sodalite
 		// Static stuff
 		internal static ManualLogSource StaticLogger => _logger ?? throw new InvalidOperationException("Cannot get logger before the behaviour is initialized!");
 
+		/// <summary>
+		/// Initialization code for Sodalite
+		/// </summary>
 		public Sodalite()
 		{
 			// Hook a call to a compiler-generated method and replace it with one that doesn't use an unsafe GetTypes call

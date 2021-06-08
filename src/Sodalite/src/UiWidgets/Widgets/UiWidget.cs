@@ -8,8 +8,13 @@ namespace Sodalite.UiWidgets
 	/// </summary>
 	public class UiWidget : MonoBehaviour
 	{
+		/// <summary>Reference to the RectTransform of this widget</summary>
 		public RectTransform RectTransform = null!;
+
+		/// <summary>Reference to this widget's parent style</summary>
 		protected WidgetStyle Style = null!;
+
+		/// <summary>Reference to this widget's AudioSource, if it has one.</summary>
 		protected AudioSource? AudioSource;
 
 		/// <summary>
