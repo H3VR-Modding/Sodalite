@@ -15,5 +15,5 @@ _Sodalite_ is a [BepInEx](https://github.com/BepInEx/BepInEx) plugin for *[Hot D
 - For manual installation, make sure you have the dependencies installed (listed above the readme on the Thunderstore page), then download the mod from Thunderstore and extract copy the contents of the `Sodalite` folder into your game's `h3vr/BepInEx/` folder.
 
 ## Links
-- Sodalite API reference: https://github.com/H3VR-Modding/Sodalite
+- Sodalite API reference: https://h3vr-modding.github.io/Sodalite/
 - Discord: https://discord.gg/DCsdXk4r9A
