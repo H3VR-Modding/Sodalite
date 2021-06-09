@@ -10,7 +10,7 @@
         <PackageId>Sodalite.Patcher</PackageId>
         <Title>Sodalite - Modding Toolkit for H3VR</Title>
         <Authors>nrgill28</Authors>
-        <Description>Patching stage for H3 Modding Toolkit</Description>
+        <Description>Patching stage for Sodalite</Description>
         <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
 
         <PackageProjectUrl>https://github.com/H3VR-Modding/Sodalite</PackageProjectUrl>
