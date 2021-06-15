@@ -8,7 +8,7 @@ namespace Sodalite.UiWidgets
 	///	Widget that represents a layout group (e.g. GridLayoutGroup or HorizontalLayoutGroup) that can have children widgets
 	/// </summary>
 	/// <typeparam name="TLayout">The type of the layout group</typeparam>
-	public class LayoutWidget<TLayout> : UiWidget where TLayout : LayoutGroup
+	public abstract class LayoutWidget<TLayout> : UiWidget where TLayout : LayoutGroup
 	{
 		/// <summary>
 		/// This widget's layout group

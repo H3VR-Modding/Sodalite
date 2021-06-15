@@ -27,7 +27,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BepInEx.Core" Version="5.4.8" />
+        <PackageReference Include="BepInEx.Core" Version="5.4.11" />
         <PackageReference Include="GitInfo" Version="2.1.2">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

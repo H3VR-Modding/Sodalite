@@ -50,10 +50,7 @@ namespace Sodalite.Api
 			Object.Destroy(panel.GetComponent<OptionsPanel_Screenmanager>());
 		}
 	}
-}
 
-namespace Sodalite
-{
 	/// <summary>
 	///	The LockablePanel class represents a lockable panel similar to the options panel in game.
 	/// This abstraction is required because Unity Game Objects are scoped to the scene that they are

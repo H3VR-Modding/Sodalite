@@ -6,7 +6,7 @@ namespace Sodalite.UiWidgets
 	/// <summary>
 	///		The base class for all UI Widgets.
 	/// </summary>
-	public class UiWidget : MonoBehaviour
+	public abstract class UiWidget : MonoBehaviour
 	{
 		/// <summary>Reference to the RectTransform of this widget</summary>
 		public RectTransform RectTransform = null!;
