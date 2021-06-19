@@ -31,6 +31,9 @@ namespace Sodalite.UiWidgets
 
 			// If we have an audio source somewhere in the parent we want that too
 			AudioSource = GetComponentInParent<AudioSource>();
+			
+			// Set it upright so it looks in the proper direction
+			RectTransform.localRotation = Quaternion.identity;
 		}
 
 		/// <summary>
