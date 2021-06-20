@@ -55,7 +55,6 @@ namespace Sodalite
 				widget.RectTransform.localScale = new Vector3(0.07f, 0.07f, 0.07f);
 				widget.RectTransform.localPosition = Vector3.zero;
 				widget.RectTransform.anchoredPosition = Vector2.zero;
-				widget.RectTransform.localRotation = Quaternion.identity;
 				widget.RectTransform.sizeDelta = new Vector2(37f / 0.07f, 24f / 0.07f);
 				widget.Text.fontSize = _fontSize.Value;
 				widget.Text.alignment = TextAnchor.LowerLeft;

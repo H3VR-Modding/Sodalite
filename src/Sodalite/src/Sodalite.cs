@@ -131,7 +131,7 @@ namespace Sodalite
 		#region Log Panel Stuffs
 
 		// Wrist menu button callback. Gets our panel instance and makes the hand retrieve it.
-		private void SpawnLogPanel()
+		private void SpawnLogPanel(object sender, ButtonClickEventArgs args)
 		{
 			FVRWristMenu? wristMenu = WristMenuAPI.Instance;
 			if (wristMenu is null || !wristMenu) return;

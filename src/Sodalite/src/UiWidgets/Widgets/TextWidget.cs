@@ -10,7 +10,7 @@ namespace Sodalite.UiWidgets
 		/// <summary>Reference to the Unity Text component of this widget</summary>
 		public Text Text = null!;
 
-		/// <summary>Initializes the widget</summary>
+		/// <inheritdoc cref="UiWidget.Awake"/>
 		protected override void Awake()
 		{
 			base.Awake();

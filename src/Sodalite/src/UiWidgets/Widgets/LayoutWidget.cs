@@ -15,7 +15,7 @@ namespace Sodalite.UiWidgets
 		/// </summary>
 		public TLayout LayoutGroup = null!;
 
-		/// <summary>Initializes the widget</summary>
+		/// <inheritdoc cref="UiWidget.Awake"/>
 		protected override void Awake()
 		{
 			base.Awake();
@@ -41,6 +41,35 @@ namespace Sodalite.UiWidgets
 	/// </summary>
 	public class GridLayoutWidget : LayoutWidget<GridLayoutGroup>
 	{
+		/// <inheritdoc cref="UiWidget.Awake"/>
+		protected override void Awake()
+		{
+			base.Awake();
+
+			// Set the default layout rules
+			LayoutGroup.spacing = Vector2.one * 4;
+			LayoutGroup.startCorner = GridLayoutGroup.Corner.UpperLeft;
+			LayoutGroup.startAxis = GridLayoutGroup.Axis.Horizontal;
+			LayoutGroup.childAlignment = TextAnchor.UpperLeft;
+			LayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+		}
+
+		/// <summary>
+		///	Automatically sets the grid size for a standard looking grid menu. More complex setups can be done manually.
+		/// </summary>
+		/// <param name="rows">The number of rows in the grid</param>
+		/// <param name="columns">The number of columns in the grid</param>
+		public void SetGrid(int rows, int columns)
+		{
+			// Calculate the cell size
+			Vector2 gridSize = RectTransform.sizeDelta;
+			float cellWidth = (gridSize.x - columns * LayoutGroup.spacing.x) / columns;
+			float cellHeight = (gridSize.y - rows * LayoutGroup.spacing.y) / rows;
+
+			// Apply the calculations
+			LayoutGroup.cellSize = new Vector2(cellWidth, cellHeight);
+			LayoutGroup.constraintCount = columns;
+		}
 	}
 
 	/// <summary>

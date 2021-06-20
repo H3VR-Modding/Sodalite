@@ -144,6 +144,8 @@ namespace Sodalite.Api
 		// TODO: This code is still super ugly since it's been adapted from the game's decompiled code.
 		private static IEnumerator SpawnGun_Internal(SavedGun gun, Vector3 position, Quaternion rotation)
 		{
+			// ReSharper disable Unity.PerformanceCriticalCodeInvocation, Unity.PerformanceCriticalCodeNullComparison
+
 			// Make sure we're safe to spawn it in
 			if (!gun.AllComponentsLoaded()) throw new InvalidOperationException("This saved gun contains components that are not in the object dictionary!");
 
@@ -270,6 +272,8 @@ namespace Sodalite.Api
 			baseGun.SetLoadedChambers(gun.LoadedRoundsInChambers);
 			baseGun.SetFromFlagList(gun.SavedFlags);
 			baseGun.transform.rotation = rotation;
+
+			// ReSharper restore Unity.PerformanceCriticalCodeInvocation, Unity.PerformanceCriticalCodeNullComparison
 		}
 
 		private static Vector3 GetPositionRelativeToGun(SavedGunComponent data, Transform gun)

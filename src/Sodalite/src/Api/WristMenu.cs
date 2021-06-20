@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FistVR;
 using HarmonyLib;
@@ -103,7 +102,10 @@ namespace Sodalite.Api
 			newButton.onClick.AddListener(() =>
 			{
 				wristMenu.Aud.PlayOneShot(wristMenu.AudClip_Engage);
-				button.CallOnClick();
+
+				// The hand that isn't showing the wrist menu is the one that clicked the button
+				FVRViveHand hand = GM.CurrentMovementManager.Hands[GM.CurrentMovementManager.Hands[0] == wristMenu.m_currentHand ? 1 : 0];
+				button.CallOnClick(hand);
 			});
 
 			// Now we need to modify some things to accomodate this new button
@@ -114,7 +116,6 @@ namespace Sodalite.Api
 
 			// Finally add it to the dict and call the create event
 			CurrentButtons.Add(button, newButton);
-			button.CallOnCreate(pointable);
 		}
 
 		private static void RemoveWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
@@ -173,22 +174,16 @@ namespace Sodalite.Api
 		public int Priority { get; }
 
 		/// <summary>
-		///	Event callback for when this button is being created. If you need to run some setup
-		/// code on your button, subscribe to this event.
-		/// </summary>
-		public event Action<FVRWristMenuPointableButton>? OnCreate;
-
-		/// <summary>
 		///	Event callback for when this button is clicked on by the player
 		/// </summary>
-		public event Action? OnClick;
+		public event ButtonClickEvent? OnClick;
 
 		/// <summary>
 		///	Constructor for the wrist menu button taking the text and a click action
 		/// </summary>
 		/// <param name="text">The text to display on this button</param>
 		/// <param name="clickAction">The callback for when the button is clicked</param>
-		public WristMenuButton(string text, Action? clickAction = null) : this(text, 0, clickAction)
+		public WristMenuButton(string text, ButtonClickEvent? clickAction = null) : this(text, 0, clickAction)
 		{
 		}
 
@@ -198,21 +193,16 @@ namespace Sodalite.Api
 		/// <param name="text">The text to display on this button</param>
 		/// <param name="priority">The priority of the button. This decides the order of buttons on the wrist menu</param>
 		/// <param name="clickAction">The callback for when the button is clicked</param>
-		public WristMenuButton(string text, int priority, Action? clickAction = null)
+		public WristMenuButton(string text, int priority, ButtonClickEvent? clickAction = null)
 		{
 			Text = text;
 			Priority = priority;
 			if (clickAction is not null) OnClick += clickAction;
 		}
 
-		internal void CallOnCreate(FVRWristMenuPointableButton button)
+		internal void CallOnClick(FVRViveHand hand)
 		{
-			OnCreate?.Invoke(button);
-		}
-
-		internal void CallOnClick()
-		{
-			OnClick?.Invoke();
+			OnClick?.Invoke(this, new ButtonClickEventArgs(hand));
 		}
 	}
 }

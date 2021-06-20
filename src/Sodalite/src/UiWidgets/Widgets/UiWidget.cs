@@ -18,7 +18,7 @@ namespace Sodalite.UiWidgets
 		protected AudioSource? AudioSource;
 
 		/// <summary>
-		///		All configuration of widgets are done in their Awake() methods.
+		///	The Awake method is used to configure widgets
 		/// </summary>
 		protected virtual void Awake()
 		{
@@ -31,7 +31,7 @@ namespace Sodalite.UiWidgets
 
 			// If we have an audio source somewhere in the parent we want that too
 			AudioSource = GetComponentInParent<AudioSource>();
-			
+
 			// Set it upright so it looks in the proper direction
 			RectTransform.localRotation = Quaternion.identity;
 		}
