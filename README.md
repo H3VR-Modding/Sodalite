@@ -7,7 +7,7 @@ _Sodalite_ is a [BepInEx](https://github.com/BepInEx/BepInEx) plugin for *[Hot D
 ## What's in this plugin
 - BepInEx log panel, accessible from the wrist menu
 - Some API code to allow easier interfacing with various parts of the game including firearms, Steam leaderboards, lockable panels, the player, the vault, and the wrist menu.
-- (WIP) UI Widgets system to fill custom panels with programatically generated layouts
+- UI Widgets system to fill custom panels with programatically generated layouts
 - Various smaller extension methods and classes to assist in the development of plugins for H3VR
 
 ## Installation
@@ -15,5 +15,6 @@ _Sodalite_ is a [BepInEx](https://github.com/BepInEx/BepInEx) plugin for *[Hot D
 - For manual installation, make sure you have the dependencies installed (listed above the readme on the Thunderstore page), then download the mod from Thunderstore and extract copy the contents of the `Sodalite` folder into your game's `h3vr/BepInEx/` folder.
 
 ## Links
+- Thunderstore page: https://h3vr.thunderstore.io/package/nrgill28/Sodalite/
 - Sodalite API reference: https://h3vr-modding.github.io/Sodalite/
 - Discord: https://discord.gg/DCsdXk4r9A
