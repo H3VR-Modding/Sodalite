@@ -11,12 +11,12 @@ namespace Sodalite.Api
 	{
 		internal class LeaderboardDisableDisposable : IDisposable
 		{
-			private readonly HashSet<LeaderboardDisableDisposable> _disabled = new();
+			private readonly HashSet<LeaderboardDisableDisposable> _disabled;
 
 			internal LeaderboardDisableDisposable(HashSet<LeaderboardDisableDisposable> list)
 			{
-				_disabled.Add(this);
 				_disabled = list;
+				_disabled.Add(this);
 			}
 
 			public void Dispose()
