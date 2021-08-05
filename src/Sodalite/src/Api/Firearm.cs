@@ -20,7 +20,7 @@ namespace Sodalite.Api
 		public static ReadOnlyCollection<FVRPhysicalObject> GetAttachedObjects(this FVRFireArm fireArm)
 		{
 			// Add the gun itself, it's magazine, and any attachments into a list
-			List<FVRPhysicalObject> detectedObjects = new() { fireArm };
+			List<FVRPhysicalObject> detectedObjects = new() {fireArm};
 			if (fireArm.Magazine is not null && !fireArm.Magazine.IsIntegrated && fireArm.Magazine.ObjectWrapper is not null) detectedObjects.Add(fireArm.Magazine);
 			detectedObjects.AddRange(fireArm.Attachments.Where(attachment => attachment.ObjectWrapper is not null).Cast<FVRPhysicalObject>());
 
@@ -58,7 +58,7 @@ namespace Sodalite.Api
 		{
 			//Refresh the FVRObject to have data directly from object dictionary
 			item = IM.OD[item.ItemID];
-			return item.CompatibleSingleRounds is { Count: > 0 } || item.HasMagazine();
+			return item.CompatibleSingleRounds is {Count: > 0} || item.HasMagazine();
 		}
 
 
@@ -73,9 +73,9 @@ namespace Sodalite.Api
 			item = IM.OD[item.ItemID];
 
 			// Return true if any of the compatible object dictionaries have anything in them
-			return item.CompatibleClips is { Count: > 0 } ||
-			       item.CompatibleMagazines is { Count: > 0 } ||
-			       item.CompatibleSpeedLoaders is { Count: > 0 };
+			return item.CompatibleClips is {Count: > 0} ||
+			       item.CompatibleMagazines is {Count: > 0} ||
+			       item.CompatibleSpeedLoaders is {Count: > 0};
 		}
 
 		/// <summary>
@@ -87,9 +87,9 @@ namespace Sodalite.Api
 		/// <returns>The FVRObject of a magazine, clip, or speed loader</returns>
 		public static FVRObject? GetNextHighestCapacityMagazine(IList<FVRObject> pool, int currentCap, Func<FVRObject, bool>? filter = null)
 		{
-			return filter is not null ?
-				GetSmallestMagazine(pool, x => x.MagazineCapacity >= currentCap && filter(x)) :
-				GetSmallestMagazine(pool, x => x.MagazineCapacity >= currentCap);
+			return filter is not null
+				? GetSmallestMagazine(pool, x => x.MagazineCapacity >= currentCap && filter(x))
+				: GetSmallestMagazine(pool, x => x.MagazineCapacity >= currentCap);
 		}
 
 		/// <summary>
@@ -140,6 +140,43 @@ namespace Sodalite.Api
 		public static FVRObject? GetSmallestMagazine(FVRObject firearm, Func<FVRObject, bool>? filter = null)
 		{
 			return GetSmallestMagazine(firearm.GetCompatibleMagazines(), filter);
+		}
+
+		/// <summary>
+		/// Returns the chambers of this weapon.
+		/// Unfortunately the definitions for each chamber in the game aren't shared so this needs to exist because of that.
+		/// </summary>
+		/// <param name="firearm">The firearm to get the chambers of</param>
+		/// <returns>An array of chambers belonging to this weapon</returns>
+		public static FVRFireArmChamber[] GetFirearmChambers(FVRFireArm firearm)
+		{
+			// Return a new array with the chamber, or chambers if the gun has multiple.
+			return firearm switch
+			{
+				BAP bap => new[] {bap.Chamber},
+				BoltActionRifle boltActionRifle => new[] {boltActionRifle.Chamber},
+				BreakActionWeapon breakActionWeapon => breakActionWeapon.Barrels.Select(x => x.Chamber).ToArray(),
+				ClosedBoltWeapon closedBoltWeapon => new[] {closedBoltWeapon.Chamber},
+				Derringer derringer => derringer.Barrels.Select(x => x.Chamber).ToArray(),
+				Flaregun flaregun => new[] {flaregun.Chamber},
+				Handgun handgun => new[] {handgun.Chamber},
+				HCB hcb => new[] {hcb.Chamber},
+				LAPD2019 lapd2019 => lapd2019.Chambers,
+				LeverActionFirearm leverActionFirearm => new[] {leverActionFirearm.Chamber, leverActionFirearm.Chamber2},
+				M72 m72 => new[] {m72.Chamber},
+				OpenBoltReceiver openBoltReceiver => new[] {openBoltReceiver.Chamber},
+				PotatoGun potatoGun => new[] {potatoGun.Chamber},
+				Revolver revolver => revolver.Chambers,
+				RevolvingShotgun revolvingShotgun => revolvingShotgun.Chambers,
+				RGM40 rgm40 => new[] {rgm40.Chamber},
+				RollingBlock rollingBlock => new[] {rollingBlock.Chamber},
+				RPG7 rpg7 => new[] {rpg7.Chamber},
+				SimpleLauncher simpleLauncher => new[] {simpleLauncher.Chamber},
+				SingleActionRevolver singleActionRevolver => singleActionRevolver.Cylinder.Chambers,
+				TubeFedShotgun tubeFedShotgun => new[] {tubeFedShotgun.Chamber},
+				MF2_RL mf2Rl => new[] {mf2Rl.Chamber},
+				_ => new FVRFireArmChamber[0],
+			};
 		}
 	}
 }
