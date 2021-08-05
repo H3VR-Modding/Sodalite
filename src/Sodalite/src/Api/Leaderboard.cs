@@ -11,12 +11,12 @@ namespace Sodalite.Api
 	{
 		internal class LeaderboardDisableDisposable : IDisposable
 		{
-			private readonly HashSet<LeaderboardDisableDisposable> _disabled = new();
+			private readonly HashSet<LeaderboardDisableDisposable> _disabled;
 
 			internal LeaderboardDisableDisposable(HashSet<LeaderboardDisableDisposable> list)
 			{
-				_disabled.Add(this);
 				_disabled = list;
+				_disabled.Add(this);
 			}
 
 			public void Dispose()
@@ -35,9 +35,18 @@ namespace Sodalite.Api
 				// If no mods have requested disabling leaderboards, let it pass
 				if (ScoreboardDisabled.Count == 0) return orig(leaderboard, method, score, details, count);
 
-				// Otherwise log that it's been disabled and return an invalid call
-				Sodalite.StaticLogger.LogInfo("Scoreboard submission is disabled as requested by " + ScoreboardDisabled.Count + " mod(s)");
+				// Otherwise return an invalid call
 				return SteamAPICall_t.Invalid;
+			};
+
+			// Also prevent the player from creating new Leaderboards
+			On.Steamworks.SteamUserStats.FindOrCreateLeaderboard += (orig, name, method, type) =>
+			{
+				// If no mods have requested disabling leaderboards, let it pass
+				if (ScoreboardDisabled.Count == 0) return orig(name, method, type);
+
+				// Otherwise redirect this call to just the regular find and don't create
+				return SteamUserStats.FindLeaderboard(name);
 			};
 		}
 
