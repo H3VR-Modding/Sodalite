@@ -39,8 +39,8 @@ namespace Sodalite.Api
 			void SpawnWeapon(IList<FVRObject> o)
 			{
 				// Spawn and return the SosigWeapon object
-				GameObject weaponObj = o[Random.Range(0, o.Count)].GetGameObject();
-				SosigWeapon weapon = Object.Instantiate(weaponObj).GetComponent<SosigWeapon>();
+				GameObject weaponObj = o.GetRandom().GetGameObject();
+				SosigWeapon weapon = Object.Instantiate(weaponObj, position, rotation).GetComponent<SosigWeapon>();
 				weapon.SetAutoDestroy(true);
 				sosig.ForceEquip(weapon);
 				if (weapon.Type == SosigWeapon.SosigWeaponType.Gun && spawnOptions.SpawnWithFullAmmo)
@@ -128,13 +128,13 @@ namespace Sodalite.Api
 			public enum EquipmentSlots
 			{
 				/// <summary>Primary equipment slot</summary>
-				Primary,
+				Primary = 0b1,
 
 				/// <summary>Secondary equipment slot</summary>
-				Secondary,
+				Secondary = 0b10,
 
 				/// <summary>Tertiary equipment slot</summary>
-				Tertiary,
+				Tertiary = 0b100,
 
 				/// <summary>All equipment slots</summary>
 				All = Primary | Secondary | Tertiary

@@ -62,7 +62,7 @@ namespace Sodalite.UiWidgets
 			where TWidget : UiWidget where TStyle : WidgetStyle
 		{
 			// Create the game object and parent it
-			GameObject widgetGo = new(nameof(TWidget));
+			GameObject widgetGo = new(typeof(TWidget).Name);
 			widgetGo.transform.SetParent(go.transform);
 
 			// Configure the style
