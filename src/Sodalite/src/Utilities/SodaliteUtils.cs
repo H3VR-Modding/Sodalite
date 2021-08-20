@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using Random = System.Random;
+using Random = UnityEngine.Random;
 
 namespace Sodalite.Utilities
 {
@@ -14,8 +14,6 @@ namespace Sodalite.Utilities
 	/// </summary>
 	public static class SodaliteUtils
 	{
-		private static Random? _random;
-
 		/// <summary>
 		///	Helper method for loading a texture from a path
 		/// </summary>
@@ -99,9 +97,8 @@ namespace Sodalite.Utilities
 			if (list.Count < 1)
 				throw new InvalidOperationException("Cannot get random item from empty list!");
 
-			// Make sure our random is set and return a random item
-			_random ??= new Random();
-			return list[_random.Next(list.Count)];
+			// Return the random item
+			return list[Random.Range(0, list.Count)];
 		}
 
 		/// <summary>
