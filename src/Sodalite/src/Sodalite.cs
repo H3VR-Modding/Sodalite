@@ -17,17 +17,31 @@ using UnityEngine.UI;
 
 namespace Sodalite
 {
-	internal static class Constants
+	/// <summary>
+	/// Constant variables pertaining to Sodalite
+	/// </summary>
+	public static class SodaliteConstants
 	{
+		/// <summary>
+		/// BepInEx GUID of Sodalite
+		/// </summary>
 		public const string Guid = "nrgill28.Sodalite";
+
+		/// <summary>
+		/// BepInEx Name of Sodalite
+		/// </summary>
 		public const string Name = "Sodalite";
+
+		/// <summary>
+		/// Version of Sodalite
+		/// </summary>
 		public const string Version = ThisAssembly.Git.BaseVersion.Major + "." + ThisAssembly.Git.BaseVersion.Minor + "." + ThisAssembly.Git.BaseVersion.Patch;
 	}
 
 	/// <summary>
 	/// Sodalite main BepInEx plugin entrypoint
 	/// </summary>
-	[BepInPlugin(Constants.Guid, Constants.Name, Constants.Version)]
+	[BepInPlugin(SodaliteConstants.Guid, SodaliteConstants.Name, SodaliteConstants.Version)]
 	[BepInProcess("h3vr.exe")]
 	public class Sodalite : BaseUnityPlugin, ILogListener
 	{
@@ -81,7 +95,7 @@ namespace Sodalite
 		private void Start()
 		{
 			// Pull the button sprite and font for our use later
-			Transform button = WristMenuAPI.Instance!.OptionsPanelPrefab.transform.Find("OptionsCanvas_0_Main/Canvas/Label_SelectASection/Button_Option_1_Locomotion");
+			Transform button = GameObject.Find("MainMenuSceneProtoBase/LevelLoadScreen/LevelLoadHolder/Canvas/Button").transform;
 			WidgetStyle.DefaultButtonSprite = button.GetComponent<Image>().sprite;
 			WidgetStyle.DefaultTextFont = button.GetChild(0).GetComponent<Text>().font;
 		}

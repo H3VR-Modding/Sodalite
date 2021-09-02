@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Gizmos = Popcron.Gizmos;
 
 namespace Sodalite.UiWidgets
 {
@@ -35,6 +36,15 @@ namespace Sodalite.UiWidgets
 			// Set it upright so it looks in the proper direction
 			RectTransform.localRotation = Quaternion.identity;
 		}
+
+#if DEBUG
+		private void Update()
+		{
+			Rect rect = RectTransform.rect;
+			Vector2 size = rect.size;
+			Gizmos.Cube(rect.center, transform.rotation, new Vector3(Mathf.Abs(size.x), Mathf.Abs(size.y), 5f));
+		}
+#endif
 
 		/// <summary>
 		///		Creates a widget on the provided game object and configures it with the default style

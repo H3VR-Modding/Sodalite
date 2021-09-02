@@ -45,12 +45,12 @@ namespace Sodalite.UiWidgets
 			ButtonText.font = Style.TextFont;
 
 			// The PointableButton component is given to us in the base UiWidgets class
-			SodalitePointableButton pointable = gameObject.AddComponent<SodalitePointableButton>();
-			pointable.MaxPointingRange = 2;
-			pointable.Button = Button;
-			pointable.Image = ButtonImage;
-			pointable.ColorUnselected = Style.ButtonColorUnselected;
-			pointable.ColorSelected = Style.ButtonColorSelected;
+			Pointable = gameObject.AddComponent<SodalitePointableButton>();
+			Pointable.MaxPointingRange = 2;
+			Pointable.Button = Button;
+			Pointable.Image = ButtonImage;
+			Pointable.ColorUnselected = Style.ButtonColorUnselected;
+			Pointable.ColorSelected = Style.ButtonColorSelected;
 		}
 
 		private IEnumerator Start()
@@ -62,7 +62,7 @@ namespace Sodalite.UiWidgets
 			_boxCollider = gameObject.AddComponent<BoxCollider>();
 			Vector2 size = RectTransform.sizeDelta;
 			_boxCollider.center = Vector3.zero;
-			_boxCollider.size = new Vector3(size.x, size.y, 5f);
+			_boxCollider.size = new Vector3(Mathf.Abs(size.x), Mathf.Abs(size.y), 5f);
 		}
 
 		/// <summary>
