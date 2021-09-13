@@ -32,8 +32,8 @@ namespace Sodalite.UiWidgets
 			base.Awake();
 			ButtonImage = gameObject.AddComponent<Image>();
 			Button = gameObject.AddComponent<Button>();
-			ButtonImage.sprite = Style.ButtonSprite;
-			ButtonImage.color = Style.ButtonColorUnselected;
+			ButtonImage.sprite = WidgetStyle.ButtonSprite;
+			ButtonImage.color = WidgetStyle.ButtonColorUnselected;
 
 			// Get the text stuff setup
 			GameObject child = new("Text");
@@ -41,16 +41,16 @@ namespace Sodalite.UiWidgets
 			ButtonText = child.AddComponent<Text>();
 			((RectTransform) child.transform).FillParent();
 			ButtonText.alignment = TextAnchor.MiddleCenter;
-			ButtonText.color = Style.TextColor;
-			ButtonText.font = Style.TextFont;
+			ButtonText.color = WidgetStyle.TextColor;
+			ButtonText.font = WidgetStyle.TextFont;
 
 			// The PointableButton component is given to us in the base UiWidgets class
 			Pointable = gameObject.AddComponent<SodalitePointableButton>();
 			Pointable.MaxPointingRange = 2;
 			Pointable.Button = Button;
 			Pointable.Image = ButtonImage;
-			Pointable.ColorUnselected = Style.ButtonColorUnselected;
-			Pointable.ColorSelected = Style.ButtonColorSelected;
+			Pointable.ColorUnselected = WidgetStyle.ButtonColorUnselected;
+			Pointable.ColorSelected = WidgetStyle.ButtonColorSelected;
 		}
 
 		private IEnumerator Start()

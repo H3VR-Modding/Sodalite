@@ -15,8 +15,8 @@ namespace Sodalite.UiWidgets
 		{
 			base.Awake();
 			Text = gameObject.AddComponent<Text>();
-			Text.font = Style.TextFont;
-			Text.color = Style.TextColor;
+			Text.font = WidgetStyle.TextFont;
+			Text.color = WidgetStyle.TextColor;
 		}
 	}
 }
