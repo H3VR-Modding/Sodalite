@@ -12,9 +12,6 @@ namespace Sodalite.UiWidgets
 		/// <summary>Reference to the RectTransform of this widget</summary>
 		public RectTransform RectTransform = null!;
 
-		/// <summary>Reference to this widget's AudioSource, if it has one.</summary>
-		protected AudioSource? AudioSource;
-
 		/// <summary>
 		///	The Awake method is used to configure widgets
 		/// </summary>
@@ -22,9 +19,6 @@ namespace Sodalite.UiWidgets
 		{
 			// Make sure we're a 2D UI element
 			RectTransform = gameObject.AddComponent<RectTransform>();
-
-			// If we have an audio source somewhere in the parent we want that too
-			AudioSource = GetComponentInParent<AudioSource>();
 
 			// Set it upright so it looks in the proper direction
 			RectTransform.localRotation = Quaternion.identity;

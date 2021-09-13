@@ -26,6 +26,8 @@ namespace Sodalite.UiWidgets
 
 		private BoxCollider _boxCollider = null!;
 
+		private AudioSource? _audioSource;
+
 		/// <inheritdoc cref="UiWidget.Awake"/>
 		protected override void Awake()
 		{
@@ -34,6 +36,9 @@ namespace Sodalite.UiWidgets
 			Button = gameObject.AddComponent<Button>();
 			ButtonImage.sprite = WidgetStyle.ButtonSprite;
 			ButtonImage.color = WidgetStyle.ButtonColorUnselected;
+
+			// Check if we have an audio source on us
+			_audioSource = GetComponentInParent<AudioSource>();
 
 			// Get the text stuff setup
 			GameObject child = new("Text");
@@ -76,8 +81,8 @@ namespace Sodalite.UiWidgets
 			{
 				// If we have references to everything we need to play a sound, play a sound
 				FVRWristMenu? wristMenu = WristMenuAPI.Instance;
-				if (AudioSource is not null && AudioSource && wristMenu is not null && wristMenu)
-					AudioSource.PlayOneShot(wristMenu.AudClip_Engage);
+				if (_audioSource && wristMenu is not null && wristMenu)
+					_audioSource!.PlayOneShot(wristMenu.AudClip_Engage);
 
 				// Create the event and fire the callback
 				callback(this, args);
