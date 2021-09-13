@@ -69,7 +69,7 @@ namespace Sodalite.Api
 			// or the button just above where this one should go according to the priority
 			WristMenuButton? aboveButton = WristMenuButtons
 				.OrderByDescending(x => x.Priority)
-				.LastOrDefault(x => x.Priority > button.Priority);
+				.FirstOrDefault(x => x.Priority > button.Priority);
 			Button referenceButton = aboveButton is null ? wristMenu.Buttons[16] : CurrentButtons[aboveButton];
 			RectTransform referenceRt = referenceButton.GetComponent<RectTransform>();
 

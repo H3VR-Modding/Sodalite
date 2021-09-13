@@ -11,11 +11,10 @@ namespace Sodalite.Api
 	public static class PlayerAPI
 	{
 		/// <summary>
-		/// Returns a read-only collection of the objects the player currently has equipped.
+		/// Returns a list of the objects the player currently has equipped.
 		/// This includes objects in the player's hands, in quickbelt slots, or in an equipped backpack slot.
 		/// </summary>
-		/// <returns></returns>
-		public static ReadOnlyCollection<FVRPhysicalObject> GetEquippedObjects()
+		public static List<FVRPhysicalObject> GetEquippedObjects()
 		{
 			// Make a list of the objects and a helper method to add to it
 			List<FVRPhysicalObject> objects = new();
@@ -45,7 +44,7 @@ namespace Sodalite.Api
 				AddObject(slot.CurObject);
 
 			// Return the objects as a read only collection
-			return objects.AsReadOnly();
+			return objects;
 		}
 	}
 }
