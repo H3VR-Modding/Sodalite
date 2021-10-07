@@ -16,30 +16,30 @@ namespace Sodalite.UiWidgets
 		/// <summary>
 		/// The text font
 		/// </summary>
-		public static Font TextFont { get; set; } = DefaultTextFont is not null && DefaultTextFont
+		public static Font TextFont  => DefaultTextFont is not null && DefaultTextFont
 			? DefaultTextFont
 			: throw new InvalidOperationException("Default text font was null!");
 
 		/// <summary>
 		/// The text color
 		/// </summary>
-		public static Color TextColor { get; set; } = Color.white;
+		public static Color TextColor { get; internal set; } = Color.white;
 
 		/// <summary>
 		/// Sprite used for buttons
 		/// </summary>
-		public static Sprite ButtonSprite { get; set; } = DefaultButtonSprite is not null && DefaultButtonSprite
+		public static Sprite ButtonSprite => DefaultButtonSprite is not null && DefaultButtonSprite
 			? DefaultButtonSprite
 			: throw new InvalidOperationException("Default text font was null!");
 
 		/// <summary>
 		/// The button sprite tint while it is unselected
 		/// </summary>
-		public static Color ButtonColorUnselected { get; set; } = new(27 / 255f, 73 / 255f, 155 / 255f, 160 / 255f);
+		public static Color ButtonColorUnselected { get; internal set; } = new(27 / 255f, 73 / 255f, 155 / 255f, 160 / 255f);
 
 		/// <summary>
 		/// The button sprite tint when selected (hovered)
 		/// </summary>
-		public static Color ButtonColorSelected { get; set; } = new(192 / 255f, 202 / 255f, 222 / 255f, 216 / 255f);
+		public static Color ButtonColorSelected { get; internal set; } = new(192 / 255f, 202 / 255f, 222 / 255f, 216 / 255f);
 	}
 }
