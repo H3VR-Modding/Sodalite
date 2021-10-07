@@ -9,9 +9,12 @@ namespace Sodalite.Patcher
 	/// </summary>
 	internal static class SodalitePatcher
 	{
+		// ReSharper disable once UnusedMember.Global
 		public static IEnumerable<string> TargetDLLs { get; } = new string[0];
 		internal static LogBuffer LogBuffer { get; } = new();
 
+		// ReSharper disable once UnusedMember.Global
+		// ReSharper disable once UnusedParameter.Global
 		public static void Patch(AssemblyDefinition assembly)
 		{
 		}
@@ -22,6 +25,9 @@ namespace Sodalite.Patcher
 	/// </summary>
 	internal class LogBuffer : ILogListener
 	{
+		// Capture log events
+		internal readonly List<LogEventArgs> LogEvents = new();
+
 		public LogBuffer()
 		{
 			Logger.Listeners.Add(this);
@@ -31,9 +37,6 @@ namespace Sodalite.Patcher
 		{
 			Logger.Listeners.Remove(this);
 		}
-
-		// Capture log events
-		internal readonly List<LogEventArgs> LogEvents = new();
 
 		public void LogEvent(object sender, LogEventArgs eventArgs)
 		{

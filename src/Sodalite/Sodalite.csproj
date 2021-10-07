@@ -20,12 +20,12 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <DocumentationFile>bin\Debug\Sodalite.xml</DocumentationFile>
-      <NoWarn>1701;1702</NoWarn>
+      <NoWarn>1701;1702;NU5104</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <DocumentationFile>bin\Release\Sodalite.xml</DocumentationFile>
-      <NoWarn>1701;1702</NoWarn>
+        <NoWarn>1701;1702;NU5104</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
