@@ -4,7 +4,7 @@ export VERSION=$(git describe --tags --abbrev=0 | sed -n 's/v\(.\+\)/\1/p')
 cd $TS_DIR
 
 # Delete the existing build if it exists
-rm nrgill28-Sodalite.zip
+rm nrgill28-Sodalite-*.zip
 
 # Create our temp folders
 mkdir -p TEMP/Sodalite/plugins
@@ -22,7 +22,7 @@ sed -i "s/{VERSION}/$VERSION/g" TEMP/manifest.json
 
 # Zip the folder
 cd TEMP
-zip -9r ../nrgill28-Sodalite.zip *
+zip -9r "../nrgill28-Sodalite-$VERSION.zip" *
 
 # Delete the temp dir
 cd ..
