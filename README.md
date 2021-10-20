@@ -9,6 +9,7 @@ _Sodalite_ is a [BepInEx](https://github.com/BepInEx/BepInEx) plugin for *[Hot D
 - Some API code to allow easier interfacing with various parts of the game including firearms, Steam leaderboards, lockable panels, the player, the vault, and the wrist menu.
 - UI Widgets system to fill custom panels with programatically generated layouts
 - Various smaller extension methods and classes to assist in the development of plugins for H3VR
+- A runtime Gizmos library which allows drawing primitive shapes in the world
 
 ## Installation
 - If you are using a mod manager this mod will be installed automatically for you if it's needed.
