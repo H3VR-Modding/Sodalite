@@ -46,8 +46,8 @@ namespace Sodalite
 	public class Sodalite : BaseUnityPlugin, ILogListener
 	{
 		// Private fields
-		private readonly List<LogEventArgs> _logEvents;
-		private readonly LockablePanel _logPanel;
+		private List<LogEventArgs> _logEvents = null!;
+		private LockablePanel _logPanel = null!;
 		private BepInExLogPanel? _logPanelComponent;
 		private static ManualLogSource? _logger;
 
@@ -57,7 +57,7 @@ namespace Sodalite
 		/// <summary>
 		/// Initialization code for Sodalite
 		/// </summary>
-		public Sodalite()
+		private void Awake()
 		{
 			// Hook a call to a compiler-generated method and replace it with one that doesn't use an unsafe GetTypes call
 			new Hook(
