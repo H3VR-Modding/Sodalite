@@ -38,6 +38,7 @@ namespace Sodalite
 		public const string Version = ThisAssembly.Git.BaseVersion.Major + "." + ThisAssembly.Git.BaseVersion.Minor + "." + ThisAssembly.Git.BaseVersion.Patch;
 	}
 
+#if RUNTIME
 	/// <summary>
 	/// Sodalite main BepInEx plugin entrypoint
 	/// </summary>
@@ -182,4 +183,5 @@ namespace Sodalite
 				select t;
 		}
 	}
+#endif
 }

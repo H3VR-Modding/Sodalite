@@ -12,6 +12,7 @@ using UnityEngine.UI;
 
 namespace Sodalite
 {
+#if RUNTIME
 	/// <summary>
 	/// Unity MonoBehaviour for controlling the BepInEx log panel
 	/// </summary>
@@ -143,4 +144,5 @@ namespace Sodalite
 			Panel.Scroll(scroll);
 		}
 	}
+#endif
 }
