@@ -17,16 +17,26 @@
         <RepositoryUrl>https://github.com/H3VR-Modding/Sodalite.git</RepositoryUrl>
         <RootNamespace>Sodalite</RootNamespace>
         <PackageVersion>1.1.0</PackageVersion>
+        <Configurations>Runtime;Editor</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <PropertyGroup Condition=" '$(Configuration)' == 'Runtime' ">
+      <DocumentationFile>bin\Release\Sodalite.xml</DocumentationFile>
+      <NoWarn>1701;1702;NU5104</NoWarn>
+      <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
+      <PlatformTarget>x64</PlatformTarget>
+      <DefineConstants>TRACE;RUNTIME;</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Editor' ">
       <DocumentationFile>bin\Debug\Sodalite.xml</DocumentationFile>
       <NoWarn>1701;1702;NU5104</NoWarn>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <DocumentationFile>bin\Release\Sodalite.xml</DocumentationFile>
-        <NoWarn>1701;1702;NU5104</NoWarn>
+      <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
+      <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
+      <Optimize>true</Optimize>
+      <PlatformTarget>x64</PlatformTarget>
+      <DefineConstants>TRACE;EDITOR;</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -41,7 +51,7 @@
         <PackageReference Include="H3VR.GameLibs" Version="0.100.2-r.1" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(Configuration)'=='Runtime'">
         <Reference Include="MMHOOK_Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\libs\MMHOOK_Assembly-CSharp.dll</HintPath>
         </Reference>

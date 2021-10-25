@@ -27,6 +27,7 @@ namespace Sodalite.Api
 
 		private static readonly HashSet<LeaderboardDisableDisposable> ScoreboardDisabled = new();
 
+#if RUNTIME
 		static LeaderboardAPI()
 		{
 			// Disable any form of Steam leaderboard uploading
@@ -37,6 +38,7 @@ namespace Sodalite.Api
 			On.Steamworks.SteamUserStats.FindOrCreateLeaderboard += (orig, name, method, type) =>
 				ScoreboardDisabled.Count == 0 ? orig(name, method, type) : SteamUserStats.FindLeaderboard(name);
 		}
+#endif
 
 		/// <summary>
 		///	Calling this method will let you disable the Steam leaderboards. Disposing of the object returned by

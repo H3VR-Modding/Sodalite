@@ -27,24 +27,14 @@ namespace Sodalite.Api
 		private static readonly ObservableHashSet<WristMenuButton> WristMenuButtons = new();
 		private static readonly Dictionary<WristMenuButton, Button> CurrentButtons = new();
 
-		static  WristMenuAPI()
+#if RUNTIME
+		static WristMenuAPI()
 		{
 			// Wrist Menu stuff
+
 			On.FistVR.FVRWristMenu.Awake += FVRWristMenuOnAwake;
 			WristMenuButtons.ItemAdded += WristMenuButtonsItemAdded;
 			WristMenuButtons.ItemRemoved += WristMenuButtonsItemRemoved;
-		}
-
-		private static void WristMenuButtonsItemAdded(WristMenuButton button)
-		{
-			if (Instance is null || !Instance) return;
-			AddWristMenuButton(Instance, button);
-		}
-
-		private static void WristMenuButtonsItemRemoved(WristMenuButton button)
-		{
-			if (Instance is null || !Instance) return;
-			RemoveWristMenuButton(Instance, button);
 		}
 
 		private static void FVRWristMenuOnAwake(On.FistVR.FVRWristMenu.orig_Awake orig, FVRWristMenu self)
@@ -61,6 +51,19 @@ namespace Sodalite.Api
 			// For all the registered buttons, add them
 			foreach (WristMenuButton button in WristMenuButtons)
 				AddWristMenuButton(self, button);
+		}
+#endif
+
+		private static void WristMenuButtonsItemAdded(WristMenuButton button)
+		{
+			if (Instance is null || !Instance) return;
+			AddWristMenuButton(Instance, button);
+		}
+
+		private static void WristMenuButtonsItemRemoved(WristMenuButton button)
+		{
+			if (Instance is null || !Instance) return;
+			RemoveWristMenuButton(Instance, button);
 		}
 
 		private static void AddWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
