@@ -52,11 +52,11 @@ namespace Sodalite.Api
 			if (template.WeaponOptions.Count > 0 && spawnWithPrimaryWeapon) SpawnWeapon(template.WeaponOptions);
 
 			// Spawn the secondary weapon
-			bool spawnWithSecondaryWeapon = spawnOptions.EquipmentMode.HasFlag(SpawnOptions.EquipmentSlots.Secondary) && Random.Range(0.0f, 1f) >= template.SecondaryChance;
+			bool spawnWithSecondaryWeapon = spawnOptions.EquipmentMode.HasFlag(SpawnOptions.EquipmentSlots.Secondary) && Random.Range(0.0f, 1f) < template.SecondaryChance;
 			if (template.WeaponOptions_Secondary.Count > 0 && spawnWithSecondaryWeapon) SpawnWeapon(template.WeaponOptions_Secondary);
 
 			// Spawn the tertiary weapon
-			bool spawnWithTertiaryWeapon = spawnOptions.EquipmentMode.HasFlag(SpawnOptions.EquipmentSlots.Tertiary) && Random.Range(0.0f, 1f) >= template.TertiaryChance;
+			bool spawnWithTertiaryWeapon = spawnOptions.EquipmentMode.HasFlag(SpawnOptions.EquipmentSlots.Tertiary) && Random.Range(0.0f, 1f) < template.TertiaryChance;
 			if (template.WeaponOptions_Tertiary.Count > 0 && spawnWithTertiaryWeapon) SpawnWeapon(template.WeaponOptions_Tertiary);
 
 			// Set the IFF (team) of the Sosig
