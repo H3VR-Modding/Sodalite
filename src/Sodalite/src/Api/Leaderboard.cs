@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sodalite.Utilities;
 using Steamworks;
 
 namespace Sodalite.Api
@@ -9,42 +10,32 @@ namespace Sodalite.Api
 	/// </summary>
 	public static class LeaderboardAPI
 	{
-		internal class LeaderboardDisableDisposable : IDisposable
-		{
-			private readonly HashSet<LeaderboardDisableDisposable> _disabled;
-
-			internal LeaderboardDisableDisposable(HashSet<LeaderboardDisableDisposable> list)
-			{
-				_disabled = list;
-				_disabled.Add(this);
-			}
-
-			public void Dispose()
-			{
-				_disabled.Remove(this);
-			}
-		}
-
-		private static readonly HashSet<LeaderboardDisableDisposable> ScoreboardDisabled = new();
+		/// <summary>
+		/// Call the TakeLock method to lock Steam leaderboard functionality and dispose of the returned value to re-enable.
+		/// </summary>
+		public static readonly SafeMultiLock LeaderboardDisabled = new();
 
 #if RUNTIME
 		static LeaderboardAPI()
 		{
 			// Disable any form of Steam leaderboard uploading
 			On.Steamworks.SteamUserStats.UploadLeaderboardScore += (orig, leaderboard, method, score, details, count) =>
-				ScoreboardDisabled.Count == 0 ? orig(leaderboard, method, score, details, count) : SteamAPICall_t.Invalid;
+				LeaderboardDisabled.IsLocked ? SteamAPICall_t.Invalid : orig(leaderboard, method, score, details, count);
 
 			// Also prevent the player from creating new Leaderboards.
 			On.Steamworks.SteamUserStats.FindOrCreateLeaderboard += (orig, name, method, type) =>
-				ScoreboardDisabled.Count == 0 ? orig(name, method, type) : SteamUserStats.FindLeaderboard(name);
+				LeaderboardDisabled.IsLocked ? SteamUserStats.FindLeaderboard(name) : orig(name, method, type);
 		}
 #endif
 
 		/// <summary>
 		///	Calling this method will let you disable the Steam leaderboards. Disposing of the object returned by
 		/// this method will re-enable the leaderboards (as long as no other mod is holding their own lock)
+		///
+		/// OBSOLETE, please take a lock directly from LeaderboardAPI.LeaderboardDisabled instead.
 		/// </summary>
 		/// <returns>A disposable that while not disposed prevents any scores from submitting to Steam leaderboards.</returns>
-		public static IDisposable GetLeaderboardDisableLock() => new LeaderboardDisableDisposable(ScoreboardDisabled);
+		[Obsolete("Please take a lock directly from LeaderboardAPI.LeaderboardDisabled instead")]
+		public static IDisposable GetLeaderboardDisableLock() => LeaderboardDisabled.TakeLock();
 	}
 }
