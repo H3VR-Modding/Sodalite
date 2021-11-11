@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Linq;
+using Sodalite.Utilities;
 using UnityEngine;
 // ReSharper disable All
 #pragma warning disable 1591
@@ -32,7 +34,7 @@ namespace Popcron
 				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 				foreach (Assembly assembly in assemblies)
 				{
-					Type[] types = assembly.GetTypes();
+					Type[] types = assembly.GetTypesSafe().ToArray();
 					foreach (Type type in types)
 					{
 						if (type.IsAbstract) continue;

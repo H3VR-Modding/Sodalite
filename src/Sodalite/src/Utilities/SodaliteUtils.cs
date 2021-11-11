@@ -137,5 +137,12 @@ namespace Sodalite.Utilities
 		/// <param name="handler">The exception handler</param>
 		/// <returns>The wrapped enumerator</returns>
 		public static IEnumerator TryCatch(this IEnumerator @this, Action<Exception> handler) => @this.TryCatch<Exception>(handler);
+
+		/// <summary>
+		/// Formats the color as an rgba css code
+		/// </summary>
+		/// <param name="c">The color</param>
+		/// <returns>a string</returns>
+		public static string AsRGBA(this Color c) => $"rgba({c.r*255:N0}, {c.g*255:N0}, {c.b*255:N0}, {c.a*255:N0})";
 	}
 }

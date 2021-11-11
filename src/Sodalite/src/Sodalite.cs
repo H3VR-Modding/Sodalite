@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
@@ -7,6 +8,7 @@ using BepInEx.Logging;
 using FistVR;
 using MonoMod.RuntimeDetour;
 using Sodalite.Api;
+using Sodalite.ModPanel;
 using Sodalite.Patcher;
 using Sodalite.UiWidgets;
 using Sodalite.Utilities;
@@ -38,7 +40,6 @@ namespace Sodalite
 		public const string Version = ThisAssembly.Git.BaseVersion.Major + "." + ThisAssembly.Git.BaseVersion.Minor + "." + ThisAssembly.Git.BaseVersion.Patch;
 	}
 
-#if RUNTIME
 	/// <summary>
 	/// Sodalite main BepInEx plugin entrypoint
 	/// </summary>
@@ -48,11 +49,13 @@ namespace Sodalite
 	{
 		// Private fields
 		private List<LogEventArgs> _logEvents = null!;
-		private LockablePanel _logPanel = null!;
-		private BepInExLogPanel? _logPanelComponent;
+		private LockablePanel _modPanel = null!;
+		private GameObject? _modPanelPrefab;
+		private UniversalModPanel? _modPanelComponent;
 		private static ManualLogSource? _logger;
 
 		// Static stuff
+		private static readonly string BasePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
 		internal static ManualLogSource StaticLogger => _logger ?? throw new InvalidOperationException("Cannot get logger before the behaviour is initialized!");
 
 		/// <summary>
@@ -74,11 +77,15 @@ namespace Sodalite
 			_logEvents = SodalitePatcher.LogBuffer.LogEvents;
 			SodalitePatcher.LogBuffer.Dispose();
 
+			// Load our prefab
+			AssetBundle bundle = AssetBundle.LoadFromFile(Path.Combine(BasePath, "universalpanel"));
+			_modPanelPrefab = bundle.LoadAsset<GameObject>("Universal Mod Panel");
+
 			// Make a new LockablePanel for the console panel
-			_logPanel = new LockablePanel();
-			_logPanel.Configure += ConfigureLogPanel;
-			_logPanel.TextureOverride = SodaliteUtils.LoadTextureFromBytes(Assembly.GetExecutingAssembly().GetResource("LogPanel.png"));
-			WristMenuAPI.Buttons.Add(new WristMenuButton("Spawn Log Panel", int.MaxValue, SpawnLogPanel));
+			_modPanel = new LockablePanel();
+			_modPanel.Configure += ConfigureModPanel;
+			_modPanel.TextureOverride = SodaliteUtils.LoadTextureFromBytes(Assembly.GetExecutingAssembly().GetResource("LogPanel.png"));
+			WristMenuAPI.Buttons.Add(new WristMenuButton("Spawn Mod Panel", int.MaxValue, SpawnModPanel));
 
 			// Try to log the game's build id. This can be useful for debugging but only works if the game is launched via Steam.
 			// The game _usually_ is launched via Steam, even with r2mm, so this may only error if someone tries to launch the game via the exe directly.
@@ -120,70 +127,30 @@ namespace Sodalite
 			GM.SetRunningModded();
 		}
 
-		#region Utility Panel (Widgets test)
-
-		/*
-		private static void ConfigureUtilityPanel(GameObject panel)
-		{
-			GameObject canvas = panel.transform.Find("OptionsCanvas_0_Main/Canvas").gameObject;
-			UiWidget.CreateAndConfigureWidget(canvas, (GridLayoutWidget widget) =>
-			{
-				// Fill our parent and set pivot to top middle
-				widget.RectTransform.localScale = new Vector3(0.07f, 0.07f, 0.07f);
-				widget.RectTransform.localPosition = Vector3.zero;
-				widget.RectTransform.anchoredPosition = Vector2.zero;
-				widget.RectTransform.sizeDelta = new Vector2(37f / 0.07f, 24f / 0.07f);
-				widget.RectTransform.pivot = new Vector2(0.5f, 1f);
-
-				// Adjust our grid settings
-				widget.LayoutGroup.cellSize = new Vector2(171, 50);
-				widget.LayoutGroup.spacing = Vector2.one * 4;
-				widget.LayoutGroup.startCorner = GridLayoutGroup.Corner.UpperLeft;
-				widget.LayoutGroup.startAxis = GridLayoutGroup.Axis.Horizontal;
-				widget.LayoutGroup.childAlignment = TextAnchor.UpperCenter;
-				widget.LayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-				widget.LayoutGroup.constraintCount = 3;
-
-				widget.AddChild((ButtonWidget button) => button.ButtonText.text = "Button 1!");
-				widget.AddChild((ButtonWidget button) => button.ButtonText.text = "Mod Configs");
-				widget.AddChild((ButtonWidget button) => button.ButtonText.text = "Another button");
-				widget.AddChild((ButtonWidget button) => button.ButtonText.text = "Another button 2");
-				widget.AddChild((ButtonWidget button) => button.ButtonText.text = "Another button 3");
-			});
-		}
-
-		private void SpawnUtilityPanel()
-		{
-			if (_api.WristMenu is null || !_api.WristMenu) return;
-			GameObject panel = _utilityPanel.GetOrCreatePanel();
-			_api.WristMenu.m_currentHand.RetrieveObject(panel.GetComponent<FVRPhysicalObject>());
-		}
-		*/
-
-		#endregion
-
 		#region Log Panel Stuffs
 
 		// Wrist menu button callback. Gets our panel instance and makes the hand retrieve it.
-		private void SpawnLogPanel(object sender, ButtonClickEventArgs args)
+		private void SpawnModPanel(object sender, ButtonClickEventArgs args)
 		{
 			FVRWristMenu? wristMenu = WristMenuAPI.Instance;
-			if (wristMenu is null || !wristMenu) return;
-			GameObject panel = _logPanel.GetOrCreatePanel();
-			wristMenu.m_currentHand.RetrieveObject(panel.GetComponent<FVRPhysicalObject>());
+			if (!wristMenu) return;
+			GameObject panel = _modPanel.GetOrCreatePanel();
+			args.Hand.OtherHand.RetrieveObject(panel.GetComponent<FVRPhysicalObject>());
 		}
 
-		private void ConfigureLogPanel(GameObject panel)
+		private void ConfigureModPanel(GameObject panel)
 		{
 			Transform canvasTransform = panel.transform.Find("OptionsCanvas_0_Main/Canvas");
-			_logPanelComponent = panel.AddComponent<BepInExLogPanel>();
-			_logPanelComponent.CreateWithExisting(this, canvasTransform.gameObject, _logEvents);
+			_modPanelComponent = Instantiate(_modPanelPrefab, canvasTransform.position, canvasTransform.rotation, canvasTransform.parent)!.GetComponent<UniversalModPanel>();
+			_modPanelComponent.LogPage.CurrentEvents = _logEvents;
+			_modPanelComponent.LogPage.UpdateText();
+			Destroy(canvasTransform.gameObject);
 		}
 
 		void ILogListener.LogEvent(object sender, LogEventArgs eventArgs)
 		{
 			_logEvents.Add(eventArgs);
-			if (_logPanelComponent && _logPanelComponent is not null) _logPanelComponent.LogEvent();
+			if (_modPanelComponent) _modPanelComponent!.LogPage.LogEvent();
 		}
 
 		void IDisposable.Dispose()
@@ -202,5 +169,4 @@ namespace Sodalite
 				select t;
 		}
 	}
-#endif
 }
