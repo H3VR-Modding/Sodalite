@@ -148,6 +148,7 @@ namespace Sodalite.Api
 		/// </summary>
 		/// <param name="firearm">The firearm to get the chambers of</param>
 		/// <returns>An array of chambers belonging to this weapon</returns>
+		[Obsolete("Vanilla game has this method now. Please use FVRFireArm.GetChambers() instead.")]
 		public static FVRFireArmChamber[] GetFirearmChambers(FVRFireArm firearm)
 		{
 			// Return a new array with the chamber, or chambers if the gun has multiple.
