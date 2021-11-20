@@ -85,7 +85,8 @@ namespace Sodalite
 			try
 			{
 				SteamAPI.Init();
-				Logger.LogMessage($"Game build ID: {SteamApps.GetAppBuildId()}.");
+				bool beta = SteamApps.GetCurrentBetaName(out string betaName, 128);
+				Logger.LogMessage($"Game build ID: {SteamApps.GetAppBuildId()} ({(beta ? betaName : "main")}).");
 			}
 			catch (InvalidOperationException)
 			{
@@ -95,10 +96,26 @@ namespace Sodalite
 
 		private void Start()
 		{
+			// Try to set the game running modded. This will fail on versions below Update 100 Alpha 7
+			// This needs to be in Start because the game manager doesn't initialize until after us
+			try
+			{
+				SetRunningModded();
+			}
+			catch (MissingMethodException)
+			{
+				// Ignored
+			}
+
 			// Pull the button sprite and font for our use later
 			Transform button = GameObject.Find("MainMenuSceneProtoBase/LevelLoadScreen/LevelLoadHolder/Canvas/Button").transform;
 			WidgetStyle.DefaultButtonSprite = button.GetComponent<Image>().sprite;
 			WidgetStyle.DefaultTextFont = button.GetChild(0).GetComponent<Text>().font;
+		}
+
+		private void SetRunningModded()
+		{
+			GM.SetRunningModded();
 		}
 
 		#region Utility Panel (Widgets test)
