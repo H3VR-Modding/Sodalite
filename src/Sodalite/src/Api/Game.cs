@@ -79,7 +79,11 @@ namespace Sodalite.Api
 			foreach (var asset in bundle.LoadAllAssets())
 			{
 				// Correct the prefab path if this is an FVRObject
-				if (asset is FVRObject objectId) objectId.m_anvilPrefab.Bundle = Path.Combine(pluginPath, objectId.m_anvilPrefab.Bundle);
+				if (asset is FVRObject objectId)
+				{
+					objectId.m_anvilPrefab.Bundle = Path.Combine(pluginPath, objectId.m_anvilPrefab.Bundle);
+					objectId.IsModContent = true;
+				}
 
 				// Inject the resource into the game
 				InjectResource(asset);
