@@ -86,7 +86,9 @@ namespace Sodalite
 			{
 				SteamAPI.Init();
 				bool beta = SteamApps.GetCurrentBetaName(out string betaName, 128);
-				Logger.LogMessage($"Game build ID: {SteamApps.GetAppBuildId()} ({(beta ? betaName : "main")}).");
+				GameAPI.BetaName = beta ? betaName : string.Empty;
+				GameAPI.BuildId = SteamApps.GetAppBuildId();
+				Logger.LogMessage($"Game build ID: {GameAPI.BuildId} ({(beta ? betaName : "main")}).");
 			}
 			catch (InvalidOperationException)
 			{
