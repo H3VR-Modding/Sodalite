@@ -44,16 +44,25 @@ namespace Sodalite.Api
 
 			void AddObject(FVRPhysicalObject? obj)
 			{
-				// If this slot is holding a backpack also iterate over it's slots and add them
-				if (obj is PlayerBackPack backpack)
-				{
-					objects.AddRange(from backpackSlot in backpack.Slots
-						where backpackSlot.CurObject is not null
-						select backpackSlot.CurObject);
-				}
 				// If the slot contains something, add it
-				else if (obj is not null)
-					objects.Add(obj);
+				if (obj is null) return;
+				objects.Add(obj);
+
+				// Check for any special cases
+				switch (obj)
+				{
+					// If this slot is holding a backpack also iterate over it's slots and add them
+					case PlayerBackPack backpack:
+						objects.AddRange(from backpackSlot in backpack.Slots
+							where backpackSlot.CurObject is not null
+							select backpackSlot.CurObject);
+						break;
+
+					// If the object is a magazine also check if there's another one being palmed
+					case FVRFireArmMagazine magazine when magazine.m_magChild is not null:
+						objects.Add(magazine.m_magChild);
+						break;
+				}
 			}
 
 			// Get whatever the player is holding
