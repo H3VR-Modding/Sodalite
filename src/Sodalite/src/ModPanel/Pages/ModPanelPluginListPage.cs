@@ -22,7 +22,9 @@ public class ModPanelPluginListPage : UniversalModPanelPage
 			Destroy(ContentGameObject.GetChild(i).gameObject);
 
 		// Re-initialize with all the plugins
-		foreach (var plugin in Chainloader.PluginInfos.Values.OrderByDescending(x => UniversalModPanel.RegisteredConfigs.ContainsKey(x)))
+		foreach (var plugin in Chainloader.PluginInfos.Values
+			         .OrderByDescending(x => UniversalModPanel.RegisteredConfigs.ContainsKey(x))
+			         .ThenByDescending(x => x.Metadata.Name))
 		{
 			// Skip any Mason-compiled assemblies and any monomod assemblies.
 			if (plugin.Location.EndsWith("mm.dll") || Path.GetFileName(plugin.Location) == "bootstrap.dll") continue;
