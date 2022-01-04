@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
+using Sodalite.ModPanel.Components;
 using Sodalite.ModPanel.Pages;
 using UnityEngine;
 using UnityEngine.UI;
@@ -43,8 +44,9 @@ namespace Sodalite.ModPanel
 		[SerializeField] private List<UniversalModPanelPage> SerializedPages = null!;
 		[SerializeField] internal UniversalModPanelLogPage LogPage = null!;
 
-
 		internal static readonly Dictionary<PluginInfo, ConfigEntryBase[]> RegisteredConfigs = new();
+		internal static readonly Dictionary<Type, SodaliteConfigInputFieldBase> RegisteredInputFields = new();
+
 		private readonly Dictionary<string, UniversalModPanelPage> _pages = new();
 		private readonly Stack<UniversalModPanelPage> _stack = new();
 		private UniversalModPanelPage _currentPage = null!;
@@ -172,16 +174,15 @@ namespace Sodalite.ModPanel
 
 		#region Static Methods
 
-		/// <summary>
-		/// Registers the provided config entries for the settings of your plugin in the universal mod panel
-		/// </summary>
-		/// <param name="plugin">Your plugin</param>
-		/// <param name="configEntries">The entries to register</param>
 		public static void RegisterPluginSettings(PluginInfo plugin, params ConfigEntryBase[] configEntries)
 		{
 			RegisteredConfigs[plugin] = configEntries;
 		}
 
+		public static void RegisterConfigField<T>(SodaliteConfigInputField<T> inputField)
+		{
+
+		}
 		#endregion
 	}
 }

@@ -102,8 +102,6 @@ namespace Sodalite
 			{
 				Logger.LogWarning("Game build ID unknown: unable to initialize Steamworks.");
 			}
-
-			UniversalModPanel.RegisterPluginSettings(Info);
 		}
 
 		private void Start()

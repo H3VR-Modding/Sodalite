@@ -1,7 +1,6 @@
 ﻿#pragma warning disable CS1591
 using System.IO;
 using System.Linq;
-using BepInEx;
 using BepInEx.Bootstrap;
 using Sodalite.ModPanel.Components;
 using UnityEngine;
@@ -17,6 +16,9 @@ public class ModPanelPluginListPage : UniversalModPanelPage
 
 	private void Awake()
 	{
+		// Don't do this in the editor.
+		if (Application.isEditor) return;
+
 		// Clear out all the children of the content
 		for (int i = ContentGameObject.childCount - 1; i >= 0; i--)
 			Destroy(ContentGameObject.GetChild(i).gameObject);

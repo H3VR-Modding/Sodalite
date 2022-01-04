@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.IO;
 using BepInEx;
+using Sodalite.ModPanel.Pages;
 using Sodalite.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,5 +62,6 @@ public class SodalitePluginListItem : MonoBehaviour
 
 		// If this plugin has config entries registered enable the button
 		PluginSettings.gameObject.SetActive(UniversalModPanel.RegisteredConfigs.ContainsKey(plugin));
+		PluginSettings.onClick.AddListener(() => UniversalModPanel.Instance.GetPageOfType<ModPanelConfigPage>()!.NavigateHere(plugin));
 	}
 }
