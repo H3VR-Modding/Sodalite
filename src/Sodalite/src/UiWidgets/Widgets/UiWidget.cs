@@ -40,6 +40,7 @@ namespace Sodalite.UiWidgets
 		/// <param name="configureWidget">The configuration to apply to the widget</param>
 		/// <typeparam name="TWidget">The type of widget to make</typeparam>
 		/// <returns>The created widget</returns>
+		[Obsolete("UIWidgets have been superseded by the universal mod panel.")]
 		public static TWidget CreateAndConfigureWidget<TWidget>(GameObject go, Action<TWidget> configureWidget)
 			where TWidget : UiWidget
 		{

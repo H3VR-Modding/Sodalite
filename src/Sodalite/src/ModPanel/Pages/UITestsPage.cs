@@ -1,23 +1,20 @@
-﻿using Sodalite.UiWidgets.Components;
+﻿#pragma warning disable CS1591
+using Sodalite.ModPanel.Components;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sodalite.ModPanel
+namespace Sodalite.ModPanel.Pages
 {
 	public class UITestsPage : UniversalModPanelPage
 	{
 		public Text ButtonText = null!;
 		public Text SliderText = null!;
 
-		public SodaliteNumberInput NumberInput = null!;
-		public SodaliteSlider SliderInput = null!;
-		public SodaliteColorPicker ColorInput = null!;
+		public SodaliteSliderInput SliderInput = null!;
 
 		private void Awake()
 		{
-			NumberInput.OnValueChanged = NumberInputChanged;
 			SliderInput.OnValueChanged = SliderValueChanged;
-			ColorInput.ColorChanged = PickColor;
 		}
 
 		public void ToggleButtonClick()
@@ -28,16 +25,6 @@ namespace Sodalite.ModPanel
 		private void SliderValueChanged(float val)
 		{
 			SliderText.text = "Value: " + val;
-		}
-
-		private void NumberInputChanged(float val)
-		{
-
-		}
-
-		private void PickColor(Color c)
-		{
-
 		}
 	}
 }

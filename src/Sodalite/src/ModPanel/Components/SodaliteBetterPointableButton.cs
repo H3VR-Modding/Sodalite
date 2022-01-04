@@ -1,15 +1,16 @@
-﻿using FistVR;
+﻿#pragma warning disable CS1591
+using FistVR;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sodalite.ModPanel
+namespace Sodalite.ModPanel.Components
 {
 	/// <summary>
 	/// A better pointable button component that doesn't require assigning redundant options
 	/// and allows for making use of the 'interactable' field of the Button.
 	/// </summary>
 	[RequireComponent(typeof(Button), typeof(BoxCollider))]
-	public class BetterPointableButton : FVRPointable
+	public class SodaliteBetterPointableButton : FVRPointable
 	{
 		private Button _button = null!;
 

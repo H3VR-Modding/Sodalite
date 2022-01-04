@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using FistVR;
 using MonoMod.RuntimeDetour;
@@ -101,30 +102,19 @@ namespace Sodalite
 			{
 				Logger.LogWarning("Game build ID unknown: unable to initialize Steamworks.");
 			}
+
+			UniversalModPanel.RegisterPluginSettings(Info);
 		}
 
 		private void Start()
 		{
 			// Try to set the game running modded. This will fail on versions below Update 100 Alpha 7
-			// This needs to be in Start because the game manager doesn't initialize until after us
-			try
-			{
-				SetRunningModded();
-			}
-			catch (MissingMethodException)
-			{
-				// Ignored
-			}
+			GM.SetRunningModded();
 
 			// Pull the button sprite and font for our use later
 			Transform button = GameObject.Find("MainMenuSceneProtoBase/LevelLoadScreen/LevelLoadHolder/Canvas/Button").transform;
 			WidgetStyle.DefaultButtonSprite = button.GetComponent<Image>().sprite;
 			WidgetStyle.DefaultTextFont = button.GetChild(0).GetComponent<Text>().font;
-		}
-
-		private void SetRunningModded()
-		{
-			GM.SetRunningModded();
 		}
 
 		#region Log Panel Stuffs

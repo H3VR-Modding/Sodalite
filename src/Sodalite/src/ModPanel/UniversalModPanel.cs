@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BepInEx;
+using BepInEx.Configuration;
+using Sodalite.ModPanel.Pages;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +17,7 @@ namespace Sodalite.ModPanel
 		/// <summary>
 		/// Reference to the panel
 		/// </summary>
-		public UniversalModPanel Panel;
+		public UniversalModPanel Panel = null!;
 
 		/// <summary>
 		/// Display name for this page used in the breadcrumb
@@ -27,8 +30,11 @@ namespace Sodalite.ModPanel
 	/// </summary>
 	public class UniversalModPanel : MonoBehaviour
 	{
-		[Header("References")]
-		[SerializeField] private Button HomeButton = null!;
+		#region Fields
+
+		[Header("References")] [SerializeField]
+		private Button HomeButton = null!;
+
 		[SerializeField] private Button BackButton = null!;
 		[SerializeField] private Button PaginatePreviousButton = null!;
 		[SerializeField] private Button PaginateNextButton = null!;
@@ -37,6 +43,8 @@ namespace Sodalite.ModPanel
 		[SerializeField] private List<UniversalModPanelPage> SerializedPages = null!;
 		[SerializeField] internal UniversalModPanelLogPage LogPage = null!;
 
+
+		internal static readonly Dictionary<PluginInfo, ConfigEntryBase[]> RegisteredConfigs = new();
 		private readonly Dictionary<string, UniversalModPanelPage> _pages = new();
 		private readonly Stack<UniversalModPanelPage> _stack = new();
 		private UniversalModPanelPage _currentPage = null!;
@@ -44,7 +52,11 @@ namespace Sodalite.ModPanel
 		/// <summary>
 		/// Instance of the mod panel, for people to access.
 		/// </summary>
-		public static UniversalModPanel Instance { get; private set; }
+		public static UniversalModPanel Instance { get; private set; } = null!;
+
+		#endregion
+
+		#region MonoBehavior Methods
 
 		private void Awake()
 		{
@@ -54,6 +66,7 @@ namespace Sodalite.ModPanel
 				_pages.Add(page.gameObject.name, page);
 				page.gameObject.SetActive(false);
 			}
+
 			NavigateHome();
 		}
 
@@ -154,5 +167,21 @@ namespace Sodalite.ModPanel
 				.Concat(new[] {_currentPage.DisplayName}).ToArray());
 			Breadcrumb.text = breadcrumb;
 		}
+
+		#endregion
+
+		#region Static Methods
+
+		/// <summary>
+		/// Registers the provided config entries for the settings of your plugin in the universal mod panel
+		/// </summary>
+		/// <param name="plugin">Your plugin</param>
+		/// <param name="configEntries">The entries to register</param>
+		public static void RegisterPluginSettings(PluginInfo plugin, params ConfigEntryBase[] configEntries)
+		{
+			RegisteredConfigs[plugin] = configEntries;
+		}
+
+		#endregion
 	}
 }

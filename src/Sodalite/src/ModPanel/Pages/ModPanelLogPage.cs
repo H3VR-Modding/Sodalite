@@ -1,21 +1,15 @@
-﻿using System;
+﻿#pragma warning disable CS1591
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
-using FistVR;
-using Sodalite.UiWidgets;
+using Sodalite.ModPanel.Components;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sodalite.ModPanel
+namespace Sodalite.ModPanel.Pages
 {
-	/// <summary>
-	/// Unity MonoBehaviour for controlling the BepInEx log panel
-	/// </summary>
-	public sealed class UniversalModPanelLogPage : UniversalModPanelPage
+	public sealed class UniversalModPanelLogPage : UniversalModPanelPage, ISodaliteScrollable
 	{
 		internal List<LogEventArgs>? CurrentEvents;
 		[SerializeField] private Text Log = null!;
@@ -32,8 +26,9 @@ namespace Sodalite.ModPanel
 			[LogLevel.Debug] = "grey"
 		};
 
-		internal void Scroll(int direction)
+		public void Scroll(float x)
 		{
+			int direction = x == 0f ? 0 : x > 0 ? 1 : -1;
 			if (CurrentEvents is null || direction == 0) return;
 			_offset = Mathf.Clamp(_offset + direction, 0, CurrentEvents.Count - 1);
 			UpdateText();
@@ -61,46 +56,6 @@ namespace Sodalite.ModPanel
 
 			sb.Append($" -- Showing lines {startIndex + 1} to {startIndex + MaxLines} (of {CurrentEvents.Count})");
 			Log.text = sb.ToString();
-		}
-	}
-
-	/// <summary>
-	/// Pointable monobehaviour for the log panel. This is responsible for getting the player's touchpad input
-	/// </summary>
-	public class ScrollPointable : FVRPointable
-	{
-		[SerializeField]
-		private UniversalModPanelLogPage Panel = null!;
-		private float _lastScrollTime;
-
-		private const float ScrollPause = 0.05f;
-
-		/// <summary>
-		/// Called every frame when the player is pointing at this
-		/// </summary>
-		public override void OnHoverDisplay()
-		{
-			if (Time.time < _lastScrollTime + ScrollPause) return;
-			int scroll = 0;
-			foreach (var hand in PointingHands)
-			{
-				switch (hand.Input.TouchpadAxes.y)
-				{
-					case > .5f:
-						scroll = 1;
-						break;
-					case < -.5f:
-						scroll = -1;
-						break;
-					default:
-						continue;
-				}
-
-				break;
-			}
-
-			_lastScrollTime = Time.time;
-			Panel.Scroll(scroll);
 		}
 	}
 }

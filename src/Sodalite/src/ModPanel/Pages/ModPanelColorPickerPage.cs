@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿#pragma warning disable CS1591
+using System;
 using Sodalite.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sodalite.ModPanel
+namespace Sodalite.ModPanel.Pages
 {
 	/// <summary>
 	/// Unity component for displaying and using the Universal Mod Panel color picker page
@@ -21,9 +21,15 @@ namespace Sodalite.ModPanel
 		public Text OldColorText = null!;
 		public Text NewColorText = null!;
 
-		private Action<Color> _onSuccess;
+		private Action<Color>? _onSuccess;
 		private Color _newColor;
 
+		/// <summary>
+		/// Opens the color picker page and prompts the user to edit a color
+		/// </summary>
+		/// <param name="fieldName">Name of the color field user is editing</param>
+		/// <param name="currentColor">The existing color to edit</param>
+		/// <param name="onSuccess">Callback when the user confirms the new color</param>
 		public void PickColor(string fieldName, Color currentColor, Action<Color> onSuccess)
 		{
 			// Open this page
@@ -62,7 +68,7 @@ namespace Sodalite.ModPanel
 		public void Confirm()
 		{
 			// Callback and exit
-			_onSuccess(_newColor);
+			_onSuccess?.Invoke(_newColor);
 			Panel.NavigateBack();
 		}
 	}
