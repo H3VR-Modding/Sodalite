@@ -1,5 +1,5 @@
 ﻿#pragma warning disable CS1591
-using System;
+using BepInEx.Configuration;
 using Sodalite.ModPanel.Pages;
 using Sodalite.Utilities;
 using UnityEngine;
@@ -7,31 +7,29 @@ using UnityEngine.UI;
 
 namespace Sodalite.ModPanel.Components;
 
-public class SodaliteColorInput : MonoBehaviour
+public class SodaliteColorInput : SodaliteConfigInputField<Color>
 {
 	public Image Image = null!;
 	public Text Text = null!;
-	public string FieldName = "";
-	public Color CurrentColor;
 
-	public Action<Color>? ColorChanged;
+	private Color _currentColor;
 
-	public void Awake()
+	private void SetColor(Color c)
 	{
-		SetColor(CurrentColor);
+		SetValue(c);
+		Redraw();
 	}
 
 	public void OpenPicker()
 	{
-		UniversalModPanel.Instance.GetPageOfType<ModPanelColorPickerPage>()!.PickColor(FieldName, CurrentColor, SetColor);
+		UniversalModPanel.Instance.GetPageOfType<ModPanelColorPickerPage>()!.PickColor(ConfigEntry.Definition.Key, _currentColor, SetColor);
 	}
 
-	private void SetColor(Color c)
+	public override void Redraw()
 	{
-		Text.text = c.AsRGBA();
-		Image.color = c;
-		Text.color = c.maxColorComponent < 0.8f ? Color.white : Color.black;
-		CurrentColor = c;
-		ColorChanged?.Invoke(c);
+		_currentColor = (Color) ConfigEntry.BoxedValue;
+		Text.text = _currentColor.AsRGBA();
+		Image.color = _currentColor;
+		Text.color = _currentColor.maxColorComponent < 0.8f ? Color.white : Color.black;
 	}
 }

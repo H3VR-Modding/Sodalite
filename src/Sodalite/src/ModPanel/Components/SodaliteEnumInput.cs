@@ -18,7 +18,11 @@ public class SodaliteEnumInput : SodaliteConfigInputField<Enum>
 		base.Apply(entry);
 		_enumType = entry.SettingType;
 		_items = Enum.GetNames(_enumType);
-		string value = Enum.GetName(entry.SettingType, entry.BoxedValue)!;
+	}
+
+	public override void Redraw()
+	{
+		var value = Enum.GetName(ConfigEntry.SettingType, ConfigEntry.BoxedValue)!;
 		_index = Array.IndexOf(_items, value);
 		Text.text = value;
 	}
@@ -39,7 +43,7 @@ public class SodaliteEnumInput : SodaliteConfigInputField<Enum>
 	private void UpdateFromIndex()
 	{
 		string value = _items[_index];
-		Text.text = value;
 		SetValue(Enum.Parse(_enumType, value));
+		Redraw();
 	}
 }

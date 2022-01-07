@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using FistVR;
 using MonoMod.RuntimeDetour;
@@ -102,6 +101,13 @@ namespace Sodalite
 			{
 				Logger.LogWarning("Game build ID unknown: unable to initialize Steamworks.");
 			}
+
+			var enumField = Config.Bind("Main", "Log Verbosity", LogLevel.Debug, "Choose the types of messages to see in the BepInEx Log");
+			var colorField = Config.Bind("Main", "Random Color", new Color(0.5f, 0.8f, 0.2f, 1f), "This is a test color field :)");
+			var numField = Config.Bind("Main", "Random Number", 10, "This is a series of numbers. Yeah!");
+			var boolField = Config.Bind("Advanced", "Enable Awesome Mode", false, "This enables the awesome mode for Sodalite. Not recommended as it may be too powerful for you.");
+
+			UniversalModPanel.RegisterPluginSettings(Info, enumField, colorField, boolField);
 		}
 
 		private void Start()

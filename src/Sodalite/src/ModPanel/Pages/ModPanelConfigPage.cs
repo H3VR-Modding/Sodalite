@@ -15,11 +15,13 @@ public class ModPanelConfigPage : UniversalModPanelPage
 
 	public SodaliteConfigInputFieldBase BoolField = null!;
 	public SodaliteConfigInputFieldBase EnumField = null!;
+	public SodaliteConfigInputFieldBase ColorField = null!;
 
 	private void Awake()
 	{
 		UniversalModPanel.RegisteredInputFields[typeof(bool)] = BoolField;
 		UniversalModPanel.RegisteredInputFields[typeof(Enum)] = EnumField;
+		UniversalModPanel.RegisteredInputFields[typeof(Color)] = ColorField;
 	}
 
 	public void NavigateHere(PluginInfo plugin)
@@ -52,7 +54,9 @@ public class ModPanelConfigPage : UniversalModPanelPage
 
 				if (prefab is null)
 					throw new InvalidOperationException($"The setting type {entry.SettingType} of {plugin.Metadata.Name} /  {section}.{entry.Definition.Key} is not supported.");
-				Instantiate(prefab, ContentGameObject).Apply(entry);
+				var field = Instantiate(prefab, ContentGameObject);
+				field.Apply(entry);
+				field.Redraw();
 			}
 		}
 	}
