@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS1591
 using System;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
@@ -15,19 +16,19 @@ public class SodaliteTextInput : MonoBehaviour
 	public string Description = "Text Input";
 	public uint MaxChars = 256;
 
-	/// <summary>
-	/// Callback for when the value of this field is changed
-	/// </summary>
-	public event Action<string>? OnValueChanged;
-
 	private bool _isKeyboardOpen;
 
 	private void Awake()
 	{
 		SteamVR_Events.System(EVREventType.VREvent_KeyboardCharInput).Listen(OnKeyboard);
 		SteamVR_Events.System(EVREventType.VREvent_KeyboardClosed).Listen(OnKeyboardClosed);
-		InputField.onValueChanged.AddListener((value) => OnValueChanged?.Invoke(value));
+		InputField.onValueChanged.AddListener(value => OnValueChanged?.Invoke(value));
 	}
+
+	/// <summary>
+	///     Callback for when the value of this field is changed
+	/// </summary>
+	public event Action<string>? OnValueChanged;
 
 	private void OnKeyboard(VREvent_t args)
 	{
@@ -70,16 +71,16 @@ public class SodaliteTextInput : MonoBehaviour
 		{
 			kb.cNewInput0, kb.cNewInput1, kb.cNewInput2, kb.cNewInput3, kb.cNewInput4, kb.cNewInput5, kb.cNewInput6, kb.cNewInput7
 		};
-		int len = 0;
+		var len = 0;
 		for (; inputBytes[len] != 0 && len < 7; len++)
 		{
 		}
 
-		return System.Text.Encoding.UTF8.GetString(inputBytes, 0, len);
+		return Encoding.UTF8.GetString(inputBytes, 0, len);
 	}
 
 	/// <summary>
-	/// Opens the keyboard and starts listening for input for this field
+	///     Opens the keyboard and starts listening for input for this field
 	/// </summary>
 	public void ShowKeyboard()
 	{

@@ -7,7 +7,6 @@ using Sodalite.ModPanel.Pages;
 using Sodalite.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
-using Valve.Newtonsoft.Json;
 using Valve.Newtonsoft.Json.Linq;
 
 namespace Sodalite.ModPanel.Components;
@@ -25,9 +24,9 @@ public class SodalitePluginListItem : MonoBehaviour
 	public void ApplyFrom(PluginInfo plugin)
 	{
 		// Get the path of the plugin's assembly
-		string pluginPath = Path.GetDirectoryName(plugin.Location)!;
-		string iconPath = Path.Combine(pluginPath, "icon.png");
-		string manifestPath = Path.Combine(pluginPath, "manifest.json");
+		var pluginPath = Path.GetDirectoryName(plugin.Location)!;
+		var iconPath = Path.Combine(pluginPath, "icon.png");
+		var manifestPath = Path.Combine(pluginPath, "manifest.json");
 
 		// Try to get the icon from the cache or from a file
 		if (!CachedIcons.TryGetValue(iconPath, out var icon))
@@ -38,7 +37,10 @@ public class SodalitePluginListItem : MonoBehaviour
 				icon = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
 				CachedIcons[iconPath] = icon;
 			}
-			else icon = null;
+			else
+			{
+				icon = null;
+			}
 		}
 
 		// Try to get the manifest from the cache or from a file
@@ -49,7 +51,10 @@ public class SodalitePluginListItem : MonoBehaviour
 				manifest = JObject.Parse(File.ReadAllText(manifestPath));
 				CachedManifests[manifestPath] = manifest;
 			}
-			else manifest = null;
+			else
+			{
+				manifest = null;
+			}
 		}
 
 		// Apply the properties if they exist
@@ -58,6 +63,7 @@ public class SodalitePluginListItem : MonoBehaviour
 			PluginName.text = plugin.Metadata.Name;
 			PluginDescription.text = manifest["description"].ToObject<string>();
 		}
+
 		PluginIcon.sprite = icon;
 
 		// If this plugin has config entries registered enable the button

@@ -1,13 +1,12 @@
 ﻿#pragma warning disable CS1591
-using BepInEx.Configuration;
 using Sodalite.ModPanel.Pages;
 using Sodalite.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sodalite.ModPanel.Components;
+namespace Sodalite.ModPanel.ConfigFields;
 
-public class SodaliteColorInput : SodaliteConfigInputField<Color>
+public class ColorConfigField : ConfigField<Color>
 {
 	public Image Image = null!;
 	public Text Text = null!;

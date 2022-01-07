@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using BepInEx;
-using Sodalite.ModPanel.Components;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,9 +12,9 @@ public class ModPanelConfigPage : UniversalModPanelPage
 	public RectTransform ContentGameObject = null!;
 	public Text SectionTextPrefab = null!;
 
-	public SodaliteConfigInputFieldBase BoolField = null!;
-	public SodaliteConfigInputFieldBase EnumField = null!;
-	public SodaliteConfigInputFieldBase ColorField = null!;
+	public ConfigFieldBase BoolField = null!;
+	public ConfigFieldBase EnumField = null!;
+	public ConfigFieldBase ColorField = null!;
 
 	private void Awake()
 	{
@@ -31,7 +30,7 @@ public class ModPanelConfigPage : UniversalModPanelPage
 		UniversalModPanel.Instance.Navigate(this);
 
 		// Clear out all the children of the content
-		for (int i = ContentGameObject.childCount - 1; i >= 0; i--)
+		for (var i = ContentGameObject.childCount - 1; i >= 0; i--)
 			Destroy(ContentGameObject.GetChild(i).gameObject);
 
 		// Make sure we have registered config values
@@ -47,10 +46,8 @@ public class ModPanelConfigPage : UniversalModPanelPage
 			{
 				// Either pick the exact same type for the field, or the first which is a subclass of the actual type.
 				if (!UniversalModPanel.RegisteredInputFields.TryGetValue(entry.SettingType, out var prefab))
-				{
 					prefab = UniversalModPanel.RegisteredInputFields
 						.FirstOrDefault(x => entry.SettingType.IsSubclassOf(x.Key)).Value;
-				}
 
 				if (prefab is null)
 					throw new InvalidOperationException($"The setting type {entry.SettingType} of {plugin.Metadata.Name} /  {section}.{entry.Definition.Key} is not supported.");

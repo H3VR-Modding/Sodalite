@@ -3,15 +3,15 @@ using System;
 using BepInEx.Configuration;
 using UnityEngine.UI;
 
-namespace Sodalite.ModPanel.Components;
+namespace Sodalite.ModPanel.ConfigFields;
 
-public class SodaliteEnumInput : SodaliteConfigInputField<Enum>
+public class EnumConfigField : ConfigField<Enum>
 {
 	public Text Text = null!;
+	private Type _enumType = null!;
+	private int _index;
 
 	private string[] _items = new string[0];
-	private int _index;
-	private Type _enumType = null!;
 
 	public override void Apply(ConfigEntryBase entry)
 	{
@@ -42,7 +42,7 @@ public class SodaliteEnumInput : SodaliteConfigInputField<Enum>
 
 	private void UpdateFromIndex()
 	{
-		string value = _items[_index];
+		var value = _items[_index];
 		SetValue(Enum.Parse(_enumType, value));
 		Redraw();
 	}

@@ -1,15 +1,12 @@
 ﻿#pragma warning disable CS1591
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using BepInEx.Configuration;
-using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sodalite.ModPanel.Components;
+namespace Sodalite.ModPanel;
 
-public abstract class SodaliteConfigInputFieldBase : MonoBehaviour
+public abstract class ConfigFieldBase : MonoBehaviour
 {
 	public Text Name = null!;
 	public Text Description = null!;
@@ -31,7 +28,7 @@ public abstract class SodaliteConfigInputFieldBase : MonoBehaviour
 	public abstract void Redraw();
 }
 
-public abstract class SodaliteConfigInputField<TVal> : SodaliteConfigInputFieldBase
+public abstract class ConfigField<TVal> : ConfigFieldBase
 {
 	public override void Apply(ConfigEntryBase entry)
 	{
@@ -39,6 +36,7 @@ public abstract class SodaliteConfigInputField<TVal> : SodaliteConfigInputFieldB
 
 		// Double check we can actually use this type
 		if (!typeof(TVal).IsAssignableFrom(entry.SettingType))
-			throw new InvalidOperationException($"The setting type {entry.SettingType} of {entry.Definition.Section}.{entry.Definition.Key} is not compatible. Expected {typeof(TVal)}");
+			throw new InvalidOperationException(
+				$"The setting type {entry.SettingType} of {entry.Definition.Section}.{entry.Definition.Key} is not compatible. Expected {typeof(TVal)}");
 	}
 }

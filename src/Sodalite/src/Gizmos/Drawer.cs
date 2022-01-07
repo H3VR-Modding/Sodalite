@@ -1,9 +1,10 @@
 using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Sodalite.Utilities;
 using UnityEngine;
+
 // ReSharper disable All
 #pragma warning disable 1591
 

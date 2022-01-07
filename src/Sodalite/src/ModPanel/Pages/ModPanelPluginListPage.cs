@@ -20,7 +20,7 @@ public class ModPanelPluginListPage : UniversalModPanelPage
 		if (Application.isEditor) return;
 
 		// Clear out all the children of the content
-		for (int i = ContentGameObject.childCount - 1; i >= 0; i--)
+		for (var i = ContentGameObject.childCount - 1; i >= 0; i--)
 			Destroy(ContentGameObject.GetChild(i).gameObject);
 
 		// Re-initialize with all the plugins

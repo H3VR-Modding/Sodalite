@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 
-namespace Popcron
+namespace Popcron;
+
+internal class Element
 {
-	internal class Element
-	{
-		public Vector3[] Points = { };
-		public Color Color = Color.white;
-		public bool Dashed = false;
-	}
+	public Color Color = Color.white;
+	public bool Dashed = false;
+	public Vector3[] Points = { };
 }

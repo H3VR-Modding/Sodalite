@@ -15,9 +15,15 @@ public class SodaliteNumberInput : MonoBehaviour
 
 	public Action<float>? OnValueChanged;
 
-	public void Increase() => Set(Value + Step);
+	public void Increase()
+	{
+		Set(Value + Step);
+	}
 
-	public void Decrease() => Set(Value - Step);
+	public void Decrease()
+	{
+		Set(Value - Step);
+	}
 
 	public void Set(float newValue)
 	{

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+
 // ReSharper disable All
 #pragma warning disable 1591
 
@@ -7,38 +8,39 @@ namespace Popcron
 {
 	public static class Gizmos
 	{
-
 		/// <summary>
-		/// By default, it will always render to scene view camera and the main camera.
-		/// Subscribing to this allows you to whitelist your custom cameras.
+		///     By default, it will always render to scene view camera and the main camera.
+		///     Subscribing to this allows you to whitelist your custom cameras.
 		/// </summary>
 		public static readonly Func<Camera, bool> CameraFilter = cam => false;
 
+		private static Vector3[] _buffer = new Vector3[BufferSize];
+
 
 		/// <summary>
-		/// The size of the total gizmos buffer.
-		/// Default is 4096.
+		///     The size of the total gizmos buffer.
+		///     Default is 4096.
 		/// </summary>
 		public static int BufferSize { get; set; } = 4096;
 
 		/// <summary>
-		/// Toggles whether the gizmos could be drawn or not.
+		///     Toggles whether the gizmos could be drawn or not.
 		/// </summary>
 		public static bool Enabled { get; set; } = true;
 
 		/// <summary>
-		/// The size of the gap when drawing dashed elements.
-		/// Default gap size is 0.1
+		///     The size of the gap when drawing dashed elements.
+		///     Default gap size is 0.1
 		/// </summary>
 		public static float DashGap { get; set; } = 0.1f;
 
 		/// <summary>
-		/// Should the camera not draw elements that are not visible?
+		///     Should the camera not draw elements that are not visible?
 		/// </summary>
 		public static bool FrustumCulling { get; set; } = true;
 
 		/// <summary>
-		/// The material being used to render.
+		///     The material being used to render.
 		/// </summary>
 		public static Material Material
 		{
@@ -47,19 +49,17 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Rendering pass to activate.
+		///     Rendering pass to activate.
 		/// </summary>
 		public static int Pass { get; set; } = 0;
 
 		/// <summary>
-		/// Global offset for all points. Default is (0, 0, 0).
+		///     Global offset for all points. Default is (0, 0, 0).
 		/// </summary>
 		public static Vector3 Offset { get; set; } = Vector3.zero;
 
-		private static Vector3[] _buffer = new Vector3[BufferSize];
-
 		/// <summary>
-		/// Draws an element onto the screen.
+		///     Draws an element onto the screen.
 		/// </summary>
 		public static void Draw<T>(Color? color, bool dashed, params object[] args) where T : Drawer
 		{
@@ -78,7 +78,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draws an array of lines. Useful for things like paths.
+		///     Draws an array of lines. Useful for things like paths.
 		/// </summary>
 		public static void Lines(Vector3[] lines, Color? color = null, bool dashed = false)
 		{
@@ -88,7 +88,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draw line in world space.
+		///     Draw line in world space.
 		/// </summary>
 		public static void Line(Vector3 a, Vector3 b, Color? color = null, bool dashed = false)
 		{
@@ -96,7 +96,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draw square in world space.
+		///     Draw square in world space.
 		/// </summary>
 		public static void Square(Vector2 position, Vector2 size, Color? color = null, bool dashed = false)
 		{
@@ -104,7 +104,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draw square in world space with float diameter parameter.
+		///     Draw square in world space with float diameter parameter.
 		/// </summary>
 		public static void Square(Vector2 position, float diameter, Color? color = null, bool dashed = false)
 		{
@@ -112,7 +112,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draw square in world space with a rotation parameter.
+		///     Draw square in world space with a rotation parameter.
 		/// </summary>
 		public static void Square(Vector2 position, Quaternion rotation, Vector2 size, Color? color = null, bool dashed = false)
 		{
@@ -120,7 +120,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draws a cube in world space.
+		///     Draws a cube in world space.
 		/// </summary>
 		public static void Cube(Vector3 position, Quaternion rotation, Vector3 size, Color? color = null, bool dashed = false)
 		{
@@ -128,7 +128,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draws a rectangle in screen space.
+		///     Draws a rectangle in screen space.
 		/// </summary>
 		public static void Rect(Rect rect, Camera camera, Color? color = null, bool dashed = false)
 		{
@@ -138,7 +138,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draws a representation of a bounding box.
+		///     Draws a representation of a bounding box.
 		/// </summary>
 		public static void Bounds(Bounds bounds, Color? color = null, bool dashed = false)
 		{
@@ -146,7 +146,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draws a cone similar to the one that spot lights draw.
+		///     Draws a cone similar to the one that spot lights draw.
 		/// </summary>
 		public static void Cone(Vector3 position, Quaternion rotation, float length, float angle, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
@@ -166,7 +166,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draws a sphere at position with specified radius.
+		///     Draws a sphere at position with specified radius.
 		/// </summary>
 		public static void Sphere(Vector3 position, float radius, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
@@ -176,7 +176,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draws a circle in world space and billboards towards the camera.
+		///     Draws a circle in world space and billboards towards the camera.
 		/// </summary>
 		public static void Circle(Vector3 position, float radius, Camera camera, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
@@ -185,7 +185,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		/// Draws a circle in world space with a specified rotation.
+		///     Draws a circle in world space with a specified rotation.
 		/// </summary>
 		public static void Circle(Vector3 position, float radius, Quaternion rotation, Color? color = null, bool dashed = false, int pointsCount = 16)
 		{
