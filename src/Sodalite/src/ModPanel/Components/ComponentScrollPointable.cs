@@ -10,8 +10,6 @@ namespace Sodalite.ModPanel.Components;
 /// </summary>
 public class SodaliteScrollPointable : FVRPointable
 {
-	private const float ScrollPause = 0.05f;
-	private float _lastScrollTime;
 	private ISodaliteScrollable? _scrollable;
 	private ScrollRect? _scrollRect;
 
@@ -26,32 +24,19 @@ public class SodaliteScrollPointable : FVRPointable
 	/// </summary>
 	public override void OnHoverDisplay()
 	{
-		if (Time.time < _lastScrollTime + ScrollPause) return;
-		var scroll = 0;
+		var scroll = Vector2.zero;
 		foreach (var hand in PointingHands)
 		{
-			switch (hand.Input.TouchpadAxes.y)
-			{
-				case > .5f:
-					scroll = 1;
-					break;
-				case < -.5f:
-					scroll = -1;
-					break;
-				default:
-					continue;
-			}
-
+			if (Mathf.Approximately(hand.Input.TouchpadAxes.y, 0f)) continue;
+			scroll = hand.Input.TouchpadAxes;
 			break;
 		}
-
-		_lastScrollTime = Time.time;
-
-		if (_scrollRect && scroll != 0)
+		if (_scrollRect && scroll != Vector2.zero)
 		{
 			var contentHeight = _scrollRect!.content.sizeDelta.y;
-			var contentShift = 1 * scroll * Time.deltaTime;
-			_scrollRect!.verticalNormalizedPosition += contentShift / contentHeight;
+			var contentShiftVertical = 500 * scroll.y * Time.deltaTime;
+			float newVal = _scrollRect!.verticalNormalizedPosition + contentShiftVertical / contentHeight;
+			_scrollRect!.verticalNormalizedPosition = Mathf.Clamp01(newVal);
 		}
 
 		_scrollable?.Scroll(scroll);
@@ -67,5 +52,5 @@ public interface ISodaliteScrollable
 	///     Callback for when a thing is scrolled
 	/// </summary>
 	/// <param name="x">The amount and direction of scroll</param>
-	void Scroll(float x);
+	void Scroll(Vector2 x);
 }

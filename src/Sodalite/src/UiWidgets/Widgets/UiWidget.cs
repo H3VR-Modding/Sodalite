@@ -23,15 +23,6 @@ public abstract class UiWidget : MonoBehaviour
 		RectTransform.localRotation = Quaternion.identity;
 	}
 
-#if DEBUG
-		private void Update()
-		{
-			Rect rect = RectTransform.rect;
-			Vector2 size = rect.size;
-			Gizmos.Cube(rect.center, transform.rotation, new Vector3(Mathf.Abs(size.x), Mathf.Abs(size.y), 5f));
-		}
-#endif
-
 	/// <summary>
 	///     Creates a widget on the provided game object
 	/// </summary>
@@ -39,7 +30,6 @@ public abstract class UiWidget : MonoBehaviour
 	/// <param name="configureWidget">The configuration to apply to the widget</param>
 	/// <typeparam name="TWidget">The type of widget to make</typeparam>
 	/// <returns>The created widget</returns>
-	[Obsolete("UIWidgets have been superseded by the universal mod panel.")]
 	public static TWidget CreateAndConfigureWidget<TWidget>(GameObject go, Action<TWidget> configureWidget)
 		where TWidget : UiWidget
 	{

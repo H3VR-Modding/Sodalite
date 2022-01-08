@@ -25,9 +25,14 @@ public sealed class UniversalModPanelLogPage : UniversalModPanelPage, ISodaliteS
 	private int _offset;
 	internal List<LogEventArgs>? CurrentEvents;
 
-	public void Scroll(float x)
+	private const float ScrollPause = 0.05f;
+	private float _lastScrollTime;
+
+	public void Scroll(Vector2 x)
 	{
-		var direction = x == 0f ? 0 : x > 0 ? 1 : -1;
+		if (Time.time < _lastScrollTime + ScrollPause) return;
+		_lastScrollTime = Time.time;
+		var direction = x.y == 0f ? 0 : x.y > 0 ? 1 : -1;
 		if (CurrentEvents is null || direction == 0) return;
 		_offset = Mathf.Clamp(_offset + direction, 0, CurrentEvents.Count - 1);
 		UpdateText();

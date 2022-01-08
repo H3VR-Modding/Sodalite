@@ -7,29 +7,27 @@ namespace Sodalite.ModPanel.Components;
 
 public class SodaliteNumberInput : MonoBehaviour
 {
-	public float MinValue;
-	public float MaxValue;
-	public float Step;
-	public float Value;
+	public int MinValue;
+	public int MaxValue;
+	public int Value;
 	public Text Text = null!;
 
-	public Action<float>? OnValueChanged;
+	public event Action<int>? OnValueChanged;
 
 	public void Increase()
 	{
-		Set(Value + Step);
+		Set(Value + 1);
 	}
 
 	public void Decrease()
 	{
-		Set(Value - Step);
+		Set(Value - 1);
 	}
 
-	public void Set(float newValue)
+	public void Set(int newValue)
 	{
-		Value = Mathf.Round(newValue / Step) * Step;
 		Value = Mathf.Clamp(Value, MinValue, MaxValue);
-		Text.text = Value + "";
+		Text.text = Value.ToString();
 		OnValueChanged?.Invoke(Value);
 	}
 }

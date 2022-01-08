@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using FistVR;
 using MonoMod.RuntimeDetour;
@@ -106,12 +107,15 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 		}
 
 		// TODO: TEMP FIELDS, REMOVE BEFORE RELEASE
-		var enumField = Config.Bind("Main", "Log Verbosity", LogLevel.Debug, "Choose the types of messages to see in the BepInEx Log");
-		var colorField = Config.Bind("Main", "Random Color", new Color(0.5f, 0.8f, 0.2f, 1f), "This is a test color field :)");
-		var numField = Config.Bind("Main", "Random Number", 10, "This is a series of numbers. Yeah!");
-		var boolField = Config.Bind("Advanced", "Enable Awesome Mode", false, "This enables the awesome mode for Sodalite. Not recommended as it may be too powerful for you.");
+		var boolField = Config.Bind("Basic Fields", "Boolean toggle", false, "Description for a the boolean config value.");
+		var numField = Config.Bind("Basic Fields", "Raw Number", 10, "There was no specified acceptable range for this input, so it has a raw edit field.");
+		var colorField = Config.Bind("Basic Fields", "Color Picker", new Color(0.5f, 0.8f, 0.2f, 1f), "Pick a color using the color pick page of the panel.");
+		var enumField = Config.Bind("List Input Fields", "Enum Field", LogLevel.Debug, "Pick between any of the BepInEx log enum values.");
+		var stringListField = Config.Bind("List Input Fields", "String List", "Foo", new ConfigDescription("Pick from one of three acceptable strings with the list picker.", new AcceptableValueList<string>("Foo", "Bar", "Biz")));
+		var intListField = Config.Bind("List Input Fields", "Integer List", 1, new ConfigDescription("Pick from one of four acceptable integer values with the list picker.", new AcceptableValueList<int>(1, 2, 4, 8)));
+		var intRangeField = Config.Bind("Range Input Fields", "Integer Range", 0, new ConfigDescription("Select a value between the acceptable range -10 to 10", new AcceptableValueRange<int>(-10, 10)));
 
-		UniversalModPanel.RegisterPluginSettings(Info, enumField, colorField, boolField);
+		UniversalModPanel.RegisterPluginSettings(Info, boolField, numField, colorField, enumField, stringListField, intListField, intRangeField);
 	}
 
 	private void Start()

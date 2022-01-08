@@ -7,12 +7,15 @@ using UnityEngine.UI;
 
 namespace Sodalite.ModPanel.Components;
 
+/// <summary>
+/// Companion script for a regular Unity slider to make it usable in H3.
+/// </summary>
 public class SodaliteSlider : FVRPointable
 {
 	private FVRViveHand? _selectingHand;
 	private Slider _slider = null!;
 
-	public Action<float>? OnValueChanged;
+	public event Action<float>? OnValueChanged;
 
 	private void Awake()
 	{

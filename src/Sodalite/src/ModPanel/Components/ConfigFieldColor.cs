@@ -4,9 +4,9 @@ using Sodalite.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sodalite.ModPanel.ConfigFields;
+namespace Sodalite.ModPanel.Components;
 
-public class ColorConfigField : ConfigField<Color>
+public class ConfigFieldColor : ConfigFieldBase
 {
 	public Image Image = null!;
 	public Text Text = null!;

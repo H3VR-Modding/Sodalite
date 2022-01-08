@@ -1,9 +1,9 @@
 ﻿#pragma warning disable CS1591
 using UnityEngine.UI;
 
-namespace Sodalite.ModPanel.ConfigFields;
+namespace Sodalite.ModPanel.Components;
 
-public class BoolConfigField : ConfigField<bool>
+public class ConfigFieldBool : ConfigFieldBase
 {
 	private const string TextTrue = "<color=grey>False</color> / <color=green>True</color>";
 	private const string TextFalse = "<color=red>False</color> / <color=grey>True</color>";

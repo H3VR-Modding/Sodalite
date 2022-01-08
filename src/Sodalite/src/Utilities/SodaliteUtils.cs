@@ -153,4 +153,27 @@ public static class SodaliteUtils
 	{
 		return $"rgba({c.r * 255:N0}, {c.g * 255:N0}, {c.b * 255:N0}, {c.a * 255:N0})";
 	}
+
+	/// <summary>
+	///		Checks if the provided object is an instance of the generic type
+	/// </summary>
+	public static bool IsInstanceOfGenericType(Type genericType, object? instance)
+	{
+		if (genericType is null) throw new ArgumentNullException(nameof(genericType));
+		if (instance is null) return false;
+
+		var type = instance.GetType();
+		while (type != null)
+		{
+			if (type.IsGenericType &&
+			    type.GetGenericTypeDefinition() == genericType)
+			{
+				return true;
+			}
+
+			type = type.BaseType;
+		}
+
+		return false;
+	}
 }

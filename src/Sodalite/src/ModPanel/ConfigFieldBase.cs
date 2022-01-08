@@ -15,9 +15,10 @@ public abstract class ConfigFieldBase : MonoBehaviour
 
 	public virtual void Apply(ConfigEntryBase entry)
 	{
+		Debug.Log($"Entering Apply for field {entry.Definition.Key}");
 		ConfigEntry = entry;
 		Name.text = entry.Definition.Key;
-		Description.text = entry.Description.Description;
+		Description.text = entry.Description.Description + $"\nDefault Value: {entry.DefaultValue}";
 	}
 
 	protected void SetValue(object val)
@@ -26,17 +27,4 @@ public abstract class ConfigFieldBase : MonoBehaviour
 	}
 
 	public abstract void Redraw();
-}
-
-public abstract class ConfigField<TVal> : ConfigFieldBase
-{
-	public override void Apply(ConfigEntryBase entry)
-	{
-		base.Apply(entry);
-
-		// Double check we can actually use this type
-		if (!typeof(TVal).IsAssignableFrom(entry.SettingType))
-			throw new InvalidOperationException(
-				$"The setting type {entry.SettingType} of {entry.Definition.Section}.{entry.Definition.Key} is not compatible. Expected {typeof(TVal)}");
-	}
 }

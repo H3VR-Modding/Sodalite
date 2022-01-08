@@ -2,6 +2,8 @@
 using System;
 using System.Linq;
 using BepInEx;
+using BepInEx.Configuration;
+using Sodalite.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,14 +15,17 @@ public class ModPanelConfigPage : UniversalModPanelPage
 	public Text SectionTextPrefab = null!;
 
 	public ConfigFieldBase BoolField = null!;
-	public ConfigFieldBase EnumField = null!;
+	public ConfigFieldBase ListField = null!;
 	public ConfigFieldBase ColorField = null!;
+	public ConfigFieldBase RangeField = null!;
+	public ConfigFieldBase RawField = null!;
 
 	private void Awake()
 	{
-		UniversalModPanel.RegisteredInputFields[typeof(bool)] = BoolField;
-		UniversalModPanel.RegisteredInputFields[typeof(Enum)] = EnumField;
-		UniversalModPanel.RegisteredInputFields[typeof(Color)] = ColorField;
+		UniversalModPanel.RegisteredInputFields[BoolField] = x => x.SettingType == typeof(bool);
+		UniversalModPanel.RegisteredInputFields[ColorField] = x => x.SettingType == typeof(Color);
+		UniversalModPanel.RegisteredInputFields[ListField] = x => x.SettingType.IsEnum || SodaliteUtils.IsInstanceOfGenericType(typeof(AcceptableValueList<>), x.Description.AcceptableValues);
+		UniversalModPanel.RegisteredInputFields[RangeField] = x => SodaliteUtils.IsInstanceOfGenericType(typeof(AcceptableValueRange<>), x.Description.AcceptableValues);
 	}
 
 	public void NavigateHere(PluginInfo plugin)
@@ -44,13 +49,11 @@ public class ModPanelConfigPage : UniversalModPanelPage
 			Instantiate(SectionTextPrefab, ContentGameObject).text = section.Key;
 			foreach (var entry in section)
 			{
-				// Either pick the exact same type for the field, or the first which is a subclass of the actual type.
-				if (!UniversalModPanel.RegisteredInputFields.TryGetValue(entry.SettingType, out var prefab))
-					prefab = UniversalModPanel.RegisteredInputFields
-						.FirstOrDefault(x => entry.SettingType.IsSubclassOf(x.Key)).Value;
+				// Pick the first config field that passes the predicate or use the raw input (text) field if none match.
+				var prefab = UniversalModPanel.RegisteredInputFields.FirstOrDefault(x => x.Value(entry)).Key;
+				if (!prefab) prefab = RawField;
 
-				if (prefab is null)
-					throw new InvalidOperationException($"The setting type {entry.SettingType} of {plugin.Metadata.Name} /  {section}.{entry.Definition.Key} is not supported.");
+				// Instantiate it
 				var field = Instantiate(prefab, ContentGameObject);
 				field.Apply(entry);
 				field.Redraw();

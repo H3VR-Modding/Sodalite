@@ -46,7 +46,7 @@ public class UniversalModPanel : MonoBehaviour
 	[SerializeField] internal UniversalModPanelLogPage LogPage = null!;
 
 	internal static readonly Dictionary<PluginInfo, ConfigEntryBase[]> RegisteredConfigs = new();
-	internal static readonly Dictionary<Type, ConfigFieldBase> RegisteredInputFields = new();
+	internal static readonly Dictionary<ConfigFieldBase, Func<ConfigEntryBase, bool>> RegisteredInputFields = new();
 	private static readonly Dictionary<string, UniversalModPanelPage> RegisteredCustomPages = new();
 
 	private readonly Dictionary<string, UniversalModPanelPage> _pages = new();
@@ -209,10 +209,11 @@ public class UniversalModPanel : MonoBehaviour
 	///     Pass this method a prefab for a custom input field type should you need to create custom config fields
 	/// </summary>
 	/// <param name="inputField">The field prefab object</param>
+	/// <param name="predicate">Predicate for selecting when this field should be drawn</param>
 	/// <typeparam name="TConfigType">Type of the config entries that should draw this field</typeparam>
-	public static void RegisterConfigField<TConfigType>(ConfigField<TConfigType> inputField)
+	public static void RegisterConfigField(ConfigFieldBase inputField, Func<ConfigEntryBase, bool> predicate)
 	{
-		RegisteredInputFields[typeof(TConfigType)] = inputField;
+		RegisteredInputFields[inputField] = predicate;
 	}
 
 	/// <summary>
