@@ -29,6 +29,7 @@ public class ConfigFieldList : ConfigFieldBase
 
 		// Check if _values was set
 		if (_values.Count == 0) throw new ArgumentException("Provided config entry does not have an acceptable values list, nor is it an enum.", nameof(entry));
+		_index = _values.IndexOf(entry.BoxedValue);
 
 	}
 

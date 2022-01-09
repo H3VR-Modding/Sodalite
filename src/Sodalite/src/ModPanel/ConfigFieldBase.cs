@@ -15,7 +15,6 @@ public abstract class ConfigFieldBase : MonoBehaviour
 
 	public virtual void Apply(ConfigEntryBase entry)
 	{
-		Debug.Log($"Entering Apply for field {entry.Definition.Key}");
 		ConfigEntry = entry;
 		Name.text = entry.Definition.Key;
 		Description.text = entry.Description.Description + $"\nDefault Value: {entry.DefaultValue}";

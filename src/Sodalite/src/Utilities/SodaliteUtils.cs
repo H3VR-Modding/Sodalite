@@ -176,4 +176,22 @@ public static class SodaliteUtils
 
 		return false;
 	}
+
+	/// <summary>
+	/// Counts the number of lines in a string
+	/// https://stackoverflow.com/a/40928366
+	/// </summary>
+	public static int CountLines(this string str)
+	{
+		if (str == null)
+			throw new ArgumentNullException(nameof(str));
+		if (str == string.Empty)
+			return 0;
+		int index = -1;
+		int count = 0;
+		while (-1 != (index = str.IndexOf('\n', index + 1)))
+			count++;
+
+		return count + 1;
+	}
 }

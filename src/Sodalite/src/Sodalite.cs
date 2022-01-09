@@ -53,7 +53,8 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	// Static stuff
 	private static readonly string BasePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
 	// Private fields
-	private List<LogEventArgs> _logEvents = null!;
+	internal static List<LogEventArgs> LogEvents = null!;
+	internal static Dictionary<LogEventArgs, int> LogEventLineCount = null!;
 	private LockablePanel _modPanel = null!;
 	private UniversalModPanel? _modPanelComponent;
 	private GameObject? _modPanelPrefab;
@@ -78,7 +79,13 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 
 		// Register ourselves as the new log listener and try to grab what's already been captured
 		BepInEx.Logging.Logger.Listeners.Add(this);
-		_logEvents = SodalitePatcher.LogBuffer.LogEvents;
+
+		LogEvents = SodalitePatcher.LogBuffer.LogEvents;
+		LogEventLineCount = new Dictionary<LogEventArgs, int>();
+		foreach (var evt in LogEvents)
+		{
+			LogEventLineCount[evt] = evt.ToString().CountLines();
+		}
 		SodalitePatcher.LogBuffer.Dispose();
 
 		// Load our prefab
@@ -105,17 +112,6 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 		{
 			Logger.LogWarning("Game build ID unknown: unable to initialize Steamworks.");
 		}
-
-		// TODO: TEMP FIELDS, REMOVE BEFORE RELEASE
-		var boolField = Config.Bind("Basic Fields", "Boolean toggle", false, "Description for a the boolean config value.");
-		var numField = Config.Bind("Basic Fields", "Raw Number", 10, "There was no specified acceptable range for this input, so it has a raw edit field.");
-		var colorField = Config.Bind("Basic Fields", "Color Picker", new Color(0.5f, 0.8f, 0.2f, 1f), "Pick a color using the color pick page of the panel.");
-		var enumField = Config.Bind("List Input Fields", "Enum Field", LogLevel.Debug, "Pick between any of the BepInEx log enum values.");
-		var stringListField = Config.Bind("List Input Fields", "String List", "Foo", new ConfigDescription("Pick from one of three acceptable strings with the list picker.", new AcceptableValueList<string>("Foo", "Bar", "Biz")));
-		var intListField = Config.Bind("List Input Fields", "Integer List", 1, new ConfigDescription("Pick from one of four acceptable integer values with the list picker.", new AcceptableValueList<int>(1, 2, 4, 8)));
-		var intRangeField = Config.Bind("Range Input Fields", "Integer Range", 0, new ConfigDescription("Select a value between the acceptable range -10 to 10", new AcceptableValueRange<int>(-10, 10)));
-
-		UniversalModPanel.RegisterPluginSettings(Info, boolField, numField, colorField, enumField, stringListField, intListField, intRangeField);
 	}
 
 	private void Start()
@@ -152,21 +148,21 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	{
 		var canvasTransform = panel.transform.Find("OptionsCanvas_0_Main/Canvas");
 		_modPanelComponent = Instantiate(_modPanelPrefab, canvasTransform.position, canvasTransform.rotation, canvasTransform.parent)!.GetComponent<UniversalModPanel>();
-		_modPanelComponent.LogPage.CurrentEvents = _logEvents;
-		_modPanelComponent.LogPage.UpdateText();
+		_modPanelComponent.LogPage.UpdateText(true);
 		Destroy(canvasTransform.gameObject);
 	}
 
 	void ILogListener.LogEvent(object sender, LogEventArgs eventArgs)
 	{
-		_logEvents.Add(eventArgs);
-		if (_modPanelComponent) _modPanelComponent!.LogPage.LogEvent();
+		LogEvents!.Add(eventArgs);
+		LogEventLineCount!.Add(eventArgs, eventArgs.ToString().CountLines());
+		if (_modPanelComponent) _modPanelComponent!.LogPage.LogEvent(eventArgs);
 	}
 
 	void IDisposable.Dispose()
 	{
 		BepInEx.Logging.Logger.Listeners.Remove(this);
-		_logEvents.Clear();
+		LogEvents.Clear();
 	}
 
 	#endregion

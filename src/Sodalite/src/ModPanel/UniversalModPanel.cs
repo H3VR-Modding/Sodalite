@@ -38,6 +38,8 @@ public class UniversalModPanel : MonoBehaviour
 	[SerializeField] private Button HomeButton = null!;
 	[SerializeField] private RectTransform PagesRoot = null!;
 	[SerializeField] private Button BackButton = null!;
+	[SerializeField] private RectTransform HomePage = null!;
+	[SerializeField] private GameObject HomeScreenButtonPrefab = null!;
 	[SerializeField] private Button PaginatePreviousButton = null!;
 	[SerializeField] private Button PaginateNextButton = null!;
 	[SerializeField] private Text PaginateText = null!;
@@ -48,6 +50,7 @@ public class UniversalModPanel : MonoBehaviour
 	internal static readonly Dictionary<PluginInfo, ConfigEntryBase[]> RegisteredConfigs = new();
 	internal static readonly Dictionary<ConfigFieldBase, Func<ConfigEntryBase, bool>> RegisteredInputFields = new();
 	private static readonly Dictionary<string, UniversalModPanelPage> RegisteredCustomPages = new();
+	private static readonly Dictionary<string, string> CustomHomepageButtons = new();
 
 	private readonly Dictionary<string, UniversalModPanelPage> _pages = new();
 	private readonly Stack<UniversalModPanelPage> _stack = new();
@@ -77,7 +80,15 @@ public class UniversalModPanel : MonoBehaviour
 		{
 			var instance = Instantiate(entry.Value, PagesRoot.position, PagesRoot.rotation, PagesRoot);
 			_pages.Add(entry.Key, instance);
+			instance.Panel = this;
 			instance.gameObject.SetActive(false);
+		}
+
+		foreach (var button in CustomHomepageButtons)
+		{
+			var b = Instantiate(HomeScreenButtonPrefab, HomePage);
+			b.GetComponentInChildren<Text>().text = button.Key;
+			b.GetComponent<Button>().onClick.AddListener(() => Navigate(button.Value));
 		}
 
 		// Make sure the home page is up
@@ -210,7 +221,6 @@ public class UniversalModPanel : MonoBehaviour
 	/// </summary>
 	/// <param name="inputField">The field prefab object</param>
 	/// <param name="predicate">Predicate for selecting when this field should be drawn</param>
-	/// <typeparam name="TConfigType">Type of the config entries that should draw this field</typeparam>
 	public static void RegisterConfigField(ConfigFieldBase inputField, Func<ConfigEntryBase, bool> predicate)
 	{
 		RegisteredInputFields[inputField] = predicate;
@@ -225,7 +235,21 @@ public class UniversalModPanel : MonoBehaviour
 	/// <typeparam name="TPage">The type of the page to add</typeparam>
 	public static void RegisterCustomPage<TPage>(string identifier, TPage page) where TPage : UniversalModPanelPage
 	{
+		if (string.IsNullOrEmpty(identifier)) throw new ArgumentException("Identifier cannot be null or empty", nameof(identifier));
+		if (page is null) throw new ArgumentNullException(nameof(page));
 		RegisteredCustomPages.Add(identifier, page);
+	}
+
+	/// <summary>
+	/// Adds a new button on the homepage which when clicked, navigates the panel to the target page.
+	/// </summary>
+	/// <param name="buttonText">The text to put on the button</param>
+	/// <param name="targetPage">The identifier of the target page</param>
+	public static void AddHomepageButton(string buttonText, string targetPage)
+	{
+		if (string.IsNullOrEmpty(buttonText)) throw new ArgumentException("Button text cannot be empty", nameof(buttonText));
+		if (string.IsNullOrEmpty(targetPage)) throw new ArgumentException("Target page cannot be empty", nameof(targetPage));
+		CustomHomepageButtons.Add(buttonText, targetPage);
 	}
 
 	#endregion

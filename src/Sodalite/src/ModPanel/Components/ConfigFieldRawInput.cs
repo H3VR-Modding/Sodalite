@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using BepInEx.Configuration;
+using UnityEngine;
 using TypeConverter = System.ComponentModel.TypeConverter;
 
 #pragma warning disable CS1591
@@ -15,21 +16,23 @@ public class ConfigFieldRawInput : ConfigFieldBase
 	public override void Apply(ConfigEntryBase entry)
 	{
 		base.Apply(entry);
-		Input.OnValueChanged += InputOnOnValueChanged;
+		Input.OnValueChanged += OnInputValueChanged;
+		Input.Description = entry.Definition.Key;
 		_converter = TypeDescriptor.GetConverter(ConfigEntry.SettingType);
 	}
 
-	private void InputOnOnValueChanged(string obj)
+	private void OnInputValueChanged(string obj)
 	{
 		// Make sure we don't error out if the entered value is not valid for this type
 		try
 		{
 			SetValue(_converter.ConvertFrom(obj)!);
 		}
-		catch (NotSupportedException)
+		catch
 		{
-			// Pass
+			// ignored
 		}
+
 		Redraw();
 	}
 
