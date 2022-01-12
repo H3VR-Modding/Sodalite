@@ -87,15 +87,22 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 		}
 		SodalitePatcher.LogBuffer.Dispose();
 
-		// Load our prefab
+		// Load our prefab. JUST in case I forget to bundle the bundle again.
 		var bundle = AssetBundle.LoadFromFile(Path.Combine(BasePath, "universalpanel"));
-		_modPanelPrefab = bundle.LoadAsset<GameObject>("Universal Mod Panel");
+		if (bundle)
+		{
+			_modPanelPrefab = bundle.LoadAsset<GameObject>("Universal Mod Panel");
 
-		// Make a new LockablePanel for the console panel
-		_modPanel = new LockablePanel();
-		_modPanel.Configure += ConfigureModPanel;
-		_modPanel.TextureOverride = SodaliteUtils.LoadTextureFromBytes(Assembly.GetExecutingAssembly().GetResource("LogPanel.png"));
-		WristMenuAPI.Buttons.Add(new WristMenuButton("Spawn Mod Panel", int.MaxValue, SpawnModPanel));
+			// Make a new LockablePanel for the console panel
+			_modPanel = new LockablePanel();
+			_modPanel.Configure += ConfigureModPanel;
+			_modPanel.TextureOverride = SodaliteUtils.LoadTextureFromBytes(Assembly.GetExecutingAssembly().GetResource("LogPanel.png"));
+			WristMenuAPI.Buttons.Add(new WristMenuButton("Spawn Mod Panel", int.MaxValue, SpawnModPanel));
+		}
+		else
+		{
+			Logger.LogError("Guess who forgot to bundle the universal panel in with the release again!!!");
+		}
 
 		// Try to log the game's build id. This can be useful for debugging but only works if the game is launched via Steam.
 		// The game _usually_ is launched via Steam, even with r2mm, so this may only error if someone tries to launch the game via the exe directly.

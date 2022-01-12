@@ -65,7 +65,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="res/**/*" />
+        <EmbeddedResource Include="res/LogPanel.png" />
+        <None Update="res/universalpanel" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>
