@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
-
 // ReSharper disable All
 #pragma warning disable 1591
 
@@ -30,14 +29,14 @@ namespace Popcron
 		private static GizmosInstance _instance;
 		private static bool _hotReloaded = true;
 		private static Material _defaultMaterial;
-		private int _lastFrame;
 
 		private Material _overrideMaterial;
-		private Element[] _queue = new Element[DefaultQueueSize];
 		private int _queueIndex;
+		private int _lastFrame;
+		private Element[] _queue = new Element[DefaultQueueSize];
 
 		/// <summary>
-		///     The material being used to render
+		/// The material being used to render
 		/// </summary>
 		public static Material Material
 		{
@@ -54,7 +53,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		///     The default line renderer material
+		/// The default line renderer material
 		/// </summary>
 		private static Material DefaultMaterial
 		{
@@ -79,32 +78,6 @@ namespace Popcron
 
 				return _defaultMaterial;
 			}
-		}
-
-		private void Update()
-		{
-			//always render something
-			Gizmos.Line(default, default);
-		}
-
-		private void OnEnable()
-		{
-			//populate queue with empty elements
-			_queue = new Element[DefaultQueueSize];
-			for (int i = 0; i < DefaultQueueSize; i++) _queue[i] = new Element();
-
-			if (GraphicsSettings.renderPipelineAsset == null)
-				Camera.onPostRender += OnRendered;
-			else
-				RenderPipelineManager.EndCameraRendering += OnRendered;
-		}
-
-		private void OnDisable()
-		{
-			if (GraphicsSettings.renderPipelineAsset == null)
-				Camera.onPostRender -= OnRendered;
-			else
-				RenderPipelineManager.EndCameraRendering -= OnRendered;
 		}
 
 		private static GizmosInstance GetOrCreate()
@@ -140,7 +113,7 @@ namespace Popcron
 		}
 
 		/// <summary>
-		///     Submits an array of points to draw into the queue.
+		/// Submits an array of points to draw into the queue.
 		/// </summary>
 		internal static void Submit(Vector3[] points, Color? color, bool dashed)
 		{
@@ -170,6 +143,26 @@ namespace Popcron
 			inst._queueIndex++;
 		}
 
+		private void OnEnable()
+		{
+			//populate queue with empty elements
+			_queue = new Element[DefaultQueueSize];
+			for (int i = 0; i < DefaultQueueSize; i++) _queue[i] = new Element();
+
+			if (GraphicsSettings.renderPipelineAsset == null)
+				Camera.onPostRender += OnRendered;
+			else
+				RenderPipelineManager.EndCameraRendering += OnRendered;
+		}
+
+		private void OnDisable()
+		{
+			if (GraphicsSettings.renderPipelineAsset == null)
+				Camera.onPostRender -= OnRendered;
+			else
+				RenderPipelineManager.EndCameraRendering -= OnRendered;
+		}
+
 		private void OnRendered(ScriptableRenderContext context, Camera camera)
 		{
 			OnRendered(camera);
@@ -185,6 +178,12 @@ namespace Popcron
 		{
 			//essentially check if at least 1 point is visible by the camera
 			return camera && points.Points.Select(camera.WorldToViewportPoint).Any(vp => vp.x is >= 0 and <= 1 && vp.y is >= 0 and <= 1);
+		}
+
+		private void Update()
+		{
+			//always render something
+			Gizmos.Line(default, default);
 		}
 
 		private void OnRendered(Camera camera)
