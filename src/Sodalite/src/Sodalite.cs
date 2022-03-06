@@ -76,6 +76,7 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 		{
 			if (_autoRegisterConfigs.Value) UniversalModPanel.RegisterUnregisteredPluginConfigs();
 		};
+		UniversalModPanel.RegisterPluginSettings(Info, Config);
 
 		// Hook a call to a compiler-generated method and replace it with one that doesn't use an unsafe GetTypes call
 		// ReSharper disable once ObjectCreationAsStatement
