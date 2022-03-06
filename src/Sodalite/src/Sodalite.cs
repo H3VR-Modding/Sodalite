@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using FistVR;
 using MonoMod.RuntimeDetour;
@@ -58,6 +59,9 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	private UniversalModPanel? _modPanelComponent;
 	private GameObject? _modPanelPrefab;
 
+	// Config entries
+	private ConfigEntry<bool> _autoRegisterConfigs = null!;
+
 	// ReSharper disable once UnusedMember.Global
 	internal static ManualLogSource StaticLogger => _logger ?? throw new InvalidOperationException("Cannot get logger before the behaviour is initialized!");
 
@@ -66,6 +70,13 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	/// </summary>
 	private void Awake()
 	{
+		// Register config values
+		_autoRegisterConfigs = Config.Bind("General", "AutoRegisterConfigs", false, "Enable this to see config pages for mods which haven't explicitly added them.");
+		_autoRegisterConfigs.SettingChanged += (sender, args) =>
+		{
+			if (_autoRegisterConfigs.Value) UniversalModPanel.RegisterUnregisteredPluginConfigs();
+		};
+
 		// Hook a call to a compiler-generated method and replace it with one that doesn't use an unsafe GetTypes call
 		// ReSharper disable once ObjectCreationAsStatement
 		new Hook(
@@ -79,6 +90,7 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 		// Register ourselves as the new log listener and try to grab what's already been captured
 		BepInEx.Logging.Logger.Listeners.Add(this);
 
+		// Setup the rest of the in-game log page
 		LogEvents = SodalitePatcher.LogBuffer.LogEvents;
 		LogEventLineCount = new Dictionary<LogEventArgs, int>();
 		foreach (var evt in LogEvents)
@@ -124,6 +136,9 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	{
 		// Try to set the game running modded. This will fail on versions below Update 100 Alpha 7
 		GM.SetRunningModded();
+
+		// If we want to auto-register configs, do that now.
+		if (_autoRegisterConfigs.Value) UniversalModPanel.RegisterUnregisteredPluginConfigs();
 
 		// Pull the button sprite and font for our use later
 		var button = GameObject.Find("MainMenuSceneProtoBase/LevelLoadScreen/LevelLoadHolder/Canvas/Button").transform;

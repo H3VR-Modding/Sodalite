@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using Sodalite.ModPanel.Pages;
 using UnityEngine;
@@ -214,6 +216,16 @@ public class UniversalModPanel : MonoBehaviour
 	/// <param name="configFile"></param>
 	public static void RegisterPluginSettings(PluginInfo plugin, ConfigFile configFile)
 	{
+		// If there are no config entries, skip.
+		if (configFile.Count == 0) return;
+
+		// Get an array of the entries
+		int i = 0;
+		ConfigEntryBase[] entries = new ConfigEntryBase[configFile.Count];
+		foreach (var key in configFile.Keys) entries[i++] = configFile[key];
+
+		// Add them
+		RegisterPluginSettings(plugin, entries);
 	}
 
 	/// <summary>
@@ -250,6 +262,16 @@ public class UniversalModPanel : MonoBehaviour
 		if (string.IsNullOrEmpty(buttonText)) throw new ArgumentException("Button text cannot be empty", nameof(buttonText));
 		if (string.IsNullOrEmpty(targetPage)) throw new ArgumentException("Target page cannot be empty", nameof(targetPage));
 		CustomHomepageButtons.Add(buttonText, targetPage);
+	}
+
+	internal static void RegisterUnregisteredPluginConfigs()
+	{
+		// For each plugin just try to add all their keys
+		foreach (var plugin in Chainloader.ManagerObject.GetComponents<BaseUnityPlugin>())
+		{
+			if (RegisteredConfigs.ContainsKey(plugin.Info)) continue;
+			RegisterPluginSettings(plugin.Info, plugin.Config);
+		}
 	}
 
 	#endregion

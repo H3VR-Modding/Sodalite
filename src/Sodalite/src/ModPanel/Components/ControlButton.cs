@@ -46,7 +46,9 @@ public class SodaliteBetterPointableButton : FVRPointable
 		base.OnPoint(hand);
 
 		// If the trigger is clicked invoke the onClick event of the button
-		if (hand.Input.TriggerDown)
+		// NOTE: I use trigger up here instead of trigger down because the Steam overlay keyboard
+		//       immediately closes itself otherwise.
+		if (hand.Input.TriggerUp)
 			_button.onClick.Invoke();
 	}
 }
