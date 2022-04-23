@@ -61,6 +61,7 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 
 	// Config entries
 	private ConfigEntry<bool> _autoRegisterConfigs = null!;
+	private ConfigEntry<bool> _spoofSteamUserId = null!;
 
 	// ReSharper disable once UnusedMember.Global
 	internal static ManualLogSource StaticLogger => _logger ?? throw new InvalidOperationException("Cannot get logger before the behaviour is initialized!");
@@ -72,6 +73,8 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	{
 		// Register config values
 		_autoRegisterConfigs = Config.Bind("General", "AutoRegisterConfigs", false, "Enable this to see config pages for mods which haven't explicitly added them.");
+		_spoofSteamUserId = Config.Bind("Privacy", "SpoofSteamUserID", false, "Randomizes your Steam User ID on every startup (requires restart)");
+
 		_autoRegisterConfigs.SettingChanged += (sender, args) =>
 		{
 			if (_autoRegisterConfigs.Value) UniversalModPanel.RegisterUnregisteredPluginConfigs();
