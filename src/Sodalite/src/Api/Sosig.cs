@@ -62,14 +62,7 @@ public static class SosigAPI
 		// Set the IFF (team) of the Sosig
 		var sosigIFF = spawnOptions.IFF;
 		if (sosigIFF >= 5) sosigIFF = Random.Range(6, 10000);
-		try
-		{
-			Update102_SetSosigIFF(sosig, sosigIFF);
-		}
-		catch (MissingMemberException)
-		{
-			sosig.E.IFFCode = sosigIFF;
-		}
+		sosig.SetIFF(sosigIFF);
 
 		// Set the Sosig's order
 		sosig.CurrentOrder = Sosig.SosigOrder.Disabled;
@@ -84,13 +77,6 @@ public static class SosigAPI
 		// Return the Sosig object
 		return sosig;
 	}
-
-	// TODO: Once Update 102 hits main this can be inlined
-	private static void Update102_SetSosigIFF(Sosig s, int iff)
-	{
-		s.SetIFF(iff);
-	}
-
 
 	private static Sosig SpawnAndConfigureSosig(GameObject prefab, Vector3 pos, Quaternion rot, SosigConfigTemplate template, SosigOutfitConfig outfit)
 	{

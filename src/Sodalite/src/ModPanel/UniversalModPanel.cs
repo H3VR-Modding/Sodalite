@@ -272,6 +272,9 @@ public class UniversalModPanel : MonoBehaviour
 			if (RegisteredConfigs.ContainsKey(plugin.Info)) continue;
 			RegisterPluginSettings(plugin.Info, plugin.Config);
 		}
+
+		// If the panel already exists in the scene force the plugin list to redraw
+		if (Instance) Instance.GetPageOfType<ModPanelPluginListPage>()!.RedrawList();
 	}
 
 	#endregion

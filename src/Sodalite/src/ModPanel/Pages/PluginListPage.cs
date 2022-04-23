@@ -19,6 +19,11 @@ public class ModPanelPluginListPage : UniversalModPanelPage
 		// Don't do this in the editor.
 		if (Application.isEditor) return;
 
+		RedrawList();
+	}
+
+	internal void RedrawList()
+	{
 		// Clear out all the children of the content
 		for (var i = ContentGameObject.childCount - 1; i >= 0; i--)
 			Destroy(ContentGameObject.GetChild(i).gameObject);
