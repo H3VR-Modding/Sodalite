@@ -35,22 +35,17 @@ internal static class SodalitePatcher
 		new Random().NextBytes(buf);
 		uint rand = BitConverter.ToUInt32(buf, 0);
 
-		// The upper 64 bits are always the same for individual accounts so
+		// The upper 32 bits are always the same for individual accounts so
 		// combine the random low 32 bits with this magic number and bam, valid Steam ID.
 		SessionId = rand | 76_561_197_960_265_728ul;
-
-		// We want a callback when the firstpass assembly is loaded so we can hook the method ASAP
-		AppDomain.CurrentDomain.AssemblyLoad += CurrentDomainOnAssemblyLoad;
 	}
 
-	private static void CurrentDomainOnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
+	internal static void CheckSpoofSteamUserID()
 	{
-		Assembly asm = args.LoadedAssembly;
-		if (asm.GetName().Name == "Assembly-CSharp-firstpass") CheckSpoofSteamUserID(asm);
-	}
+		// Get the firstpass assembly. That's where the steamworks stuff resides.
+		Assembly? asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == "Assembly-CSharp-firstpass");
+		if (asm is null) return;
 
-	private static void CheckSpoofSteamUserID(Assembly asm)
-	{
 		// Call the init function. This loads the native DLL since it is lazy loaded
 		Type c = asm.GetType("Steamworks.NativeMethods");
 		c.GetMethod("SteamAPI_Init")!.Invoke(null, new object[0]);
@@ -70,7 +65,7 @@ internal static class SodalitePatcher
 		{
 			// Apply the hook
 			IntPtr hook = Marshal.GetFunctionPointerForDelegate(GetSteamIDRandomized);
-			var detour = new NativeDetour(getUserIdFunction, hook, new NativeDetourConfig() {ManualApply = true});
+			var detour = new NativeDetour(getUserIdFunction, hook, new NativeDetourConfig {ManualApply = true});
 			detour.Apply();
 		}
 		else
@@ -111,5 +106,8 @@ internal class LogBuffer : ILogListener
 	public void LogEvent(object sender, LogEventArgs eventArgs)
 	{
 		LogEvents.Add(eventArgs);
+
+		// Wait just before BepInEx starts loading plugins to apply our SteamID spoofing patch
+		if (eventArgs.Data is "Chainloader started") SodalitePatcher.CheckSpoofSteamUserID();
 	}
 }
