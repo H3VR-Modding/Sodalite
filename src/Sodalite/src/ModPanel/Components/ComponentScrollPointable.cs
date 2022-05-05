@@ -19,11 +19,11 @@ public class SodaliteScrollPointable : FVRPointable
 		_scrollRect = GetComponent<ScrollRect>();
 	}
 
-	/// <summary>
-	///     Called every frame when the player is pointing at this
-	/// </summary>
-	public override void OnHoverDisplay()
+	public override void Update()
 	{
+		// If the player isn't pointing at us return
+		if (!m_isBeingPointedAt) return;
+
 		var scroll = Vector2.zero;
 		foreach (var hand in PointingHands)
 		{
@@ -31,6 +31,7 @@ public class SodaliteScrollPointable : FVRPointable
 			scroll = hand.Input.TouchpadAxes;
 			break;
 		}
+
 		if (_scrollRect && scroll != Vector2.zero)
 		{
 			var contentHeight = _scrollRect!.content.sizeDelta.y;

@@ -23,24 +23,24 @@ public sealed class UniversalModPanelLogPage : UniversalModPanelPage, ISodaliteS
 	[SerializeField] private Text Log = null!;
 	[SerializeField] private int MaxLines;
 	private int _offset;
-
-	private const float ScrollPause = 0.05f;
-	private float _lastScrollTime;
+	private float _scrollValue;
 
 	public void Scroll(Vector2 x)
 	{
-		if (Time.time < _lastScrollTime + ScrollPause) return;
-		_lastScrollTime = Time.time;
-		var direction = x.y == 0f ? 0 : x.y > 0 ? 1 : -1;
-		if (direction == 0) return;
-		_offset = Mathf.Clamp(_offset + direction, 0, Sodalite.LogEvents.Count - 1);
+		// Scroll up to 25 lines per second
+		_scrollValue += x.y * Time.deltaTime * 25;
+
+		// Wait until we're scrolling at least one line
+		if (Mathf.Abs(_scrollValue) < 1) return;
+		_offset = Mathf.Clamp(_offset + (int) _scrollValue, 0, Sodalite.LogEvents.Count - 1);
 		UpdateText(false);
+		_scrollValue += _scrollValue > 0 ? -1 : 1;
 	}
 
 	internal void LogEvent(LogEventArgs evt)
 	{
 		// If the user is currently offset the scrolling, keep their position in the log
-		if (_offset != 0) _offset += Sodalite.LogEventLineCount![evt];
+		if (_offset != 0) _offset += Sodalite.LogEventLineCount[evt];
 		UpdateText(false);
 	}
 

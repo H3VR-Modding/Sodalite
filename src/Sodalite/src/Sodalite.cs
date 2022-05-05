@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using FistVR;
 using MonoMod.RuntimeDetour;
@@ -59,10 +58,6 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	private UniversalModPanel? _modPanelComponent;
 	private GameObject? _modPanelPrefab;
 
-	// Config entries
-	private ConfigEntry<bool> _autoRegisterConfigs = null!;
-	private ConfigEntry<bool> _spoofSteamUserId = null!;
-
 	// ReSharper disable once UnusedMember.Global
 	internal static ManualLogSource StaticLogger => _logger ?? throw new InvalidOperationException("Cannot get logger before the behaviour is initialized!");
 
@@ -72,13 +67,8 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	private void Awake()
 	{
 		// Register config values
-		_autoRegisterConfigs = Config.Bind("General", "AutoRegisterConfigs", false, "Enable this to see config pages for mods which haven't explicitly added them.");
-		_spoofSteamUserId = Config.Bind("Privacy", "SpoofSteamUserID", false, "Randomizes your Steam User ID on every startup (requires restart)");
+		Config.Bind("Privacy", "SpoofSteamUserID", false, "Randomizes your Steam User ID on every startup (requires restart)");
 
-		_autoRegisterConfigs.SettingChanged += (sender, args) =>
-		{
-			if (_autoRegisterConfigs.Value) UniversalModPanel.RegisterUnregisteredPluginConfigs();
-		};
 		UniversalModPanel.RegisterPluginSettings(Info, Config);
 
 		// Hook a call to a compiler-generated method and replace it with one that doesn't use an unsafe GetTypes call
@@ -141,8 +131,8 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 		// Try to set the game running modded. This will fail on versions below Update 100 Alpha 7
 		GM.SetRunningModded();
 
-		// If we want to auto-register configs, do that now.
-		if (_autoRegisterConfigs.Value) UniversalModPanel.RegisterUnregisteredPluginConfigs();
+		// Now that all plugins should have had a chance to setup their configs, scan for them
+		UniversalModPanel.RegisterUnregisteredPluginConfigs();
 
 		// Pull the button sprite and font for our use later
 		var button = GameObject.Find("MainMenuSceneProtoBase/LevelLoadScreen/LevelLoadHolder/Canvas/Button").transform;
@@ -179,8 +169,8 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 
 	void ILogListener.LogEvent(object sender, LogEventArgs eventArgs)
 	{
-		LogEvents!.Add(eventArgs);
-		LogEventLineCount!.Add(eventArgs, eventArgs.ToString().CountLines());
+		LogEvents.Add(eventArgs);
+		LogEventLineCount.Add(eventArgs, eventArgs.ToString().CountLines());
 		if (_modPanelComponent) _modPanelComponent!.LogPage.LogEvent(eventArgs);
 	}
 
