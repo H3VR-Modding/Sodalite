@@ -109,7 +109,6 @@ public static class VaultAPI
 
 		// Save the last info
 		savedGun.LoadedRoundsInChambers = firearm.GetChamberRoundList();
-		savedGun.SavedFlags = firearm.GetFlagList();
 
 		// Reset the rotation (again? Is this needed?)
 		detectedObjects[0].transform.rotation = Quaternion.LookRotation(forward, up);
@@ -255,7 +254,6 @@ public static class VaultAPI
 		}
 
 		baseGun.SetLoadedChambers(gun.LoadedRoundsInChambers);
-		baseGun.SetFromFlagList(gun.SavedFlags);
 		baseGun.transform.rotation = rotation;
 
 		// ReSharper restore Unity.PerformanceCriticalCodeInvocation, Unity.PerformanceCriticalCodeNullComparison

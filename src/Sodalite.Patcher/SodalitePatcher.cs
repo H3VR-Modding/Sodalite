@@ -42,37 +42,44 @@ internal static class SodalitePatcher
 
 	internal static void CheckSpoofSteamUserID()
 	{
-		// Get the firstpass assembly. That's where the steamworks stuff resides.
-		Assembly? asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == "Assembly-CSharp-firstpass");
-		if (asm is null) return;
-
-		// Call the init function. This loads the native DLL since it is lazy loaded
-		Type c = asm.GetType("Steamworks.NativeMethods");
-		c.GetMethod("SteamAPI_Init")!.Invoke(null, new object[0]);
-
-		// Get the pointers to the native code function
-		IntPtr steamworks = DynDll.OpenLibrary("CSteamworks.dll");
-		IntPtr getUserIdFunction = steamworks.GetFunction("ISteamUser_GetSteamID");
-
-		// Check if we want to spoof or not by trying to find the config value in the file
-		bool applyHook = false;
-		string configPath = Path.Combine(Paths.ConfigPath, "nrgill28.Sodalite.cfg");
-		if (File.Exists(configPath))
-			applyHook = File.ReadAllLines(configPath)
-				.Any(line => line.Contains("SpoofSteamUserID = true"));
-
-		if (applyHook)
+		try
 		{
-			// Apply the hook
-			IntPtr hook = Marshal.GetFunctionPointerForDelegate(GetSteamIDRandomized);
-			var detour = new NativeDetour(getUserIdFunction, hook, new NativeDetourConfig {ManualApply = true});
-			detour.Apply();
+			// Get the firstpass assembly. That's where the steamworks stuff resides.
+			Assembly? asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == "Assembly-CSharp-firstpass");
+			if (asm is null) return;
+
+			// Call the init function. This loads the native DLL since it is lazy loaded
+			Type c = asm.GetType("Steamworks.NativeMethods");
+			c.GetMethod("SteamAPI_Init")!.Invoke(null, new object[0]);
+
+			// Get the pointers to the native code function
+			IntPtr steamworks = DynDll.OpenLibrary("CSteamworks.dll");
+			IntPtr getUserIdFunction = steamworks.GetFunction("ISteamUser_GetSteamID");
+
+			// Check if we want to spoof or not by trying to find the config value in the file
+			bool applyHook = false;
+			string configPath = Path.Combine(Paths.ConfigPath, "nrgill28.Sodalite.cfg");
+			if (File.Exists(configPath))
+				applyHook = File.ReadAllLines(configPath)
+					.Any(line => line.Contains("SpoofSteamUserID = true"));
+
+			if (applyHook)
+			{
+				// Apply the hook
+				IntPtr hook = Marshal.GetFunctionPointerForDelegate(GetSteamIDRandomized);
+				var detour = new NativeDetour(getUserIdFunction, hook, new NativeDetourConfig {ManualApply = true});
+				detour.Apply();
+			}
+			else
+			{
+				// If we don't want to apply the hook, set our sessionId to match
+				var original = (getSteamIDDelegate) Marshal.GetDelegateForFunctionPointer(getUserIdFunction, typeof(getSteamIDDelegate));
+				SessionId = original();
+			}
 		}
-		else
+		catch (Exception)
 		{
-			// If we don't want to apply the hook, set our sessionId to match
-			var original = (getSteamIDDelegate) Marshal.GetDelegateForFunctionPointer(getUserIdFunction, typeof(getSteamIDDelegate));
-			SessionId = original();
+			// Ignored.
 		}
 	}
 

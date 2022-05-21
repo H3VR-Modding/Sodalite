@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using BepInEx.Bootstrap;
 using FistVR;
 using MonoMod.RuntimeDetour;
 using UnityEngine;
@@ -46,17 +47,26 @@ public static class GameAPI
 	/// <param name="assetBundle">Path to the asset bundle</param>
 	public static void PreloadAllAssets(string assetBundle)
 	{
+		// Get the path of the plugin the bundle is from, and the plugin info of the plugin
 		var pluginPath = Path.GetDirectoryName(Path.GetFullPath(assetBundle))!;
+		var pluginInfo = Chainloader.PluginInfos.Values.FirstOrDefault(p => p.Location == pluginPath);
 
 		// Load all the resources from the bundle
 		var bundle = AssetBundle.LoadFromFile(assetBundle);
 		foreach (var asset in bundle.LoadAllAssets())
 		{
-			// Correct the prefab path if this is an FVRObject
-			if (asset is FVRObject objectId)
+			switch (asset)
 			{
-				objectId.m_anvilPrefab.Bundle = Path.Combine(pluginPath, objectId.m_anvilPrefab.Bundle);
-				objectId.IsModContent = true;
+				// Correct the prefab path if this is an FVRObject
+				case FVRObject objectId:
+					objectId.m_anvilPrefab.Bundle = Path.Combine(pluginPath, objectId.m_anvilPrefab.Bundle);
+					objectId.IsModContent = true;
+					break;
+
+				// If this is an ItemSpawnerID, we need to set the FromMod field
+				case ItemSpawnerID itemSpawnerID when pluginInfo != null:
+					itemSpawnerID.FromMod = pluginInfo.Metadata.GUID;
+					break;
 			}
 
 			// Inject the resource into the game
