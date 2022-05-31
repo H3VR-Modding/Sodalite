@@ -42,6 +42,7 @@ public class ButtonWidget : UiWidget
 		// Get the text stuff setup
 		GameObject child = new("Text");
 		child.transform.SetParent(transform);
+		child.transform.localRotation = Quaternion.identity;
 		ButtonText = child.AddComponent<Text>();
 		((RectTransform) child.transform).FillParent();
 		ButtonText.alignment = TextAnchor.MiddleCenter;
