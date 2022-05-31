@@ -63,6 +63,11 @@ public class SodalitePluginListItem : MonoBehaviour
 			PluginName.text = plugin.Metadata.Name;
 			PluginDescription.text = manifest["description"].ToObject<string>();
 		}
+		else
+		{
+			PluginName.text = plugin.Metadata.Name;
+			PluginDescription.text = "Bare plugin assembly from " + Path.GetFileName(plugin.Location);
+		}
 
 		PluginIcon.sprite = icon;
 
