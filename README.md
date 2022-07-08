@@ -5,15 +5,24 @@
 _Sodalite_ is a [BepInEx](https://github.com/BepInEx/BepInEx) plugin for *[Hot Dogs, Horseshoes & Hand Grenades](https://store.steampowered.com/app/450540/Hot_Dogs_Horseshoes__Hand_Grenades/)* (known as H3VR) which provides tools and modding APIs for the game.
 
 ## What's in this plugin
-- BepInEx log panel, accessible from the wrist menu
-- Some API code to allow easier interfacing with various parts of the game including firearms, Steam leaderboards, lockable panels, the player, the vault, and the wrist menu.
-- UI Widgets system to fill custom panels with programatically generated layouts
-- Various smaller extension methods and classes to assist in the development of plugins for H3VR
-- A runtime Gizmos library which allows drawing primitive shapes in the world
+- **Universal Mod Panel:**  
+Accessible from the wrist menu, the universal panel contains the bepinex log and an in-game config editor for other plugins.
+- **APIs for various parts of the game:**
+  - Firearms
+  - Steam Leaderboards
+  - Lockable Panels
+  - The Player
+  - The Vault
+  - Wrist Menu
+- **UI Widget system:**  
+Programatic creation of UIs for easy development
+- **Other helpful extensions:**
+  - Various extension methods and classes to assist in plugin development
+  - A runtime Gizmos library that allows drawing debug shapes in the world
 
 ## Installation
 - If you are using a mod manager this mod will be installed automatically for you if it's needed.
-- For manual installation, make sure you have the dependencies installed (listed above the readme on the Thunderstore page), then download the mod from Thunderstore and extract copy the contents of the `Sodalite` folder into your game's `h3vr/BepInEx/` folder.
+- For manual installation (not recommended, please just use a mod manager), make sure you have the dependencies installed (listed above the readme on the Thunderstore page), then download the mod from Thunderstore and extract copy the contents of the `Sodalite` folder into your game's `h3vr/BepInEx/` folder.
 
 ## Links
 - Thunderstore page: https://h3vr.thunderstore.io/package/nrgill28/Sodalite/
