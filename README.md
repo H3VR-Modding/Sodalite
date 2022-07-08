@@ -26,5 +26,5 @@ Programatic creation of UIs for easy development
 
 ## Links
 - Thunderstore page: https://h3vr.thunderstore.io/package/nrgill28/Sodalite/
-- Sodalite API reference: https://h3vr-modding.github.io/Sodalite/
+- H3VR Scripting Reference: https://h3vr-modding.github.io/wiki/creating/scripting/intro.html
 - Discord: https://discord.gg/DCsdXk4r9A
