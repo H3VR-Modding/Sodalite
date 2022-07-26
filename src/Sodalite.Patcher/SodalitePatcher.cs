@@ -38,6 +38,9 @@ internal static class SodalitePatcher
 		// The upper 32 bits are always the same for individual accounts so
 		// combine the random low 32 bits with this magic number and bam, valid Steam ID.
 		SessionId = rand | 76_561_197_960_265_728ul;
+
+		// Apply hooks for plugin types serialization
+		FixPluginTypesSerialization.ApplyHooks();
 	}
 
 	internal static void CheckSpoofSteamUserID()

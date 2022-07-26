@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <DebugType>Full</DebugType>
 
         <PackageId>Sodalite.Patcher</PackageId>
         <Title>Sodalite - Modding Toolkit for H3VR</Title>
