@@ -28,3 +28,7 @@ Programatic creation of UIs for easy development
 - Thunderstore page: https://h3vr.thunderstore.io/package/nrgill28/Sodalite/
 - H3VR Scripting Reference: https://h3vr-modding.github.io/wiki/creating/scripting/intro.html
 - Discord: https://discord.gg/DCsdXk4r9A
+
+## Thanks To
+- [Popcron](https://github.com/popcron) for their [Gizmos library](https://github.com/popcron/gizmos)
+- [iDeathHD](https://github.com/xiaoxiao921) for [FixPluginTypesSerialization](https://github.com/xiaoxiao921/FixPluginTypesSerialization)
