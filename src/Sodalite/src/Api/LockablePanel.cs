@@ -17,11 +17,7 @@ public static class LockablePanelAPI
 	/// <exception cref="InvalidOperationException">Method was called before a reference to the options panel prefab was taken</exception>
 	public static GameObject GetCleanLockablePanel()
 	{
-		var wristMenu = WristMenuAPI.Instance;
-		if (wristMenu is null || !wristMenu)
-			throw new InvalidOperationException("You're trying to create a lockable panel too early! Please wait until the runtime phase.");
-
-		var panel = Object.Instantiate(wristMenu.OptionsPanelPrefab);
+		var panel = Object.Instantiate(GM.CurrentOptionsPanel);
 		CleanPanel(panel);
 		return panel;
 	}

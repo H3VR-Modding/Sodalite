@@ -27,6 +27,9 @@
         <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
         <PlatformTarget>x64</PlatformTarget>
         <DefineConstants>TRACE;RUNTIME;</DefineConstants>
+        <Optimize>false</Optimize>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Editor' ">
@@ -34,21 +37,23 @@
         <NoWarn>1701;1702;NU5104</NoWarn>
         <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
         <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
-        <Optimize>true</Optimize>
+        <Optimize>false</Optimize>
         <PlatformTarget>x64</PlatformTarget>
         <DefineConstants>TRACE;EDITOR;</DefineConstants>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BepInEx.Core" Version="5.4.16" />
+        <PackageReference Include="BepInEx.Core" Version="5.4.17" />
         <PackageReference Include="GitInfo" Version="2.2.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="all" />
-        <PackageReference Include="Nullable" Version="1.3.0" PrivateAssets="all" />
+        <PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
         <PackageReference Include="UnityEngine" Version="5.6.1" />
-        <PackageReference Include="H3VR.GameLibs" Version="0.104.0-r.0" />
+        <PackageReference Include="H3VR.GameLibs" Version="0.105.4" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)'=='Runtime'">

@@ -32,7 +32,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BepInEx.Core" Version="5.4.16" />
+        <PackageReference Include="BepInEx.Core" Version="5.4.17" />
         <PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="all" />
     </ItemGroup>
 

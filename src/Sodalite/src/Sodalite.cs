@@ -153,7 +153,7 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	// Wrist menu button callback. Gets our panel instance and makes the hand retrieve it.
 	private void SpawnModPanel(object sender, ButtonClickEventArgs args)
 	{
-		var wristMenu = WristMenuAPI.Instance;
+		var wristMenu = WristMenuAPI.Instance2;
 		if (!wristMenu) return;
 		var panel = _modPanel.GetOrCreatePanel();
 		args.Hand.OtherHand.RetrieveObject(panel.GetComponent<FVRPhysicalObject>());

@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using FistVR;
-using HarmonyLib;
 using Sodalite.Utilities;
-using UnityEngine;
-using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Sodalite.Api;
 
@@ -14,12 +12,25 @@ namespace Sodalite.Api;
 public static class WristMenuAPI
 {
 	private static readonly ObservableHashSet<WristMenuButton> WristMenuButtons = new();
-	private static readonly Dictionary<WristMenuButton, Button> CurrentButtons = new();
+	private static LegacyButtonsWristMenuSection? _wristMenuSection;
 
 	/// <summary>
 	///     Reference to the current instance of the game's wrist menu.
 	/// </summary>
-	public static FVRWristMenu? Instance { get; private set; }
+	[Obsolete("FVRWristMenu is a deprecated class. Use WristMenuAPI.Instance2 instead.", true)]
+	public static FVRWristMenu? Instance
+	{
+		get
+		{
+			Sodalite.StaticLogger.LogWarning("Mod tried to access WristMenuAPI.Instance, this is an obsolete property. Please update your mod to use FVRWristMenu2.");
+			return null;
+		}
+	}
+
+	/// <summary>
+	///     Reference to the current instance of the game's wrist menu.
+	/// </summary>
+	public static FVRWristMenu2? Instance2 { get; private set; }
 
 	/// <summary>
 	///     Collection of wrist menu buttons. Add to this collection to register a button and remove from the collection to unregister.
@@ -28,106 +39,34 @@ public static class WristMenuAPI
 
 	private static void WristMenuButtonsItemAdded(WristMenuButton button)
 	{
-		if (Instance is null || !Instance) return;
-		AddWristMenuButton(Instance, button);
+		if (Instance2 == null) return;
+		AddWristMenuButton(Instance2, button);
 	}
 
 	private static void WristMenuButtonsItemRemoved(WristMenuButton button)
 	{
-		if (Instance is null || !Instance) return;
-		RemoveWristMenuButton(Instance, button);
+		if (Instance2 == null) return;
+		RemoveWristMenuButton(Instance2, button);
 	}
 
-	private static void AddWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
+	private static void AddWristMenuButton(FVRWristMenu2 wristMenu, WristMenuButton button)
 	{
-		// The button we want to use as a reference is either the spectator button (wristMenu.Buttons[16])
-		// or the button just above where this one should go according to the priority
-		var aboveButton = WristMenuButtons
-			.OrderByDescending(x => x.Priority)
-			.FirstOrDefault(x => x.Priority > button.Priority);
-		var referenceButton = aboveButton is null ? wristMenu.Buttons[16] : CurrentButtons[aboveButton];
-		var referenceRt = referenceButton.GetComponent<RectTransform>();
-
-		// Expand the canvas by the height of this button
-		var canvas = wristMenu.transform.Find("MenuGo/Canvas").GetComponent<RectTransform>();
-		var buttonSet = canvas.GetComponent<OptionsPanel_ButtonSet>();
-		var size = canvas.sizeDelta;
-		size.y += referenceRt.sizeDelta.y;
-		canvas.sizeDelta = size;
-
-		// So for any UI elements that are LOWER than this button, move them down by the height of the button
-		foreach (RectTransform child in canvas)
+		// Check if we need to create the section first
+		if (_wristMenuSection == null)
 		{
-			if (!(child.anchoredPosition.y < referenceRt.anchoredPosition.y)) continue;
-			var pos1 = child.anchoredPosition;
-			pos1.y -= referenceRt.sizeDelta.y;
-			child.anchoredPosition = pos1;
+			wristMenu.RegenerateButtons();
 		}
-
-		// Copy the spectator button and place it where it should be
-		var newButton = Object.Instantiate(referenceButton, canvas);
-		var newButtonRt = newButton.GetComponent<RectTransform>();
-		var pos = newButtonRt.anchoredPosition;
-		pos.y -= referenceRt.sizeDelta.y;
-		newButtonRt.anchoredPosition = pos;
-
-		// Apply the options
-		newButton.GetComponentInChildren<Text>().text = button.Text;
-		newButton.onClick = new Button.ButtonClickedEvent();
-		newButton.onClick.AddListener(() =>
-		{
-			wristMenu.Aud.PlayOneShot(wristMenu.AudClip_Engage);
-
-			// The hand that isn't showing the wrist menu is the one that clicked the button
-			var hand = GM.CurrentMovementManager.Hands[GM.CurrentMovementManager.Hands[0] == wristMenu.m_currentHand ? 1 : 0];
-			button.CallOnClick(hand);
-		});
-
-		// Now we need to modify some things to accomodate this new button
-		var pointable = newButton.GetComponent<FVRWristMenuPointableButton>();
-		pointable.ButtonIndex = wristMenu.Buttons.Count;
-		buttonSet.ButtonImagesInSet = buttonSet.ButtonImagesInSet.AddToArray(newButton.GetComponent<Image>());
-		wristMenu.Buttons.Add(newButton);
-
-		// Finally add it to the dict and call the create event
-		CurrentButtons.Add(button, newButton);
 	}
 
-	private static void RemoveWristMenuButton(FVRWristMenu wristMenu, WristMenuButton button)
+	private static void RemoveWristMenuButton(FVRWristMenu2 wristMenu, WristMenuButton button)
 	{
-		// This time our reference is the current button
-		var referenceButton = CurrentButtons[button];
-		var referenceRt = referenceButton.GetComponent<RectTransform>();
-
-		// Shrink the canvas by the height of this button
-		var canvas = wristMenu.transform.Find("MenuGo/Canvas").GetComponent<RectTransform>();
-		var buttonSet = canvas.GetComponent<OptionsPanel_ButtonSet>();
-		var size = canvas.sizeDelta;
-		size.y -= referenceRt.sizeDelta.y;
-		canvas.sizeDelta = size;
-
-		// So for any UI elements that are LOWER than this button, move them up by the height of the button
-		foreach (RectTransform child in canvas)
+		// If there's no buttons left, remove the button from the menu and destroy it.
+		if (WristMenuButtons.Count == 0 && _wristMenuSection != null)
 		{
-			if (!(child.anchoredPosition.y < referenceRt.anchoredPosition.y)) continue;
-			var pos1 = child.anchoredPosition;
-			pos1.y += referenceRt.sizeDelta.y;
-			child.anchoredPosition = pos1;
+			wristMenu.Sections.Remove(_wristMenuSection);
+			Object.Destroy(_wristMenuSection.gameObject);
+			wristMenu.RegenerateButtons();
 		}
-
-		// Then remove it from the internal stuff.
-		// Unfortunately, removing a button requires us to re-assign the index values of all the buttons on the wrist menu :P
-		wristMenu.Buttons.Remove(CurrentButtons[button]);
-		buttonSet.ButtonImagesInSet = wristMenu.Buttons.Select(x => x.GetComponent<Image>()).ToArray();
-		for (var i = 0; i < buttonSet.ButtonImagesInSet.Length; i++)
-		{
-			var pointable = buttonSet.ButtonImagesInSet[i].GetComponent<FVRWristMenuPointableButton>();
-			pointable.ButtonIndex = i;
-		}
-
-		// Destroy the object and remove the button from the dict
-		Object.Destroy(referenceButton.gameObject);
-		CurrentButtons.Remove(button);
 	}
 
 #if RUNTIME
@@ -135,21 +74,19 @@ public static class WristMenuAPI
 	{
 		// Wrist Menu stuff
 
-		On.FistVR.FVRWristMenu.Awake += FVRWristMenuOnAwake;
+		On.FistVR.FVRWristMenu2.Awake += FVRWristMenuOnAwake;
 		WristMenuButtons.ItemAdded += WristMenuButtonsItemAdded;
 		WristMenuButtons.ItemRemoved += WristMenuButtonsItemRemoved;
 	}
 
-	private static void FVRWristMenuOnAwake(On.FistVR.FVRWristMenu.orig_Awake orig, FVRWristMenu self)
+	private static void FVRWristMenuOnAwake(On.FistVR.FVRWristMenu2.orig_Awake orig, FVRWristMenu2 self)
 	{
 		// Note to self; this is required and very important.
 		orig(self);
 
 		// Keep our reference to the wrist menu up to date
-		Instance = self;
+		Instance2 = self;
 
-		// Clear the list of existing buttons
-		CurrentButtons.Clear();
 
 		// For all the registered buttons, add them
 		foreach (var button in WristMenuButtons)
@@ -205,5 +142,14 @@ public class WristMenuButton
 	internal void CallOnClick(FVRViveHand hand)
 	{
 		OnClick?.Invoke(this, new ButtonClickEventArgs(hand));
+	}
+}
+
+internal class LegacyButtonsWristMenuSection : FVRWristMenuSection
+{
+	private void Awake()
+	{
+		// Set the text to something descriptive
+		ButtonText = "Sodalite (+Legacy)";
 	}
 }

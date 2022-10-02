@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using Sodalite.Api;
+using FistVR;
 using Sodalite.UiWidgets.Components;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,8 +23,6 @@ public class ButtonWidget : UiWidget
 	/// <summary>Reference to the pointable component of this widget</summary>
 	public SodalitePointableButton Pointable = null!;
 
-	private AudioSource? _audioSource;
-
 	private BoxCollider _boxCollider = null!;
 
 	/// <inheritdoc cref="UiWidget.Awake" />
@@ -35,9 +33,6 @@ public class ButtonWidget : UiWidget
 		Button = gameObject.AddComponent<Button>();
 		ButtonImage.sprite = WidgetStyle.ButtonSprite;
 		ButtonImage.color = WidgetStyle.ButtonColorUnselected;
-
-		// Check if we have an audio source on us
-		_audioSource = GetComponentInParent<AudioSource>();
 
 		// Get the text stuff setup
 		GameObject child = new("Text");
@@ -79,10 +74,8 @@ public class ButtonWidget : UiWidget
 	{
 		Pointable.ButtonClicked += (_, args) =>
 		{
-			// If we have references to everything we need to play a sound, play a sound
-			var wristMenu = WristMenuAPI.Instance;
-			if (_audioSource && wristMenu is not null && wristMenu)
-				_audioSource!.PlayOneShot(wristMenu.AudClip_Engage);
+			// Play a sound
+			SM.PlayGlobalUISound(SM.GlobalUISound.Boop, transform.position);
 
 			// Create the event and fire the callback
 			callback(this, args);
