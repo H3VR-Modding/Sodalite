@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FistVR;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -17,7 +18,13 @@ public static class LockablePanelAPI
 	/// <exception cref="InvalidOperationException">Method was called before a reference to the options panel prefab was taken</exception>
 	public static GameObject GetCleanLockablePanel()
 	{
-		var panel = Object.Instantiate(GM.CurrentOptionsPanel);
+		// Make sure we're not too early
+		if (WristMenuAPI.Instance2 == null)
+			throw new InvalidOperationException("Trying to get a lockable panel too early. Please wait until after FVRWristMenu2.Awake() has happened.");
+
+		// Grab the Spawn section from the wrist menu and then make an instance of the options panel from that
+		var section = (FVRWristMenuSection_Spawn) WristMenuAPI.Instance2.Sections.First(x => x.GetType() == typeof(FVRWristMenuSection_Spawn));
+		GameObject panel = Object.Instantiate(section.OptionsPanelPrefab);
 		CleanPanel(panel);
 		return panel;
 	}
