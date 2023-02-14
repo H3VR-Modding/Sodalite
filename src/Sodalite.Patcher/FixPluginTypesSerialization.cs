@@ -62,24 +62,24 @@ public static class FixPluginTypesSerialization
 
 		// Create a delegate for core::StringStorageDefault<char>::assign so we can use it in a hook later
 		// This function assigns a string value to Unity's own string struct
-		_assignNativeString = (StringAssignType) Marshal.GetDelegateForFunctionPointer((IntPtr) (gameBase.ToInt64() + 0x471A0), typeof(StringAssignType));
+		_assignNativeString = (StringAssignType) Marshal.GetDelegateForFunctionPointer((IntPtr) (gameBase.ToInt64() + 0x470D0), typeof(StringAssignType));
 
 		// Hook MonoManager::AwakeFromLoad
-		IntPtr awakeFromLoad = (IntPtr) (gameBase.ToInt64() + 0x83D640);
+		IntPtr awakeFromLoad = (IntPtr) (gameBase.ToInt64() + 0x83E670);
 		var onAwakeFromLoad = Marshal.GetFunctionPointerForDelegate(new AwakeFromLoadDelegate(OnAwakeFromLoad));
 		var detourAwakeFromLoad = new NativeDetour(awakeFromLoad, onAwakeFromLoad, new NativeDetourConfig {ManualApply = true});
 		_origAwakeFromLoad = detourAwakeFromLoad.GenerateTrampoline<AwakeFromLoadDelegate>();
 		detourAwakeFromLoad.Apply();
 
 		// Hook ReadStringFromFile
-		IntPtr readStringFromFile = (IntPtr) (gameBase.ToInt64() + 0x711650);
+		IntPtr readStringFromFile = (IntPtr) (gameBase.ToInt64() + 0x712720);
 		var onReadStringFromFile = Marshal.GetFunctionPointerForDelegate(new ReadStringFromFileDelegate(OnReadStringFromFile));
 		_detourReadStringFromFile = new NativeDetour(readStringFromFile, onReadStringFromFile, new NativeDetourConfig {ManualApply = true});
 		_origReadStringFromFile = _detourReadStringFromFile.GenerateTrampoline<ReadStringFromFileDelegate>();
 		_detourReadStringFromFile.Apply();
 
 		// Hook IsFileCreated
-		IntPtr isFileCreated = (IntPtr) (gameBase.ToInt64() + 0x712A50);
+		IntPtr isFileCreated = (IntPtr) (gameBase.ToInt64() + 0x713B20);
 		var onIsFileCreated = Marshal.GetFunctionPointerForDelegate(new IsFileCreatedDelegate(OnIsFileCreated));
 		_detourIsFileCreated = new NativeDetour(isFileCreated, onIsFileCreated, new NativeDetourConfig {ManualApply = true});
 		_origIsFileCreated = _detourIsFileCreated.GenerateTrampoline<IsFileCreatedDelegate>();
