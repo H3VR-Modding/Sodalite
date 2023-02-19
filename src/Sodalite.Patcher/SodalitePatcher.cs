@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -55,8 +56,21 @@ internal static class SodalitePatcher
 			Type c = asm.GetType("Steamworks.NativeMethods");
 			c.GetMethod("SteamAPI_Init")!.Invoke(null, new object[0]);
 
-			// Get the pointers to the native code function
-			IntPtr steamworks = DynDll.OpenLibrary("CSteamworks.dll");
+			// Get the base address for the Steamworks module
+			IntPtr steamworks = IntPtr.Zero;
+			foreach (ProcessModule module in Process.GetCurrentProcess().Modules)
+			{
+				if (module.ModuleName != "CSteamworks.dll") continue;
+
+				steamworks = module.BaseAddress;
+				break;
+			}
+
+			// Shouldn't happen but just in case.
+			// It's not really worth throwing an exception here because that would cause all mods to not load and this isn't a critical error
+			if (steamworks == IntPtr.Zero) return;
+
+			// Get the address for the get steam id function
 			IntPtr getUserIdFunction = steamworks.GetFunction("ISteamUser_GetSteamID");
 
 			// Check if we want to spoof or not by trying to find the config value in the file

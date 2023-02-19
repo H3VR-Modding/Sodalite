@@ -5,12 +5,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using MonoMod.RuntimeDetour;
-using MonoMod.Utils;
 
 namespace Sodalite.Patcher;
 
@@ -57,7 +57,8 @@ public static class FixPluginTypesSerialization
 		}
 
 		// Get the base address of the running process
-		IntPtr gameBase = DynDll.OpenLibrary("h3vr.exe");
+		ProcessModule module = Process.GetCurrentProcess().MainModule;
+		IntPtr gameBase = module.BaseAddress;
 
 		// Create a delegate for core::StringStorageDefault<char>::assign so we can use it in a hook later
 		// This function assigns a string value to Unity's own string struct
