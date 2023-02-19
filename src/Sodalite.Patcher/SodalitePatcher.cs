@@ -26,6 +26,8 @@ internal static class SodalitePatcher
 
 	private static ulong SessionId { get; set; }
 
+	internal static ManualLogSource Logger = BepInEx.Logging.Logger.CreateLogSource("Sodalite");
+
 	static SodalitePatcher()
 	{
 		// Generate a theoretically valid Steam ID following the format from Valve's documentation
@@ -67,11 +69,16 @@ internal static class SodalitePatcher
 			}
 
 			// Shouldn't happen but just in case.
-			// It's not really worth throwing an exception here because that would cause all mods to not load and this isn't a critical error
-			if (steamworks == IntPtr.Zero) return;
+			if (steamworks == IntPtr.Zero)
+			{
+				Logger.LogError("[SpoofSteamUserID] Steamworks module not found?? SpoofSteamUserID won't work.");
+				return;
+			}
 
 			// Get the address for the get steam id function
 			IntPtr getUserIdFunction = steamworks.GetFunction("ISteamUser_GetSteamID");
+			Logger.LogDebug($"[SpoofSteamUserID] Steamworks base address: {(int) steamworks:X}");
+			Logger.LogDebug($"[SpoofSteamUserID] ISteamUser_GetSteamID address: {(int) getUserIdFunction:X}");
 
 			// Check if we want to spoof or not by trying to find the config value in the file
 			bool applyHook = false;

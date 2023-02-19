@@ -56,30 +56,41 @@ public static class FixPluginTypesSerialization
 			}
 		}
 
+		SodalitePatcher.Logger.LogDebug($"[FixPluginTypesSerialization] Discovered {PluginPaths.Count} plugin assemblies");
+
 		// Get the base address of the running process
 		ProcessModule module = Process.GetCurrentProcess().MainModule;
 		IntPtr gameBase = module.BaseAddress;
+		SodalitePatcher.Logger.LogDebug($"[FixPluginTypesSerialization] Game base address: {(int) gameBase:X}");
+
+		// Check if we're operating in 5.6.3 or 5.6.7 because the function offsets will change slightly
+		bool isUnity567 = module.FileVersionInfo.FileVersion.Contains("5.6.7");
+		SodalitePatcher.Logger.LogDebug($"[FixPluginTypesSerialization] Using offsets for Unity {(isUnity567 ? "5.6.7" : "5.6.3")}");
+		int offsetStringAssign = isUnity567 ? 0x470D0 : 0x471A0;
+		int offsetMonoManagerAwake = isUnity567 ? 0x83E670 : 0x83D640;
+		int offsetReadStringFromFile = isUnity567 ? 0x712720 : 0x711650;
+		int offsetIsFileCreated = isUnity567 ? 0x713B20 : 0x712A50;
 
 		// Create a delegate for core::StringStorageDefault<char>::assign so we can use it in a hook later
 		// This function assigns a string value to Unity's own string struct
-		_assignNativeString = (StringAssignType) Marshal.GetDelegateForFunctionPointer((IntPtr) (gameBase.ToInt64() + 0x470D0), typeof(StringAssignType));
+		_assignNativeString = (StringAssignType) Marshal.GetDelegateForFunctionPointer((IntPtr) (gameBase.ToInt64() + offsetStringAssign), typeof(StringAssignType));
 
 		// Hook MonoManager::AwakeFromLoad
-		IntPtr awakeFromLoad = (IntPtr) (gameBase.ToInt64() + 0x83E670);
+		IntPtr awakeFromLoad = (IntPtr) (gameBase.ToInt64() + offsetMonoManagerAwake);
 		var onAwakeFromLoad = Marshal.GetFunctionPointerForDelegate(new AwakeFromLoadDelegate(OnAwakeFromLoad));
 		var detourAwakeFromLoad = new NativeDetour(awakeFromLoad, onAwakeFromLoad, new NativeDetourConfig {ManualApply = true});
 		_origAwakeFromLoad = detourAwakeFromLoad.GenerateTrampoline<AwakeFromLoadDelegate>();
 		detourAwakeFromLoad.Apply();
 
 		// Hook ReadStringFromFile
-		IntPtr readStringFromFile = (IntPtr) (gameBase.ToInt64() + 0x712720);
+		IntPtr readStringFromFile = (IntPtr) (gameBase.ToInt64() + offsetReadStringFromFile);
 		var onReadStringFromFile = Marshal.GetFunctionPointerForDelegate(new ReadStringFromFileDelegate(OnReadStringFromFile));
 		_detourReadStringFromFile = new NativeDetour(readStringFromFile, onReadStringFromFile, new NativeDetourConfig {ManualApply = true});
 		_origReadStringFromFile = _detourReadStringFromFile.GenerateTrampoline<ReadStringFromFileDelegate>();
 		_detourReadStringFromFile.Apply();
 
 		// Hook IsFileCreated
-		IntPtr isFileCreated = (IntPtr) (gameBase.ToInt64() + 0x713B20);
+		IntPtr isFileCreated = (IntPtr) (gameBase.ToInt64() + offsetIsFileCreated);
 		var onIsFileCreated = Marshal.GetFunctionPointerForDelegate(new IsFileCreatedDelegate(OnIsFileCreated));
 		_detourIsFileCreated = new NativeDetour(isFileCreated, onIsFileCreated, new NativeDetourConfig {ManualApply = true});
 		_origIsFileCreated = _detourIsFileCreated.GenerateTrampoline<IsFileCreatedDelegate>();
