@@ -11,11 +11,6 @@ namespace Sodalite.Api;
 public static class PlayerAPI
 {
 	/// <summary>
-	///     Call the TakeLock method to lock the player from snap turning and dispose of the returned value to re-enable.
-	/// </summary>
-	public static readonly SafeMultiLock SnapTurnDisabled = new();
-
-	/// <summary>
 	///     Returns a list of the objects the player currently has equipped.
 	///     This includes objects in the player's hands, in quickbelt slots, or in an equipped backpack slot.
 	/// </summary>
@@ -60,22 +55,4 @@ public static class PlayerAPI
 		// Return the objects as a read only collection
 		return objects;
 	}
-
-#if RUNTIME
-	static PlayerAPI()
-	{
-		On.FistVR.FVRMovementManager.TurnClockWise += FVRMovementManagerOnTurnClockWise;
-		On.FistVR.FVRMovementManager.TurnCounterClockWise += FVRMovementManagerOnTurnCounterClockWise;
-	}
-
-	private static void FVRMovementManagerOnTurnClockWise(On.FistVR.FVRMovementManager.orig_TurnClockWise orig, FVRMovementManager self)
-	{
-		if (!SnapTurnDisabled.IsLocked) orig(self);
-	}
-
-	private static void FVRMovementManagerOnTurnCounterClockWise(On.FistVR.FVRMovementManager.orig_TurnCounterClockWise orig, FVRMovementManager self)
-	{
-		if (!SnapTurnDisabled.IsLocked) orig(self);
-	}
-#endif
 }
