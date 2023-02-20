@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS1591
+#pragma warning disable CS1591
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,9 +21,14 @@ public sealed class UniversalModPanelLogPage : UniversalModPanelPage, ISodaliteS
 		[LogLevel.Debug] = "grey"
 	};
 	[SerializeField] private Text Log = null!;
-	[SerializeField] private int MaxLines;
+	[SerializeField] private int MaxLines = 0;
 	private int _offset;
 	private float _scrollValue;
+
+	private void Awake()
+	{
+		UpdateText(true);
+	}
 
 	public void Scroll(Vector2 x)
 	{

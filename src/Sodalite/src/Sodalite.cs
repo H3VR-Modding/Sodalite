@@ -6,6 +6,7 @@ using System.Reflection;
 using BepInEx;
 using BepInEx.Logging;
 using FistVR;
+using HarmonyLib;
 using MonoMod.RuntimeDetour;
 using Sodalite.Api;
 using Sodalite.ModPanel;
@@ -48,9 +49,11 @@ public static class SodaliteConstants
 public class Sodalite : BaseUnityPlugin, ILogListener
 {
 	private static ManualLogSource? _logger;
+	private static SodaliteConfig? _config;
 
 	// Static stuff
 	private static readonly string BasePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+
 	// Private fields
 	internal static List<LogEventArgs> LogEvents = null!;
 	internal static Dictionary<LogEventArgs, int> LogEventLineCount = null!;
@@ -59,7 +62,8 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	private GameObject? _modPanelPrefab;
 
 	// ReSharper disable once UnusedMember.Global
-	internal static ManualLogSource StaticLogger => _logger ?? throw new InvalidOperationException("Cannot get logger before the behaviour is initialized!");
+	internal new static ManualLogSource Logger => _logger ?? throw new InvalidOperationException("Cannot get logger before the behaviour is initialized!");
+	internal new static SodaliteConfig Config => _config ?? throw new InvalidOperationException("Can't get config before the behaviour is initialized!");
 
 	/// <summary>
 	///     Initialization code for Sodalite
@@ -67,9 +71,8 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	private void Awake()
 	{
 		// Register config values
-		Config.Bind("Privacy", "SpoofSteamUserID", false, "Randomizes your Steam User ID on every startup (requires restart)");
-
-		UniversalModPanel.RegisterPluginSettings(Info, Config);
+		_config = new SodaliteConfig(base.Config);
+		UniversalModPanel.RegisterPluginSettings(Info, Config.SpoofSteamUserID);
 
 		// Hook a call to a compiler-generated method and replace it with one that doesn't use an unsafe GetTypes call
 		// ReSharper disable once ObjectCreationAsStatement
@@ -79,13 +82,13 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 		);
 
 		// Set our logger so it's accessible from anywhere
-		_logger = Logger;
+		_logger = base.Logger;
 
 		// Register ourselves as the new log listener and try to grab what's already been captured
 		BepInEx.Logging.Logger.Listeners.Add(this);
 
 		// Apply Harmony patches
-		Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), SodaliteConstants.Guid);
+		Harmony.CreateAndPatchAll(typeof(Hooks), SodaliteConstants.Guid);
 
 		// Setup the rest of the in-game log page
 		LogEvents = SodalitePatcher.LogBuffer.LogEvents;
@@ -164,7 +167,6 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	{
 		var canvasTransform = panel.transform.Find("OptionsCanvas_0_Main/Canvas");
 		_modPanelComponent = Instantiate(_modPanelPrefab, canvasTransform.position, canvasTransform.rotation, canvasTransform.parent)!.GetComponent<UniversalModPanel>();
-		_modPanelComponent.LogPage.UpdateText(true);
 		Destroy(canvasTransform.gameObject);
 	}
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using FistVR;
-using HarmonyLib;
 using Sodalite.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
@@ -161,23 +160,22 @@ public static class WristMenuAPI
 		}
 	}
 
-	static WristMenuAPI()
-	{
-		// Wrist Menu stuff
-		WristMenuButtons.ItemAdded += AddWristMenuButton;
-		WristMenuButtons.ItemRemoved += RemoveWristMenuButton;
-	}
-
-	[HarmonyPatch(typeof(FVRWristMenu2), nameof(FVRWristMenu2.Awake)), HarmonyPostfix]
-	private static void FVRWriteMenuOnAwake(FVRWristMenu2 __instance)
+	internal static void WristMenuAwake(FVRWristMenu2 instance)
 	{
 		// Keep our reference to the wrist menu up to date
-		Instance2 = __instance;
+		Instance2 = instance;
 		ExistingButtons.Clear();
 
 		// For all the registered buttons, add them
 		foreach (var button in WristMenuButtons)
 			AddWristMenuButton(button);
+	}
+
+	static WristMenuAPI()
+	{
+		// Wrist Menu stuff
+		WristMenuButtons.ItemAdded += AddWristMenuButton;
+		WristMenuButtons.ItemRemoved += RemoveWristMenuButton;
 	}
 }
 

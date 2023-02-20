@@ -42,12 +42,16 @@ public class UniversalModPanel : MonoBehaviour
 	[SerializeField] private Button BackButton = null!;
 	[SerializeField] private RectTransform HomePage = null!;
 	[SerializeField] private GameObject HomeScreenButtonPrefab = null!;
-	[SerializeField] private Button PaginatePreviousButton = null!;
-	[SerializeField] private Button PaginateNextButton = null!;
-	[SerializeField] private Text PaginateText = null!;
 	[SerializeField] private Text Breadcrumb = null!;
 	[SerializeField] private List<UniversalModPanelPage> SerializedPages = null!;
 	[SerializeField] internal UniversalModPanelLogPage LogPage = null!;
+
+#pragma warning disable CS0414
+	// A handful of buttons that have ended up going unused for now
+	[SerializeField] private Button PaginatePreviousButton = null!;
+	[SerializeField] private Button PaginateNextButton = null!;
+	[SerializeField] private Text PaginateText = null!;
+#pragma warning restore CS0414
 
 	internal static readonly Dictionary<PluginInfo, ConfigEntryBase[]> RegisteredConfigs = new();
 	internal static readonly Dictionary<ConfigFieldBase, Func<ConfigEntryBase, bool>> RegisteredInputFields = new();

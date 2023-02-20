@@ -1,7 +1,5 @@
 ﻿using System;
-using HarmonyLib;
 using Sodalite.Utilities;
-using Steamworks;
 
 namespace Sodalite.Api;
 
@@ -26,23 +24,4 @@ public static class LeaderboardAPI
 	{
 		return LeaderboardDisabled.TakeLock();
 	}
-
-	[HarmonyPatch(typeof(SteamUserStats), nameof(SteamUserStats.UploadLeaderboardScore)), HarmonyPrefix]
-	private static bool OnSteamUserStatsUploadLeaderboardScore(ref SteamAPICall_t __result)
-	{
-		// Stop scores from uploading if locked
-		if (!LeaderboardDisabled.IsLocked) return true;
-		__result = SteamAPICall_t.Invalid;
-		return false;
-	}
-
-	[HarmonyPatch(typeof(SteamUserStats), nameof(SteamUserStats.FindOrCreateLeaderboard)), HarmonyPrefix]
-	private static bool OnSteamUserStatsFindOrCreateLeaderboard(string pchLeaderboardName, ref SteamAPICall_t __result)
-	{
-		// Stop new leaderboards from being made
-		if (!LeaderboardDisabled.IsLocked) return true;
-		__result = SteamUserStats.FindLeaderboard(pchLeaderboardName);
-		return false;
-	}
-
 }
