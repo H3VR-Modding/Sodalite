@@ -14,9 +14,9 @@ mkdir TEMP/Sodalite/patchers
 cp manifest.json TEMP/manifest.json
 cp icon.png TEMP/icon.png
 cp ../README.md TEMP/README.md
-cp ../src/Sodalite/bin/Runtime/net35/Sodalite.dll TEMP/Sodalite/plugins/Sodalite.dll
-cp ../src/Sodalite/bin/Runtime/net35/res/universalpanel TEMP/Sodalite/plugins/universalpanel
-cp ../src/Sodalite/bin/Runtime/net35/Sodalite.Patcher.dll TEMP/Sodalite/patchers/Sodalite.Patcher.dll
+cp ../src/Sodalite/bin/Release/net35/Sodalite.dll TEMP/Sodalite/plugins/Sodalite.dll
+cp ../src/Sodalite/bin/Release/net35/res/universalpanel TEMP/Sodalite/plugins/universalpanel
+cp ../src/Sodalite/bin/Release/net35/Sodalite.Patcher.dll TEMP/Sodalite/patchers/Sodalite.Patcher.dll
 
 # Modify the version number
 sed -i "s/{VERSION}/$VERSION/g" TEMP/manifest.json
