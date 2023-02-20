@@ -17,7 +17,7 @@
         <PackageProjectUrl>https://github.com/H3VR-Modding/Sodalite</PackageProjectUrl>
         <RepositoryUrl>https://github.com/H3VR-Modding/Sodalite.git</RepositoryUrl>
         <RootNamespace>Sodalite.Patcher</RootNamespace>
-        <PackageVersion>1.4.0</PackageVersion>
+        <PackageVersion>1.4.2</PackageVersion>
         <Configurations>Release</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
