@@ -1,4 +1,5 @@
 ﻿using System;
+using HarmonyLib;
 using Sodalite.Utilities;
 using Steamworks;
 
@@ -14,19 +15,6 @@ public static class LeaderboardAPI
 	/// </summary>
 	public static readonly SafeMultiLock LeaderboardDisabled = new();
 
-#if RUNTIME
-	static LeaderboardAPI()
-	{
-		// Disable any form of Steam leaderboard uploading
-		On.Steamworks.SteamUserStats.UploadLeaderboardScore += (orig, leaderboard, method, score, details, count) =>
-			LeaderboardDisabled.IsLocked ? SteamAPICall_t.Invalid : orig(leaderboard, method, score, details, count);
-
-		// Also prevent the player from creating new Leaderboards.
-		On.Steamworks.SteamUserStats.FindOrCreateLeaderboard += (orig, name, method, type) =>
-			LeaderboardDisabled.IsLocked ? SteamUserStats.FindLeaderboard(name) : orig(name, method, type);
-	}
-#endif
-
 	/// <summary>
 	///     Calling this method will let you disable the Steam leaderboards. Disposing of the object returned by
 	///     this method will re-enable the leaderboards (as long as no other mod is holding their own lock)
@@ -38,4 +26,23 @@ public static class LeaderboardAPI
 	{
 		return LeaderboardDisabled.TakeLock();
 	}
+
+	[HarmonyPatch(typeof(SteamUserStats), nameof(SteamUserStats.UploadLeaderboardScore)), HarmonyPrefix]
+	private static bool OnSteamUserStatsUploadLeaderboardScore(ref SteamAPICall_t __result)
+	{
+		// Stop scores from uploading if locked
+		if (!LeaderboardDisabled.IsLocked) return true;
+		__result = SteamAPICall_t.Invalid;
+		return false;
+	}
+
+	[HarmonyPatch(typeof(SteamUserStats), nameof(SteamUserStats.FindOrCreateLeaderboard)), HarmonyPrefix]
+	private static bool OnSteamUserStatsFindOrCreateLeaderboard(string pchLeaderboardName, ref SteamAPICall_t __result)
+	{
+		// Stop new leaderboards from being made
+		if (!LeaderboardDisabled.IsLocked) return true;
+		__result = SteamUserStats.FindLeaderboard(pchLeaderboardName);
+		return false;
+	}
+
 }

@@ -84,6 +84,9 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 		// Register ourselves as the new log listener and try to grab what's already been captured
 		BepInEx.Logging.Logger.Listeners.Add(this);
 
+		// Apply Harmony patches
+		Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), SodaliteConstants.Guid);
+
 		// Setup the rest of the in-game log page
 		LogEvents = SodalitePatcher.LogBuffer.LogEvents;
 		LogEventLineCount = new Dictionary<LogEventArgs, int>();

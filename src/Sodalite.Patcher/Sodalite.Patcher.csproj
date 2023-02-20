@@ -18,17 +18,8 @@
         <RepositoryUrl>https://github.com/H3VR-Modding/Sodalite.git</RepositoryUrl>
         <RootNamespace>Sodalite.Patcher</RootNamespace>
         <PackageVersion>1.4.0</PackageVersion>
-        <Configurations>Runtime;Editor</Configurations>
+        <Configurations>Release</Configurations>
         <Platforms>AnyCPU</Platforms>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Runtime' ">
-      <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Editor' ">
-      <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
-      <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
     </PropertyGroup>
 
     <ItemGroup>

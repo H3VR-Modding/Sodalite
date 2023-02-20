@@ -74,8 +74,6 @@ public static class GameAPI
 		}
 	}
 
-
-#if RUNTIME
 	static GameAPI()
 	{
 		// Hook Resources.LoadAll and create a trampoline for the original
@@ -98,5 +96,4 @@ public static class GameAPI
 		// Then return the modified result
 		return original;
 	}
-#endif
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FistVR;
+using HarmonyLib;
 using Sodalite.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,7 +27,7 @@ public static class WristMenuAPI
 	{
 		get
 		{
-			Sodalite.StaticLogger.LogWarning("Mod tried to access WristMenuAPI.Instance but this is now an obsolete property. If an error occurs immediately after this message it's probably related to this. Please update your mod to use FVRWristMenu2.");
+			Sodalite.Logger.LogWarning("Mod tried to access WristMenuAPI.Instance but this is now an obsolete property. If an error occurs immediately after this message it's probably related to this. Please update your mod to use FVRWristMenu2.");
 			return null;
 		}
 	}
@@ -160,29 +161,24 @@ public static class WristMenuAPI
 		}
 	}
 
-#if RUNTIME
 	static WristMenuAPI()
 	{
 		// Wrist Menu stuff
-		On.FistVR.FVRWristMenu2.Awake += FVRWristMenuOnAwake;
 		WristMenuButtons.ItemAdded += AddWristMenuButton;
 		WristMenuButtons.ItemRemoved += RemoveWristMenuButton;
 	}
 
-	private static void FVRWristMenuOnAwake(On.FistVR.FVRWristMenu2.orig_Awake orig, FVRWristMenu2 self)
+	[HarmonyPatch(typeof(FVRWristMenu2), nameof(FVRWristMenu2.Awake)), HarmonyPostfix]
+	private static void FVRWriteMenuOnAwake(FVRWristMenu2 __instance)
 	{
-		// Note to self; this is required and very important.
-		orig(self);
-
 		// Keep our reference to the wrist menu up to date
-		Instance2 = self;
+		Instance2 = __instance;
 		ExistingButtons.Clear();
 
 		// For all the registered buttons, add them
 		foreach (var button in WristMenuButtons)
 			AddWristMenuButton(button);
 	}
-#endif
 }
 
 /// <summary>
