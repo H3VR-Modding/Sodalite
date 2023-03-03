@@ -7,6 +7,7 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <DebugType>Full</DebugType>
+        <Optimize>false</Optimize>
         <GenerateDocumentationFile>bin\Runtime\Sodalite.xml</GenerateDocumentationFile>
 
         <PackageId>Sodalite</PackageId>
