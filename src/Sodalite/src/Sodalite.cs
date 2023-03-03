@@ -108,7 +108,7 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 			// Make a new LockablePanel for the console panel
 			_modPanel = new LockablePanel();
 			_modPanel.Configure += ConfigureModPanel;
-			_modPanel.TextureOverride = SodaliteUtils.LoadTextureFromBytes(Assembly.GetExecutingAssembly().GetResource("LogPanel.png"));
+			_modPanel.TextureOverride = bundle.LoadAsset<Texture2D>("LogPanel");
 			WristMenuAPI.Buttons.Add(new WristMenuButton("Spawn Mod Panel", int.MaxValue, SpawnModPanel));
 		}
 		else
