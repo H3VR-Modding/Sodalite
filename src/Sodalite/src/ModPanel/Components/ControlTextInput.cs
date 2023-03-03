@@ -34,6 +34,7 @@ public class SodaliteTextInput : MonoBehaviour
 	private void OnKeyboardDone(VREvent_t args)
 	{
 		if (!_isKeyboardOpen) return;
+		_isKeyboardOpen = false;
 		StringBuilder sb = new StringBuilder(1024);
 		SteamVR.instance.overlay.GetKeyboardText(sb, 1024);
 		string text = sb.ToString();
