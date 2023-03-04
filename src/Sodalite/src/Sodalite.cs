@@ -109,7 +109,7 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 			_modPanel = new LockablePanel();
 			_modPanel.Configure += ConfigureModPanel;
 			_modPanel.TextureOverride = bundle.LoadAsset<Texture2D>("LogPanel");
-			WristMenuAPI.Buttons.Add(new WristMenuButton("Spawn Mod Panel", int.MaxValue, SpawnModPanel));
+			WristMenuAPI.SpawnSection.Buttons.Add(new WristMenuButton("Spawn Mod Panel", int.MaxValue - 1, SpawnModPanel));
 		}
 		else
 		{

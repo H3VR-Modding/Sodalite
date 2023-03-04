@@ -5,10 +5,6 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <DebugType>Full</DebugType>
-        <Optimize>false</Optimize>
-        <GenerateDocumentationFile>bin\Runtime\Sodalite.xml</GenerateDocumentationFile>
 
         <PackageId>Sodalite</PackageId>
         <Title>Sodalite - Modding Toolkit for H3VR</Title>
@@ -20,8 +16,20 @@
         <RepositoryUrl>https://github.com/H3VR-Modding/Sodalite.git</RepositoryUrl>
         <RootNamespace>Sodalite</RootNamespace>
         <PackageVersion>1.4.2</PackageVersion>
-        <Configurations>Release</Configurations>
+        <Configurations>Release;Debug</Configurations>
         <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <Optimize>true</Optimize>
+        <DebugSymbols>false</DebugSymbols>
+        <DebugType>none</DebugType>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <DocumentationFile>bin\Release\Sodalite.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DebugType>full</DebugType>
     </PropertyGroup>
 
     <ItemGroup>

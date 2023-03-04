@@ -194,4 +194,13 @@ public static class SodaliteUtils
 
 		return count + 1;
 	}
+
+	/// <summary>
+	/// Enumerates the children of a game object
+	/// </summary>
+	public static IEnumerable<GameObject> EnumerateChildren(this GameObject go)
+	{
+		Transform transform = go.transform;
+		for (int i = 0; i < transform.childCount; i++) yield return transform.GetChild(i).gameObject;
+	}
 }
