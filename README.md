@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This project has moved, see the new repo here: https://git.nortel.cloud/h3vr-modding/Sodalite.
+
 # Sodalite
 ![Pre-release version](https://img.shields.io/github/v/release/H3VR-Modding/Sodalite?include_prereleases&label=version&style=flat-square)
 [![Discord](https://img.shields.io/discord/777351065950879744?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&style=flat-square)](https://discord.gg/DCsdXk4r9A)
