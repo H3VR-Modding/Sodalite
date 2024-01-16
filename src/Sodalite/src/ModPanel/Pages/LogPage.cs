@@ -95,6 +95,8 @@ public sealed class UniversalModPanelLogPage : UniversalModPanelPage, ISodaliteS
 
 	public void RebuildFilterCache()
 	{
+		if (Sodalite.LogEvents == null) return;
+
 		// Clear our current offset and cache, we can't keep it when changing the messages
 		_offset = 0;
 		_cache.Clear();

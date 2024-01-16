@@ -80,7 +80,8 @@ public abstract class WristMenuSectionProxy
 		_existingButtons.Add(buttonTransform.gameObject, button);
 
 		// Change the text on the button
-		buttonTransform.GetComponentInChildren<Text>().text = button.Text;
+		Text textComponent = buttonTransform.GetComponentInChildren<Text>();
+		textComponent.text = button.Text;
 
 		// Remove any existing listeners on the button by assigning a new onClick event and add our own listener
 		Button buttonButton = buttonTransform.GetComponent<Button>();
@@ -91,6 +92,8 @@ public abstract class WristMenuSectionProxy
 			SM.PlayGlobalUISound(SM.GlobalUISound.Beep, buttonTransform.position);
 			button.CallOnClick(WristMenuAPI.Instance2!.m_currentHand.OtherHand);
 		});
+
+		button.CallOnCreate(buttonTransform.gameObject, textComponent);
 	}
 
 	// Used to resize the section background and reorder the buttons inside it

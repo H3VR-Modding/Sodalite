@@ -55,7 +55,7 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	private static readonly string BasePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
 
 	// Private fields
-	internal static List<LogEventArgs> LogEvents = null!;
+	internal static List<LogEventArgs>? LogEvents;
 	internal static Dictionary<LogEventArgs, int> LogEventLineCount = null!;
 	private LockablePanel _modPanel = null!;
 	private UniversalModPanel? _modPanelComponent;
@@ -124,7 +124,7 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 			var beta = SteamApps.GetCurrentBetaName(out var betaName, 128);
 			GameAPI.BetaName = beta ? betaName : string.Empty;
 			GameAPI.BuildId = SteamApps.GetAppBuildId();
-			Logger.LogMessage($"Game build ID: {GameAPI.BuildId} ({(beta ? betaName : "main")}).");
+			Logger.LogInfo($"Game build ID: {GameAPI.BuildId} ({(beta ? betaName : "main")}).");
 		}
 		catch (InvalidOperationException)
 		{
@@ -138,6 +138,7 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 		GM.SetRunningModded();
 
 		// Now that all plugins should have had a chance to setup their configs, scan for them
+		ModsAPI.Discover();
 		UniversalModPanel.RegisterUnregisteredPluginConfigs();
 
 		// Pull the button sprite and font for our use later
@@ -172,6 +173,8 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 
 	void ILogListener.LogEvent(object sender, LogEventArgs eventArgs)
 	{
+		if (LogEvents == null) return;
+
 		LogEvents.Add(eventArgs);
 		LogEventLineCount.Add(eventArgs, eventArgs.ToString().CountLines());
 		if (_modPanelComponent) _modPanelComponent!.LogPage.LogEvent(eventArgs);
@@ -180,7 +183,7 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	void IDisposable.Dispose()
 	{
 		BepInEx.Logging.Logger.Listeners.Remove(this);
-		LogEvents.Clear();
+		LogEvents?.Clear();
 	}
 
 	#endregion
