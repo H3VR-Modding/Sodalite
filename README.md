@@ -1,7 +1,4 @@
 # Sodalite
-![Pre-release version](https://img.shields.io/github/v/release/H3VR-Modding/Sodalite?include_prereleases&label=version&style=flat-square)
-[![Discord](https://img.shields.io/discord/777351065950879744?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&style=flat-square)](https://discord.gg/DCsdXk4r9A)
-
 _Sodalite_ is a [BepInEx](https://github.com/BepInEx/BepInEx) plugin for *[Hot Dogs, Horseshoes & Hand Grenades](https://store.steampowered.com/app/450540/Hot_Dogs_Horseshoes__Hand_Grenades/)* (known as H3VR) which provides tools and modding APIs for the game.
 
 ## What's in this plugin
@@ -14,6 +11,7 @@ Accessible from the wrist menu, the universal panel contains the bepinex log and
   - The Player
   - The Vault
   - Wrist Menu
+  - What other mods are installed
 - **UI Widget system:**  
 Programatic creation of UIs for easy development
 - **Other helpful extensions:**
