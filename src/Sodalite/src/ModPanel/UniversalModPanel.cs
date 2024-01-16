@@ -5,6 +5,7 @@ using System.Linq;
 using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Configuration;
+using Sodalite.Api;
 using Sodalite.ModPanel.Pages;
 using UnityEngine;
 using UnityEngine.UI;
@@ -57,6 +58,7 @@ public class UniversalModPanel : MonoBehaviour
 	internal static readonly Dictionary<ConfigFieldBase, Func<ConfigEntryBase, bool>> RegisteredInputFields = new();
 	private static readonly Dictionary<string, UniversalModPanelPage> RegisteredCustomPages = new();
 	private static readonly Dictionary<string, string> CustomHomepageButtons = new();
+	internal static readonly HashSet<PluginInfo> PluginsWithDocumentation = new();
 
 	private readonly Dictionary<string, UniversalModPanelPage> _pages = new();
 	private readonly Stack<UniversalModPanelPage> _stack = new();
@@ -273,8 +275,11 @@ public class UniversalModPanel : MonoBehaviour
 		// For each plugin just try to add all their keys
 		foreach (var plugin in Chainloader.ManagerObject.GetComponents<BaseUnityPlugin>())
 		{
-			if (RegisteredConfigs.ContainsKey(plugin.Info)) continue;
-			RegisterPluginSettings(plugin.Info, plugin.Config);
+			if (!RegisteredConfigs.ContainsKey(plugin.Info)) RegisterPluginSettings(plugin.Info, plugin.Config);
+
+			string packageName = ModsAPI.PluginToPackageLookup[plugin.Info].Name;
+			string docsPath = Path.Combine(Path.Combine(Paths.BepInExRootPath, "docs"), packageName);
+			if (Directory.Exists(docsPath)) PluginsWithDocumentation.Add(plugin.Info);
 		}
 
 		// If the panel already exists in the scene force the plugin list to redraw

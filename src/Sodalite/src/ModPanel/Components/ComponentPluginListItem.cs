@@ -20,6 +20,7 @@ public class SodalitePluginListItem : MonoBehaviour
 	public Text PluginDescription = null!;
 	public Image PluginIcon = null!;
 	public Button PluginSettings = null!;
+	public Button DocumentationButton = null!;
 
 	public void ApplyFrom(PluginInfo plugin)
 	{
@@ -71,8 +72,19 @@ public class SodalitePluginListItem : MonoBehaviour
 
 		PluginIcon.sprite = icon;
 
-		// If this plugin has config entries registered enable the button
-		PluginSettings.gameObject.SetActive(UniversalModPanel.RegisteredConfigs.ContainsKey(plugin));
+		// Setup the buttons
 		PluginSettings.onClick.AddListener(() => UniversalModPanel.Instance.GetPageOfType<ModPanelConfigPage>()!.NavigateHere(plugin));
+		if (!UniversalModPanel.RegisteredConfigs.ContainsKey(plugin))
+		{
+			PluginSettings.interactable = false;
+			PluginSettings.transform.GetChild(0).GetComponent<Image>().color = new Color(0.3f, 0.3f, 0.3f);
+		}
+
+		DocumentationButton.onClick.AddListener(() => Sodalite.Logger.LogInfo("Stuff!"));
+		if (!UniversalModPanel.PluginsWithDocumentation.Contains(plugin))
+		{
+			DocumentationButton.interactable = false;
+			DocumentationButton.transform.GetChild(0).GetComponent<Image>().color = new Color(0.3f, 0.3f, 0.3f);
+		}
 	}
 }
