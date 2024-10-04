@@ -81,7 +81,7 @@ public class SodalitePluginListItem : MonoBehaviour
 		}
 
 		DocumentationButton.onClick.AddListener(() => Sodalite.Logger.LogInfo("Stuff!"));
-		if (!UniversalModPanel.PluginsWithDocumentation.Contains(plugin))
+		if (/*!UniversalModPanel.PluginsWithDocumentation.Contains(plugin)*/ true)
 		{
 			DocumentationButton.interactable = false;
 			DocumentationButton.transform.GetChild(0).GetComponent<Image>().color = new Color(0.3f, 0.3f, 0.3f);

@@ -89,7 +89,7 @@ public static class ModsAPI
 			Sodalite.Logger.LogDebug("[ModsAPI] - Package: " + package);
 			foreach (var plugin in package.Plugins)
 			{
-				Sodalite.Logger.LogDebug("[ModsApi]   - Plugin: " + plugin.Metadata.GUID);
+				Sodalite.Logger.LogDebug("[ModsApi]   - Plugin: " + plugin.Metadata.GUID + " " + plugin.Metadata.Version + " (" + Path.GetFileName(plugin.Location) + ")");
 			}
 		}
 	}
