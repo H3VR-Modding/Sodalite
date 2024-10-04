@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/ash-hat/thunderstore.manifest/v1/schema.json",
   "name": "Sodalite",
   "version_number": "{VERSION}",
-  "website_url": "https://git.nortel.cloud/h3vr-modding/Sodalite",
+  "website_url": "https://github.com/H3VR-Modding/Sodalite",
   "description": "Modding API and tools for H3VR code plugins",
   "dependencies": [
     "BepInEx-BepInExPack_H3VR-5.4.1700"

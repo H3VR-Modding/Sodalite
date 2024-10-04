@@ -70,6 +70,15 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 	/// </summary>
 	private void Awake()
 	{
+		// Setup the rest of the in-game log page
+		LogEvents = SodalitePatcher.LogBuffer.LogEvents;
+		LogEventLineCount = new Dictionary<LogEventArgs, int>();
+		foreach (var evt in LogEvents)
+		{
+			LogEventLineCount[evt] = evt.ToString().CountLines();
+		}
+		SodalitePatcher.LogBuffer.Dispose();
+
 		// Register config values
 		_config = new SodaliteConfig(base.Config);
 		UniversalModPanel.RegisterPluginSettings(Info, Config.SpoofSteamUserID);
@@ -89,15 +98,6 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 
 		// Apply Harmony patches
 		Harmony.CreateAndPatchAll(typeof(Hooks), SodaliteConstants.Guid);
-
-		// Setup the rest of the in-game log page
-		LogEvents = SodalitePatcher.LogBuffer.LogEvents;
-		LogEventLineCount = new Dictionary<LogEventArgs, int>();
-		foreach (var evt in LogEvents)
-		{
-			LogEventLineCount[evt] = evt.ToString().CountLines();
-		}
-		SodalitePatcher.LogBuffer.Dispose();
 
 		// Load our prefab. JUST in case I forget to bundle the bundle again.
 		var bundle = AssetBundle.LoadFromFile(Path.Combine(BasePath, "universalpanel"));
