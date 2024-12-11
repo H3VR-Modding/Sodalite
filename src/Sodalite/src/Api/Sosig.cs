@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using FistVR;
 using Sodalite.Utilities;
@@ -84,13 +84,38 @@ public static class SosigAPI
 		var sosig = Object.Instantiate(prefab, pos, rot).GetComponentInChildren<Sosig>();
 
 		// Spawn the accessories
-		if (Random.Range(0.0f, 1f) < outfit.Chance_Headwear) SpawnAccessoryToLink(outfit.Headwear, sosig.Links[0]);
+
+		float torsoChance = Random.Range(0.0f, 1f);
+		int torsoIndex = -1;
+		if (torsoChance < outfit.Chance_Torsowear)
+			torsoIndex = SpawnAccessoryToLink(outfit.Torsowear, sosig.Links[1]);
+
+		float headChance = Random.Range(0.0f, 1f);
+		int headIndex = -1;
+		if (outfit.HeadUsesTorsoIndex)
+			headIndex = torsoIndex;
+		if (headChance < outfit.Chance_Headwear)
+			SpawnAccessoryToLink(outfit.Headwear, sosig.Links[0], headIndex);
+
+		float pantsChance = Random.Range(0.0f, 1f);
+		int pantsIndex = -1;
+		if (outfit.PantsUsesTorsoIndex)
+			pantsIndex = torsoIndex;
+		if(pantsChance < outfit.Chance_Pantswear)
+			SpawnAccessoryToLink(outfit.Pantswear, sosig.Links[2], pantsIndex);
+
+		float pantsLowerChance = Random.Range(0.0f, 1f);
+		int pantsLowerIndex = -1;
+		if (outfit.PantsLowerUsesPantsIndex)
+			pantsLowerIndex = torsoIndex;
+		if (pantsLowerChance < outfit.Chance_Pantswear_Lower)
+			SpawnAccessoryToLink(outfit.Pantswear_Lower, sosig.Links[3], pantsLowerIndex);
+
 		if (Random.Range(0.0f, 1f) < outfit.Chance_Facewear) SpawnAccessoryToLink(outfit.Facewear, sosig.Links[0]);
 		if (Random.Range(0.0f, 1f) < outfit.Chance_Eyewear) SpawnAccessoryToLink(outfit.Eyewear, sosig.Links[0]);
-		if (Random.Range(0.0f, 1f) < outfit.Chance_Torsowear) SpawnAccessoryToLink(outfit.Torsowear, sosig.Links[1]);
-		if (Random.Range(0.0f, 1f) < outfit.Chance_Pantswear) SpawnAccessoryToLink(outfit.Pantswear, sosig.Links[2]);
-		if (Random.Range(0.0f, 1f) < outfit.Chance_Pantswear_Lower) SpawnAccessoryToLink(outfit.Pantswear_Lower, sosig.Links[3]);
 		if (Random.Range(0.0f, 1f) < outfit.Chance_Backpacks) SpawnAccessoryToLink(outfit.Backpacks, sosig.Links[1]);
+		if (Random.Range(0.0f, 1f) < outfit.Chance_TorosDecoration) SpawnAccessoryToLink(outfit.TorosDecoration, sosig.Links[1]);
+		if (Random.Range(0.0f, 1f) < outfit.Chance_Belt) SpawnAccessoryToLink(outfit.Belt, sosig.Links[2]);
 
 		// If the Sosig spawns an item when it's link is destroyed register that
 		if (template.UsesLinkSpawns)
@@ -102,13 +127,17 @@ public static class SosigAPI
 		sosig.Configure(template);
 		return sosig;
 
-		static void SpawnAccessoryToLink(IList<FVRObject> gs, SosigLink l)
+		static int SpawnAccessoryToLink(IList<FVRObject> gs, SosigLink l, int index = -1)
 		{
 			// Spawn the accessory and parent it to the sosig link
-			if (gs.Count < 1) return;
+			if (gs == null || gs.Count < 1 || index >= gs.Count) return -1;
+			if(index <= -1) index = Random.Range(0, gs.Count);
+			var go = gs[index] != null ? gs[index].GetGameObject() : null;
+			if (go == null) return -1;
 			var linkTransform = l.transform;
-			var accessory = Object.Instantiate(gs[Random.Range(0, gs.Count)].GetGameObject(), linkTransform.position, linkTransform.rotation, linkTransform);
+			var accessory = Object.Instantiate(go, linkTransform.position, linkTransform.rotation, linkTransform);
 			accessory.GetComponent<SosigWearable>().RegisterWearable(l);
+			return index;
 		}
 	}
 
