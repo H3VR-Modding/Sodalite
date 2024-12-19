@@ -15,7 +15,7 @@
         <PackageProjectUrl>https://github.com/H3VR-Modding/Sodalite</PackageProjectUrl>
         <RepositoryUrl>https://github.com/H3VR-Modding/Sodalite.git</RepositoryUrl>
         <RootNamespace>Sodalite</RootNamespace>
-        <PackageVersion>1.5.0</PackageVersion>
+        <PackageVersion>1.5.1</PackageVersion>
         <Configurations>Release;Debug</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>

@@ -80,11 +80,15 @@ public class SodalitePluginListItem : MonoBehaviour
 			PluginSettings.transform.GetChild(0).GetComponent<Image>().color = new Color(0.3f, 0.3f, 0.3f);
 		}
 
-		DocumentationButton.onClick.AddListener(() => Sodalite.Logger.LogInfo("Stuff!"));
-		if (/*!UniversalModPanel.PluginsWithDocumentation.Contains(plugin)*/ true)
+		// TODO: Re-add this. The button got removed from the prefab.
+		if (DocumentationButton != null)
 		{
-			DocumentationButton.interactable = false;
-			DocumentationButton.transform.GetChild(0).GetComponent<Image>().color = new Color(0.3f, 0.3f, 0.3f);
+			DocumentationButton.onClick.AddListener(() => Sodalite.Logger.LogInfo("Stuff!"));
+			if ( /*!UniversalModPanel.PluginsWithDocumentation.Contains(plugin)*/ true)
+			{
+				DocumentationButton.interactable = false;
+				DocumentationButton.transform.GetChild(0).GetComponent<Image>().color = new Color(0.3f, 0.3f, 0.3f);
+			}
 		}
 	}
 }
