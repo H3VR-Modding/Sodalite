@@ -137,14 +137,28 @@ public class Sodalite : BaseUnityPlugin, ILogListener
 		// Try to set the game running modded. This will fail on versions below Update 100 Alpha 7
 		GM.SetRunningModded();
 
-		// Now that all plugins should have had a chance to setup their configs, scan for them
-		ModsAPI.Discover();
-		UniversalModPanel.RegisterUnregisteredPluginConfigs();
+		try
+		{
+			// Now that all plugins should have had a chance to setup their configs, scan for them
+			ModsAPI.Discover();
+			UniversalModPanel.RegisterUnregisteredPluginConfigs();
+		}
+		catch (Exception e)
+		{
+			Logger.LogError($"Unhandled exception when discovering mods and configs: {e}");
+		}
 
-		// Pull the button sprite and font for our use later
-		var button = GameObject.Find("MainMenuSceneProtoBase/LevelLoadScreen/LevelLoadHolder/Canvas/Button").transform;
-		WidgetStyle.DefaultButtonSprite = button.GetComponent<Image>().sprite;
-		WidgetStyle.DefaultTextFont = button.GetChild(0).GetComponent<Text>().font;
+		try
+		{
+			// Pull the button sprite and font for our use later
+			var button = GameObject.Find("MainMenuSceneProtoBase/LevelLoadScreen/LevelLoadHolder/Canvas/Button").transform;
+			WidgetStyle.DefaultButtonSprite = button.GetComponent<Image>().sprite;
+			WidgetStyle.DefaultTextFont = button.GetChild(0).GetComponent<Text>().font;
+		}
+		catch (Exception e)
+		{
+			Logger.LogError($"Unhandled exception when assigning WidgetStyle defaults: {e}");
+		}
 	}
 
 	// Hook over the lambda that PostProcessManager.ReloadBaseTypes uses so we can use a GetTypesSafe instead of GetTypes

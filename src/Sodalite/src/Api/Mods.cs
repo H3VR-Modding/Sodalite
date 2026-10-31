@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BepInEx;
@@ -51,29 +52,37 @@ public static class ModsAPI
 		string basePluginsPath = Path.GetFullPath(Paths.PluginPath);
 		foreach (var pluginScript in bepinexPlugins)
 		{
-			PluginInfo pluginInfo = pluginScript.Info;
-			BepInExPluginsMutable.Add(pluginInfo);
-
-			// Grab the plugin's location and trim the bepinex plugin path from the start
-			string assemblyPath = Path.GetFullPath(pluginInfo.Location);
-			string relativePath = assemblyPath.Substring(basePluginsPath.Length).TrimStart(Path.DirectorySeparatorChar);
-
-			// This should leave us with the name of the package it's from
-			string packageName = Path.GetDirectoryName(relativePath)!;
-			if (!string.IsNullOrEmpty(packageName) && ThunderstorePackages.TryGetValue(packageName, out var package))
+			try
 			{
-				// Everything matches up, we're good to go.
-				package.PluginsMutable.Add(pluginInfo);
-				PluginToPackageLookupMutable[pluginInfo] = package;
+				PluginInfo pluginInfo = pluginScript.Info;
+				BepInExPluginsMutable.Add(pluginInfo);
+
+				// Grab the plugin's location and trim the bepinex plugin path from the start
+				string assemblyPath = Path.GetFullPath(pluginInfo.Location);
+				string relativePath = assemblyPath.Substring(basePluginsPath.Length).TrimStart(Path.DirectorySeparatorChar);
+
+				// This should leave us with the name of the package it's from
+				string packageName = Path.GetDirectoryName(relativePath)!;
+				if (!string.IsNullOrEmpty(packageName) && ThunderstorePackages.TryGetValue(packageName, out var package))
+				{
+					// Everything matches up, we're good to go.
+					package.PluginsMutable.Add(pluginInfo);
+					PluginToPackageLookupMutable[pluginInfo] = package;
+				}
+				else
+				{
+					// Doesn't belong to a thunderstore package, probably an in-development plugin installed manually for testing.
+					// We'll just make a stub package for it
+					ThunderstorePackage orphanPackage = new("Unknown", pluginInfo.Metadata.Name, "", pluginInfo.Metadata.Version);
+					orphanPackage.PluginsMutable.Add(pluginInfo);
+					ThunderstorePackagesMutable[orphanPackage.Name] = orphanPackage;
+					PluginToPackageLookupMutable[pluginInfo] = orphanPackage;
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				// Doesn't belong to a thunderstore package, probably an in-development plugin installed manually for testing.
-				// We'll just make a stub package for it
-				ThunderstorePackage orphanPackage = new("Unknown", pluginInfo.Metadata.Name, "", pluginInfo.Metadata.Version);
-				orphanPackage.PluginsMutable.Add(pluginInfo);
-				ThunderstorePackagesMutable[orphanPackage.Name] = orphanPackage;
-				PluginToPackageLookupMutable[pluginInfo] = orphanPackage;
+				Sodalite.Logger.LogError($"Failed to save info of plugin {pluginScript.Info?.Metadata?.Name ?? pluginScript.Info?.Metadata?.GUID ?? pluginScript.Info?.Location
+					?? $"(Could not retrieve name), {e.Message}"}");
 			}
 		}
 
