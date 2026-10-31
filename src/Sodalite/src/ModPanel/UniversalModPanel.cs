@@ -275,6 +275,8 @@ public class UniversalModPanel : MonoBehaviour
 		// For each plugin just try to add all their keys
 		foreach (var plugin in Chainloader.ManagerObject.GetComponents<BaseUnityPlugin>())
 		{
+			if (plugin.Info == null || plugin.Config == null) continue;
+
 			if (!RegisteredConfigs.ContainsKey(plugin.Info)) RegisterPluginSettings(plugin.Info, plugin.Config);
 
 			string packageName = ModsAPI.PluginToPackageLookup[plugin.Info].Name;
